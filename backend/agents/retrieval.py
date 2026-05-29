@@ -155,6 +155,11 @@ def get_index() -> DocumentIndex:
     return _INDEX
 
 
+def warmup_index() -> None:
+    """Force the singleton index to build now (eg. at FastAPI startup)."""
+    get_index()
+
+
 def retrieve_documents(query: str, k: int = 4) -> dict[str, Any]:
     results = get_index().search(query, k=k)
     if not results:

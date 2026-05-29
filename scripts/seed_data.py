@@ -51,6 +51,10 @@ def docs_dir(cfg: TargetConfig) -> str:
     return f"/Volumes/{cfg.catalog}/{cfg.schema}/{cfg.volume}/documents"
 
 
+def pdf_dir(cfg: TargetConfig) -> str:
+    return f"/Volumes/{cfg.catalog}/{cfg.schema}/{cfg.volume}/pdf"
+
+
 def upload_csvs(client, cfg: TargetConfig) -> None:
     target = stage_dir(cfg)
     print(f"--> staging Parquet into {target}")
@@ -79,6 +83,37 @@ def upload_documents(client, cfg: TargetConfig) -> None:
                 overwrite=True,
             )
         print(f"   uploaded {src.name}")
+
+
+def upload_pdfs(client, cfg: TargetConfig) -> None:
+    """Stage the synthetic PDFs (and their KA Q/A JSON companions) into the Volume.
+
+    The synthetic Knowledge Assistant points at ``/pdf`` and discovers
+    examples from the side-by-side ``.json`` files when
+    ``add_examples_from_volume=true`` (see
+    ``databricks/agent_bricks/knowledge_assistant.json``).
+    """
+    pdf_src = DOCS / "pdf"
+    if not pdf_src.exists():
+        print(
+            "   skip PDF upload: data/documents/pdf is missing. "
+            "Run `python scripts/generate_synthetic_pdfs.py` first."
+        )
+        return
+    target = pdf_dir(cfg)
+    print(f"--> uploading synthetic PDFs (and KA examples) into {target}")
+    files = sorted([p for p in pdf_src.iterdir() if p.suffix in (".pdf", ".json")])
+    if not files:
+        print(f"   skip PDF upload: {pdf_src} is empty.")
+        return
+    for src in files:
+        with open(src, "rb") as fh:
+            client.files.upload(
+                file_path=f"{target}/{src.name}",
+                contents=fh,
+                overwrite=True,
+            )
+        print(f"   uploaded {src.name} ({src.stat().st_size:,} bytes)")
 
 
 def truncate_then_copy(client, cfg: TargetConfig) -> None:
@@ -133,7 +168,8 @@ def main() -> None:
     upload_csvs(client, cfg)
     truncate_then_copy(client, cfg)
     upload_documents(client, cfg)
-    print("Synthetic data + documents seeded into Unity Catalog.")
+    upload_pdfs(client, cfg)
+    print("Synthetic data + documents + PDFs seeded into Unity Catalog.")
 
 
 if __name__ == "__main__":

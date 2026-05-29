@@ -70,9 +70,6 @@ export default function SeqWaterGridMap() {
             active={active}
             onToggle={(id) => onToggle(id)}
             layers={MAP_LAYERS}
-            onOptions={() => {
-              /* layer options placeholder */
-            }}
           />
         </div>
         <MapStyleControl

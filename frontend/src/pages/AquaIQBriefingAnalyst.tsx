@@ -18,6 +18,7 @@ import {
 import SectionCard from "@/components/ui/SectionCard";
 import EvidenceCard from "@/components/ui/EvidenceCard";
 import StatusBadge from "@/components/ui/StatusBadge";
+import HeroBanner from "@/components/ui/HeroBanner";
 import { useToast } from "@/components/ui/Toast";
 import {
   AQUAIQ_ANALYST,
@@ -25,6 +26,8 @@ import {
   AQUAIQ_STRUCTURED,
   AQUAIQ_TOOLS_USED,
   AQUAIQ_TRACE_ID,
+  HERO_COPY,
+  HERO_IMAGES,
 } from "@/lib/demoContent";
 import { api } from "@/lib/api";
 import { cn } from "@/lib/utils";
@@ -65,6 +68,14 @@ export default function AquaIQBriefingAnalyst() {
 
   return (
     <div className="space-y-5">
+      <HeroBanner
+        image={HERO_IMAGES.aquaIQ}
+        eyebrow={HERO_COPY.aquaIQ.eyebrow}
+        headline={HERO_COPY.aquaIQ.headline}
+        sub={HERO_COPY.aquaIQ.sub}
+        height={200}
+      />
+
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
         <SectionCard
           title="Ask AquaIQ"
@@ -144,7 +155,16 @@ export default function AquaIQBriefingAnalyst() {
             >
               <Plus className="h-3.5 w-3.5" /> Add note
             </button>
-            <button className="btn-ghost text-[12.5px]">
+            <button
+              onClick={() =>
+                toast({
+                  title: "Validation history",
+                  description:
+                    "Synthetic demo — full audit trail would open here, showing every reviewer, note, and trace ID.",
+                })
+              }
+              className="btn-ghost text-[12.5px]"
+            >
               <History className="h-3.5 w-3.5" /> View validation history
             </button>
           </div>
@@ -296,7 +316,17 @@ export default function AquaIQBriefingAnalyst() {
                 <span className="flex items-center gap-2 text-deepNavy">
                   <FileText className="h-3.5 w-3.5 text-primaryBlue" /> {s}
                 </span>
-                <button className="btn-ghost text-[12px]">Open</button>
+                <button
+                  onClick={() =>
+                    toast({
+                      title: "Briefing queued",
+                      description: `Synthetic — “${s}” opened in the briefing workspace.`,
+                    })
+                  }
+                  className="btn-ghost text-[12px]"
+                >
+                  Open
+                </button>
               </li>
             ))}
           </ul>

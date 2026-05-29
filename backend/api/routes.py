@@ -1,10 +1,12 @@
 """API routes for the Seqwater AI Command Centre."""
 from __future__ import annotations
 
+import json
 from datetime import datetime, timezone
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, Query
+from fastapi.responses import StreamingResponse
 
 from backend import __version__
 from backend.agents import aquaiq
@@ -16,10 +18,12 @@ from backend.models import (
     ChatResponse,
     DamLevel,
     FloodStorage,
+    GenieEmbedResponse,
     HealthResponse,
     OverviewResponse,
     ScenarioRunRequest,
     ScenarioRunResult,
+    WarmResponse,
 )
 from backend.services import briefing as briefing_svc
 from backend.services import repository
@@ -124,13 +128,123 @@ def capital_projects() -> list[dict[str, Any]]:
     return repository.list_capital_projects()
 
 
-@router.post("/ai/chat", response_model=ChatResponse)
-def ai_chat(req: ChatRequest) -> dict[str, Any]:
+@router.post("/ai/chat")
+async def ai_chat(req: ChatRequest) -> StreamingResponse:
+    """Stream the AquaIQ answer as NDJSON over a single POST.
+
+    Each line is one JSON event:
+
+    * ``{"event": "delta", "text": ...}``
+    * ``{"event": "tool_call", "name": ..., "args": {...}}``
+    * ``{"event": "tool_result", "name": ..., "summary": ...}``
+    * ``{"event": "sources", "items": [...]}``
+    * ``{"event": "done", ...}`` (full :class:`ChatResponse` payload)
+
+    Clients that prefer the legacy non-streaming shape can drain the stream
+    and pluck the terminal ``done`` event — its payload matches
+    :class:`ChatResponse` field-for-field, including the new ``markdown``
+    field.
+    """
+
+    async def gen():
+        async for event in aquaiq.stream_answer(
+            req.question,
+            history=[m.model_dump() for m in req.history],
+            selected_asset_id=req.selected_asset_id,
+        ):
+            yield json.dumps(event, default=str) + "\n"
+
+    return StreamingResponse(
+        gen(),
+        media_type="application/x-ndjson",
+        headers={
+            "Cache-Control": "no-cache, no-transform",
+            "X-Accel-Buffering": "no",
+        },
+    )
+
+
+@router.post("/ai/chat/sync", response_model=ChatResponse)
+def ai_chat_sync(req: ChatRequest) -> dict[str, Any]:
+    """Backwards-compatible non-streaming endpoint.
+
+    Drains :func:`aquaiq.stream_answer` into a single :class:`ChatResponse`.
+    """
     return aquaiq.answer(
         req.question,
         history=[m.model_dump() for m in req.history],
         selected_asset_id=req.selected_asset_id,
     )
+
+
+@router.get("/agent/warm", response_model=WarmResponse)
+async def agent_warm() -> dict[str, Any]:
+    """Pre-warm the Supervisor endpoint to mitigate cold-start latency.
+
+    Returns immediately with a small status payload. Safe to call repeatedly;
+    the underlying serving endpoint owns its own warm pool.
+    """
+    settings = get_settings()
+    if not settings.supervisor_configured:
+        return {
+            "warm": True,
+            "latency_ms": 0,
+            "supervisor_configured": False,
+            "reason": "local_mode_no_supervisor",
+        }
+    from backend.services.agent_bricks import prewarm_supervisor
+
+    result = await prewarm_supervisor()
+    return {
+        "warm": bool(result.get("warm")),
+        "latency_ms": int(result.get("latency_ms", 0)),
+        "supervisor_configured": True,
+        "reason": result.get("reason"),
+        "status_code": result.get("status_code"),
+    }
+
+
+@router.get("/genie/embed", response_model=GenieEmbedResponse)
+def genie_embed() -> dict[str, Any]:
+    """Return the iframe URL for embedding the Seqwater Genie Space.
+
+    The frontend embeds a Genie Space directly per the Databricks docs:
+    https://docs.databricks.com/aws/en/genie/embed
+
+    Pre-conditions (handled in Databricks, not here):
+
+    1. Workspace admin enabled the *Embed Genie as an iframe* preview.
+    2. Workspace admin added the App's deployed origin to the allowed
+       embedding surfaces list.
+    3. End users have ``CAN_RUN`` on the Genie Space and ``SELECT`` on the
+       underlying tables (granted by ``scripts/grant_app_permissions.py``).
+
+    Configuration:
+
+    * ``DATABRICKS_GENIE_EMBED_URL`` (preferred) — paste the URL generated
+      by Share → Embed space.
+    * Fallback — constructed as ``{host}/embed/genie/{space_id}`` from
+      ``DATABRICKS_HOST`` + ``DATABRICKS_GENIE_SPACE_ID``.
+    """
+    s = get_settings()
+    embed = s.genie_embed_url_resolved
+    if not embed:
+        return {
+            "configured": False,
+            "embed_url": None,
+            "space_id": s.databricks_genie_space_id,
+            "workspace_host": s.databricks_host,
+            "reason": (
+                "Set DATABRICKS_GENIE_EMBED_URL (paste from Share → Embed "
+                "space) or both DATABRICKS_HOST and DATABRICKS_GENIE_SPACE_ID."
+            ),
+        }
+    return {
+        "configured": True,
+        "embed_url": embed,
+        "space_id": s.databricks_genie_space_id,
+        "workspace_host": s.databricks_host,
+    }
 
 
 @router.post("/ai/briefing", response_model=BriefingResponse)
@@ -163,11 +277,11 @@ def governance_tiles() -> list[dict[str, Any]]:
         },
         {
             "title": "Governed AI",
-            "summary": "AquaIQ runs on Databricks Foundation Model API with traceable tool calls.",
+            "summary": "AquaIQ orchestrates three Agent Bricks primitives end-to-end.",
             "detail": [
-                "Endpoint abstraction lets you swap Llama, Claude, or DBRX without code changes",
-                "Every interaction is traced (MLflow-compatible)",
-                "Document retrieval is Volume + Vector Search-ready",
+                "Supervisor (seqwater_supervisor) routes to a Knowledge Assistant + Genie + 3 UC functions",
+                "Streaming markdown answers, tool-call tracing, and live source citations",
+                "Every interaction is logged to ai_interaction_audit and MLflow",
             ],
             "icon": "sparkles",
             "accent": "violet",

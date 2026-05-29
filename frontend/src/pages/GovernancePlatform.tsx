@@ -1,34 +1,43 @@
-import { ArrowRight, ShieldCheck, ScrollText, KeyRound, Award } from "lucide-react";
+import {
+  ArrowRight,
+  Award,
+  BookOpen,
+  CheckCircle2,
+  KeyRound,
+  Pin,
+  ScrollText,
+  Search,
+  ShieldCheck,
+  Sparkles,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import SectionCard from "@/components/ui/SectionCard";
 import GovernanceFlow from "@/components/ui/GovernanceFlow";
+import HeroBanner from "@/components/ui/HeroBanner";
+import { useToast } from "@/components/ui/Toast";
 import {
   GOVERNANCE_COLUMNS,
+  HERO_COPY,
+  HERO_IMAGES,
   MODEL_SERVING_CARDS,
   PROOF_POINTS,
 } from "@/lib/demoContent";
 
 export default function GovernancePlatform() {
+  const { toast } = useToast();
   return (
     <div className="space-y-6">
-      <header className="rounded-xl border border-border bg-surface p-5 shadow-card">
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div className="max-w-3xl">
-            <div className="text-[11px] uppercase tracking-[0.18em] text-databricks-red">
-              Governance & Platform
-            </div>
-            <h2 className="mt-1 text-[24px] font-semibold leading-snug text-deepNavy">
-              Trusted Data. Governed AI. Better Decisions.
-            </h2>
-            <p className="mt-1.5 text-[13.5px] text-ink-secondary">
-              The Water for Life Intelligence Centre runs on Databricks. Unity Catalog
-              governs every dataset, Lakeflow pipelines keep them current, Foundation Model
-              API powers AquaIQ, and every recommendation is auditable end-to-end.
-            </p>
-          </div>
-          <DatabricksMark />
-        </div>
-      </header>
+      <HeroBanner
+        image={HERO_IMAGES.governance}
+        eyebrow={HERO_COPY.governance.eyebrow}
+        headline={HERO_COPY.governance.headline}
+        sub={HERO_COPY.governance.sub}
+        height={220}
+      />
+      <div className="flex justify-end">
+        <DatabricksMark />
+      </div>
 
       <SectionCard title="Architecture Flow" description="Source to insight">
         <GovernanceFlow columns={GOVERNANCE_COLUMNS} highlightColumn="Unity Catalog Governance" />
@@ -65,12 +74,18 @@ export default function GovernancePlatform() {
           <div className="flex items-center gap-2 text-[12px] uppercase tracking-[0.18em] text-white/70">
             <ShieldCheck className="h-3.5 w-3.5" /> Platform proof points
           </div>
-          <a
-            href="#"
+          <button
+            onClick={() =>
+              toast({
+                title: "Governance one-pager",
+                description:
+                  "Synthetic — printable governance summary would download here.",
+              })
+            }
             className="inline-flex items-center gap-1 text-[12.5px] font-semibold text-white/85 hover:text-white"
           >
             Download governance one-pager <ArrowRight className="h-3.5 w-3.5" />
-          </a>
+          </button>
         </div>
         <div className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-4">
           {PROOF_POINTS.map((p, idx) => (
@@ -116,24 +131,31 @@ function ProofIcon({ idx }: { idx: number }) {
 }
 
 function HumanLoopFlow() {
-  const steps = [
-    { label: "AI Output", icon: "✨" },
-    { label: "Analyst Review", icon: "🔍" },
-    { label: "Validation", icon: "✅" },
-    { label: "Decision & Action", icon: "📌" },
-    { label: "Audit & Learning", icon: "📚" },
+  const steps: { label: string; icon: LucideIcon }[] = [
+    { label: "AI Output", icon: Sparkles },
+    { label: "Analyst Review", icon: Search },
+    { label: "Validation", icon: CheckCircle2 },
+    { label: "Decision & Action", icon: Pin },
+    { label: "Audit & Learning", icon: BookOpen },
   ];
   return (
     <div className="flex flex-wrap items-center gap-2">
-      {steps.map((s, i) => (
-        <div key={s.label} className="flex items-center gap-2">
-          <div className="flex items-center gap-2 rounded-md border border-border bg-surface px-3 py-2 text-[12.5px] font-medium text-deepNavy">
-            <span className="text-[14px]">{s.icon}</span>
-            {s.label}
+      {steps.map((s, i) => {
+        const Icon = s.icon;
+        return (
+          <div key={s.label} className="flex items-center gap-2">
+            <div className="flex items-center gap-2 rounded-md border border-border bg-surface px-3 py-2 text-[12.5px] font-medium text-deepNavy">
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-surface-blue text-primaryBlue">
+                <Icon className="h-3.5 w-3.5" />
+              </span>
+              {s.label}
+            </div>
+            {i < steps.length - 1 ? (
+              <ArrowRight className="h-3.5 w-3.5 text-ink-muted" />
+            ) : null}
           </div>
-          {i < steps.length - 1 ? <ArrowRight className="h-3.5 w-3.5 text-ink-muted" /> : null}
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

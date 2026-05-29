@@ -9,7 +9,8 @@
 #   2. recalculate_asset_risk           — recompute synthetic risk scoreboard
 #   3. ingest_operational_documents     — refresh Volume + retrieval index
 #   4. refresh_ai_retrieval_index       — refresh vector search if configured
-#   5. generate_daily_executive_brief   — emit synthetic briefing artefact
+#   5. refresh_knowledge_assistant      — re-index synthetic PDFs into the KA
+#   6. generate_daily_executive_brief   — emit synthetic briefing artefact
 # ============================================================================
 
 resources:
@@ -49,10 +50,19 @@ resources:
             - task_key: ingest_operational_documents
           notebook_task:
             notebook_path: "/Workspace/Demos/Seqwater/refresh_vector_search_index"
+        - task_key: refresh_knowledge_assistant
+          depends_on:
+            - task_key: ingest_operational_documents
+          notebook_task:
+            notebook_path: "/Workspace/Demos/Seqwater/refresh_knowledge_assistant"
+            base_parameters:
+              ka_tile_id: "${var.ka_tile_id}"
+              volume_path: "/Volumes/${var.catalog}/${var.schema}/${var.volume}/pdf/"
         - task_key: generate_daily_executive_brief
           depends_on:
             - task_key: recalculate_asset_risk
             - task_key: refresh_ai_retrieval_index
+            - task_key: refresh_knowledge_assistant
           notebook_task:
             notebook_path: "/Workspace/Demos/Seqwater/generate_executive_briefing"
 
@@ -60,3 +70,15 @@ variables:
   warehouse_id:
     description: "Serverless SQL Warehouse ID for SQL tasks."
     default: "REPLACE_WITH_WAREHOUSE_ID"
+  catalog:
+    description: "Unity Catalog containing the synthetic schema."
+    default: "main"
+  schema:
+    description: "Unity Catalog schema for the synthetic Seqwater demo."
+    default: "seqwater_demo"
+  volume:
+    description: "Unity Catalog volume for synthetic operational documents."
+    default: "operational_docs"
+  ka_tile_id:
+    description: "Synthetic Knowledge Assistant tile id (from setup_agent_bricks.py)."
+    default: "REPLACE_WITH_KA_TILE_ID"

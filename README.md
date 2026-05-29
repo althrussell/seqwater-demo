@@ -99,37 +99,89 @@ and the [Databricks AI Dev Kit](https://github.com/databricks-solutions/ai-dev-k
 ```mermaid
 flowchart LR
     subgraph Browser
-        UI[React + Vite + Tailwind\nShadcn-style components\nLeaflet map\nRecharts]
+        UI[React + Vite + Tailwind\nAquaIQ chat\n+ history sidebar\n(localStorage)]
     end
 
     subgraph Backend["FastAPI backend (Databricks Apps)"]
-        API[/REST /api endpoints/]
-        Agent[AquaIQ agent\ntool-calling, retrieval,\nguardrails, MLflow tracing]
+        API[/REST /api endpoints\nNDJSON streaming /ai/chat/]
+        Agent[AquaIQ agent\nguardrails + tracing\nstream_answer()]
         Repo[Repository / data loader\n(local CSV ↔ DBSQL)]
     end
 
     subgraph Databricks
         UC[(Unity Catalog\nmain.seqwater_demo.*)]
-        Vol[(Volume\noperational_docs)]
-        FM[Foundation Model API\nLlama / Claude / DBSQL\nendpoint abstraction]
+        Vol[(Volume\noperational_docs/pdf)]
+        Sup[Supervisor MAS\nseqwater_supervisor]
+        KA[Knowledge Assistant\nseqwater_operational_docs]
+        Genie[Genie Space\nSeqwater Operations]
+        UCFn[UC Functions\ntop_asset_risks\ncapital_priorities\nrun_flood_scenario]
+        FM[Foundation Model API\n(local fallback)]
         SQL[Serverless SQL\nWarehouse]
         WF[Workflows]
         ML[MLflow tracking]
-        VS[(Vector Search\nindex — optional)]
     end
 
-    UI <-- "/api/*" --> API
+    UI <-- "POST /ai/chat (NDJSON)" --> API
     API --> Agent
     API --> Repo
     Repo <--> SQL
     SQL <--> UC
-    Agent --> Repo
+    Agent -- "stream=true" --> Sup
     Agent --> FM
-    Agent --> Vol
-    Agent --> VS
+    Sup --> KA
+    Sup --> Genie
+    Sup --> UCFn
+    KA --> Vol
+    Genie --> UC
+    UCFn --> UC
     Agent --> ML
     WF --> UC
+    WF --> KA
 ```
+
+### AquaIQ chat experience
+
+- Streams the answer as NDJSON (`fetch` + `ReadableStream`); the assistant
+  bubble renders live via `react-markdown` + `remark-gfm`.
+- The right-hand "tool palette" lights up as the Supervisor routes between
+  child agents (`seqwater_data` → `operational_docs` → `flood_scenario_runner`
+  / etc.).
+- Smart auto-scroll: only follows when the user is pinned to the bottom,
+  otherwise shows a "Jump to latest" pill with a token counter.
+- Per-browser chat history (rename + delete) lives in `localStorage` under
+  `seqwater.chats.v1`. The immutable `ai_interaction_audit` table remains
+  the governance record — deleting a thread does **not** delete the audit
+  trail.
+
+### Data Explorer (embedded Genie Space)
+
+The `/genie` page embeds the synthetic *Seqwater Operations* Genie Space as
+an iframe per the
+[Databricks docs](https://docs.databricks.com/aws/en/genie/embed). It pairs
+with the AquaIQ chat: ask AquaIQ for a governed, citation-rich answer, or
+drop into Genie directly to explore the synthetic UC tables hands-on.
+
+Pre-requisites (workspace admin):
+
+1. Enable the **Embed Genie as an iframe** preview on the workspace
+   *Previews* page.
+2. Add the App's deployed origin (e.g.
+   `https://seqwater-ai-command-centre-<id>.cloud.databricks.com`) to the
+   allowed embedding surfaces list.
+3. Grant end users `CAN_RUN` on the Genie Space and `SELECT` on the
+   underlying UC tables (`scripts/grant_app_permissions.py` already grants
+   the App SP; add user/group grants as needed).
+
+Configuration (one of):
+
+- **Recommended** — set `DATABRICKS_GENIE_EMBED_URL` to the URL from
+  Genie → *Share* → *Embed space*.
+- **Fallback** — leave it blank; the backend constructs
+  `{DATABRICKS_HOST}/embed/genie/{DATABRICKS_GENIE_SPACE_ID}` as a
+  best-effort default.
+
+The iframe is rendered with `allow="clipboard-write"` so users can copy
+query results and conversation links straight out of Genie.
 
 ## Repository layout
 
@@ -256,25 +308,43 @@ python scripts/create_uc_assets.py
 ```
 
 This runs `databricks/sql/01_create_schema.sql`, `02_create_tables.sql`,
-`03_create_views.sql`, and `databricks/volumes/create_volume.sql` against your
-warehouse via the SQL Statements API. The SQL files use `{catalog}.{schema}`
-placeholders so you can target any catalog you can write to.
+`03_create_views.sql`, `05_create_uc_functions.sql`, and
+`databricks/volumes/create_volume.sql` against your warehouse via the SQL
+Statements API. The SQL files use `{catalog}.{schema}` placeholders so you
+can target any catalog you can write to. The UC functions
+(`top_asset_risks`, `capital_priorities`, `run_flood_scenario`) are the
+synthetic deterministic tools the Supervisor agent calls.
 
 ### 3. Seed synthetic data
 
 ```bash
 python scripts/generate_synthetic_data.py     # produces CSV + Parquet
+python scripts/generate_synthetic_pdfs.py     # produces 13 branded PDFs + KA Q/A JSONs
 python scripts/seed_data.py                   # uploads + INSERT OVERWRITE
 python scripts/run_quality_checks.py          # asserts data quality
 ```
 
 `seed_data.py` stages the Parquet files into the Volume's `_stage/` path and
 runs `INSERT OVERWRITE … SELECT * FROM read_files(…)` for each table. It also
-uploads the synthetic Markdown documents into `documents/` under the Volume
-root so AquaIQ can retrieve them. Parquet preserves types better than CSV
-across the loader → Delta boundary.
+uploads the synthetic Markdown documents into `documents/` and the synthetic
+PDFs (with their KA Q/A JSON companions) into `pdf/` under the Volume root
+so the Knowledge Assistant can index them. Parquet preserves types better
+than CSV across the loader → Delta boundary.
 
-### 4. Configure environment
+### 4. Provision Agent Bricks (Genie + KA + Supervisor)
+
+```bash
+python scripts/setup_agent_bricks.py
+```
+
+The script reads the three canonical specs in `databricks/agent_bricks/`
+(`genie_space.json`, `knowledge_assistant.json`, `supervisor.json`) and
+either calls the Agent Bricks `manage_genie` / `manage_ka` / `manage_mas`
+tools (when available) or prints a precise UI runbook so an SA can apply
+each spec by hand. The resolved IDs and endpoint names are written back to
+`.env` so the FastAPI process picks them up on next start.
+
+### 5. Configure environment
 
 Copy `.env.example` to `.env` and set:
 
@@ -286,6 +356,15 @@ DATABRICKS_CATALOG=<your-catalog>
 DATABRICKS_SCHEMA=seqwater_demo
 DATABRICKS_VOLUME=operational_docs
 DATABRICKS_LLM_ENDPOINT=databricks-gpt-oss-120b
+
+# Agent Bricks — populated by scripts/setup_agent_bricks.py
+DATABRICKS_SUPERVISOR_ENDPOINT=agents_<catalog>-<schema>-seqwater_supervisor
+DATABRICKS_KA_ENDPOINT=agents_<catalog>-<schema>-seqwater_operational_docs
+DATABRICKS_KA_TILE_ID=...
+DATABRICKS_GENIE_SPACE_ID=...
+
+# Genie embed (optional) — paste from Genie → Share → Embed space
+DATABRICKS_GENIE_EMBED_URL=
 ```
 
 Locally, the backend authenticates to Databricks via the SDK's `Config()`,
@@ -293,7 +372,7 @@ which picks up your `DATABRICKS_CONFIG_PROFILE` (or an explicit
 `DATABRICKS_HOST`/`DATABRICKS_TOKEN` pair). When deployed inside a Databricks
 App, OAuth M2M credentials are auto-injected — no token configuration needed.
 
-### 5. Deploy as a Databricks App
+### 6. Deploy as a Databricks App
 
 ```bash
 DATABRICKS_CONFIG_PROFILE=<profile> python scripts/deploy_app.py
@@ -302,27 +381,55 @@ DATABRICKS_CONFIG_PROFILE=<profile> python scripts/deploy_app.py
 The script:
 
 1. Runs `npm install && npm run build` in `frontend/` so the SPA is bundled.
-2. Creates the app on first run via `databricks apps create --json @databricks/app_create.json` (sets the bound resources — SQL warehouse + LLM endpoint), or updates an existing app.
+2. Creates the app on first run via `databricks apps create --json @databricks/app_create.json` (binds the SQL warehouse, the LLM endpoint, the Supervisor + KA serving endpoints, and the Genie space), or updates an existing app.
 3. Uses `databricks sync` to push the source tree (including the SPA build and
    synthetic CSVs) to `/Workspace/Users/<you>/<app-name>`.
 4. Triggers `databricks apps deploy`.
 
-Once deployed, grant the app's service principal read access to the demo
-schema and Volume:
+> Adding a resource to `app_create.json` requires a redeploy. The Apps
+> runtime injects credentials only at app *start*, so a no-op
+> `apps update` is not enough — re-run `scripts/deploy_app.py`.
+
+### 7. Grant UC permissions and verify everything
 
 ```bash
+# Grant USE CATALOG / USE SCHEMA / SELECT / READ VOLUME / EXECUTE
 DATABRICKS_CONFIG_PROFILE=<profile> \
   DATABRICKS_WAREHOUSE_ID=<warehouse-id> \
   DATABRICKS_CATALOG=<your-catalog> \
+  SUPERVISOR_SP_APPLICATION_ID=<from setup_agent_bricks.py> \
   python scripts/grant_app_permissions.py
+
+# Final pre-demo gate: prove every endpoint actually works as the App SP.
+DATABRICKS_CONFIG_PROFILE=<profile> \
+  DATABRICKS_WAREHOUSE_ID=<warehouse-id> \
+  DATABRICKS_CATALOG=<your-catalog> \
+  python scripts/verify_app_permissions.py
 ```
 
-This issues `GRANT USE CATALOG`, `GRANT USE SCHEMA`, `GRANT SELECT ON SCHEMA`,
-and `GRANT READ VOLUME` to the service principal that the Apps runtime
-created for your app.
+The grant step wires the same UC and EXECUTE rights to **both** the App SP
+*and* the Supervisor SP, plus a defensive `READ VOLUME` regrant on `pdf/`
+for the KA SP. The verify step runs as the App SP and exercises seven
+checks: a SELECT, a Volume LIST, a UC function call, a 1-token Supervisor
+ping, a 1-token KA ping, a Genie `start-conversation`, and a Supervisor
+endpoint `state == READY`. It exits non-zero with remediation hints on any
+failure and is the **mandatory gate before any demo**.
 
 `app.yaml` runs `uvicorn backend.main:app` and uses `valueFrom: <resource-name>`
-to wire the bound warehouse + endpoint into env vars at runtime.
+to wire the bound warehouse + endpoints + Genie space into env vars at
+runtime.
+
+#### First-time deployment ordering
+
+Apply these commands in order. Each script is idempotent.
+
+1. `python scripts/create_uc_assets.py` — schema, tables, views, UC functions, volume.
+2. `python scripts/generate_synthetic_data.py && python scripts/generate_synthetic_pdfs.py` — synthetic data + PDFs.
+3. `python scripts/seed_data.py` — upload tables + documents + PDFs into Unity Catalog.
+4. `python scripts/setup_agent_bricks.py` — Genie + KA + Supervisor (writes IDs to `.env`).
+5. `python scripts/deploy_app.py` — build SPA, create/update app, bind resources, deploy.
+6. `python scripts/grant_app_permissions.py` — grant UC permissions to App + Supervisor SPs.
+7. `python scripts/verify_app_permissions.py` — must exit 0 before any demo.
 
 ### Reference deployment (s2 / `anzgt_may_us`)
 

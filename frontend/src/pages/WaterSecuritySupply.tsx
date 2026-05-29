@@ -17,7 +17,10 @@ import KpiCard from "@/components/ui/KpiCard";
 import SectionCard from "@/components/ui/SectionCard";
 import AquaIQSummaryCard from "@/components/ui/AquaIQSummaryCard";
 import StatusBadge from "@/components/ui/StatusBadge";
+import HeroBanner from "@/components/ui/HeroBanner";
 import {
+  HERO_COPY,
+  HERO_IMAGES,
   SOURCE_CONTRIBUTION,
   STORAGE_HISTORY,
   SUPPLY_AQUAIQ,
@@ -44,6 +47,14 @@ export default function WaterSecuritySupply() {
 
   return (
     <div className="space-y-5">
+      <HeroBanner
+        image={HERO_IMAGES.waterSecuritySupply}
+        eyebrow={HERO_COPY.waterSecuritySupply.eyebrow}
+        headline={HERO_COPY.waterSecuritySupply.headline}
+        sub={HERO_COPY.waterSecuritySupply.sub}
+        height={220}
+      />
+
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
         {SUPPLY_KPIS.map((k) => (
           <KpiCard
@@ -225,13 +236,19 @@ export default function WaterSecuritySupply() {
           title="Source Contribution (Current)"
           className="lg:col-span-5"
           actions={
-            <a
-              href="#"
+            <button
+              onClick={() =>
+                toast({
+                  title: "Source contribution",
+                  description:
+                    "Synthetic — per-source breakdown by dam, weir, groundwater, recycled & desalination would open here.",
+                })
+              }
               className="btn-ghost text-[12px]"
             >
               View source details
               <ArrowRight className="h-3 w-3" />
-            </a>
+            </button>
           }
         >
           <DonutSourceContribution />
@@ -242,9 +259,18 @@ export default function WaterSecuritySupply() {
           description="Available capacity by plant"
           className="lg:col-span-7"
           actions={
-            <a href="#" className="btn-ghost text-[12px]">
+            <button
+              onClick={() =>
+                toast({
+                  title: "Treatment plants",
+                  description:
+                    "Synthetic — full plant register with utilisation and outage history would open here.",
+                })
+              }
+              className="btn-ghost text-[12px]"
+            >
               View all treatment plants <ArrowRight className="h-3 w-3" />
-            </a>
+            </button>
           }
         >
           <table className="table-clean">

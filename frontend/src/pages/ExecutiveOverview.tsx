@@ -11,17 +11,18 @@ import SeqWaterMap from "@/components/map/SeqWaterMap";
 import MapLegend from "@/components/ui/MapLegend";
 import {
   EXECUTIVE_AI_EVIDENCE,
-  EXECUTIVE_AI_REVIEW,
   EXECUTIVE_AI_SOURCES,
-  EXECUTIVE_AI_SUMMARY,
   EXECUTIVE_KPIS,
-  EXECUTIVE_PRIORITIES,
   HERO_IMAGES,
 } from "@/lib/demoContent";
 import { api } from "@/lib/api";
 import { useAppContext } from "@/components/shell/AppContext";
+import { getScenarioOverlay } from "@/lib/scenarios";
 
 const PREVIEW_LAYERS = ["assets", "catchment", "rainfall", "quality", "risk"];
+
+const DEFAULT_HERO_HEADLINE =
+  "Water security remains stable, with elevated\nmonitoring across catchments and assets.";
 
 export default function ExecutiveOverview() {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ export default function ExecutiveOverview() {
   void overview;
   const assets = useQuery({ queryKey: ["assets"], queryFn: api.assets });
   const { scenarioId } = useAppContext();
-  void scenarioId;
+  const overlay = getScenarioOverlay(scenarioId);
 
   const mapAssets = useMemo(() => {
     return (assets.data ?? [])
@@ -49,16 +50,10 @@ export default function ExecutiveOverview() {
       <HeroBanner
         image={HERO_IMAGES.executiveOverview}
         eyebrow="Executive Overview"
-        headline={
-          "Water security remains stable, with elevated\nmonitoring across catchments and assets."
-        }
-        sub="Regular monitoring continues across the water grid."
+        headline={overlay.heroHeadline ?? DEFAULT_HERO_HEADLINE}
+        sub={overlay.heroSub}
         cta={{ label: "View full executive brief", onClick: () => navigate("/aquaiq") }}
-        posture={{
-          status: "watch",
-          description:
-            "Elevated monitoring in place for selected catchments, assets and water quality indicators.",
-        }}
+        posture={overlay.posture}
         height={340}
       />
 
@@ -132,7 +127,7 @@ export default function ExecutiveOverview() {
           }
         >
           <div className="space-y-2.5">
-            {EXECUTIVE_PRIORITIES.map((p) => (
+            {overlay.priorities.map((p) => (
               <ExecutivePriorityCard
                 key={p.title}
                 title={p.title}
@@ -147,11 +142,11 @@ export default function ExecutiveOverview() {
       </div>
 
       <AquaIQSummaryCard
-        body={EXECUTIVE_AI_SUMMARY}
+        body={overlay.executiveSummary}
         evidence={EXECUTIVE_AI_EVIDENCE}
-        recommendedReview={EXECUTIVE_AI_REVIEW}
+        recommendedReview={overlay.executiveReview}
         sources={EXECUTIVE_AI_SOURCES}
-        updatedLabel="Last updated 09:10 AM AEST"
+        updatedLabel={`Synthetic — ${overlay.label}`}
         onCta={() => navigate("/aquaiq")}
       />
     </div>

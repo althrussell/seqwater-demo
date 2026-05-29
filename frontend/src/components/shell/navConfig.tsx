@@ -2,6 +2,7 @@ import {
   Activity,
   CloudRain,
   Compass,
+  Database,
   Droplets,
   Map,
   ShieldCheck,
@@ -56,9 +57,15 @@ export const NAV: NavItem[] = [
   },
   {
     to: "/aquaiq",
-    label: "AquaIQ Briefing Analyst",
-    subtitle: "AquaIQ Briefing Analyst",
+    label: "AquaIQ Assistant",
+    subtitle: "AquaIQ Assistant",
     icon: Sparkles,
+  },
+  {
+    to: "/genie",
+    label: "Data Explorer (Genie)",
+    subtitle: "Embedded Genie Space",
+    icon: Database,
   },
   {
     to: "/governance",

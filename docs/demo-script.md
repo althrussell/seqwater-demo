@@ -169,38 +169,84 @@ rainfall input drops. Every output is traced.
 
 ---
 
-## 6. AquaIQ assistant — governed AI in action (2 minutes)
+## 6. AquaIQ assistant — Agent Bricks in action (2 minutes)
 
 **Page:** AquaIQ Assistant (`/aquaiq`).
 
 **What to click:**
 
-- Click prompt chip: *"What are the top 5 operational risks over the next 72 hours?"*
-- Wait for the answer.
-- Click prompt chip: *"What is driving the elevated water quality risk?"*
-- Click prompt chip: *"Generate a board-ready situation briefing."*
-- Click prompt chip: *"Which capital projects reduce the most operational risk?"*
-- Type: *"Open the spillway at Wivenhoe Dam"* — show the refusal.
+- Land on the page. Note the "Agent Bricks at work" strip — Supervisor,
+  Knowledge Assistant, Genie, UC functions. Watch the warm-up pill flip from
+  "Warming…" to "Supervisor warm (xxx ms)".
+- Click the suggestion chip: *"What are the synthetic top 5 operational
+  risks over the next 72 hours?"*
+- **Demo beat 1 — ask the data**: as the Supervisor streams, point out the
+  `seqwater_data` tool pill lighting up (Genie returns the synthetic risk
+  scoreboard). The markdown answer renders live, section by section.
+- Click: *"Summarise the synthetic flood readiness posture for scenario
+  FS-001."* The `flood_scenario_runner` UC function pill lights up.
+- **Demo beat 2 — ask the playbook**: type *"What does the dam operations
+  playbook require during a Watch posture?"* The `operational_docs` pill
+  lights up — that's the Knowledge Assistant retrieving the synthetic PDF.
+- **Demo beat 3 — ask both**: click *"Which synthetic capital projects
+  reduce the most operational risk?"* — watch `seqwater_data` and
+  `operational_docs` and `capital_priorities` light up in sequence as the
+  Supervisor chains them.
+- Type: *"Open the spillway at Wivenhoe Dam"* — show the refusal stream
+  back as markdown.
+- Hit "+ New chat" in the left sidebar, then delete a previous chat. Note
+  the audit trail tile: deleting a chat does **not** delete the synthetic
+  governance record.
 
 **What to say:**
 
-- "AquaIQ is a governed operational intelligence assistant. Every answer
-  has the same structure: summary, key signals, recommended actions, risks
-  and assumptions, sources used, and an explicit human validation
-  requirement."
-- "Notice the trace ID, the synthetic tools called, the synthetic confidence
-  band, and the citations to specific Unity Catalog tables and Volume
-  documents."
-- "Now watch what happens when an executive asks AquaIQ to do something
-  operational. It refuses — politely and predictably — and routes the user
-  back to the appropriate Seqwater function."
-- "The endpoint here is abstracted. We can swap in Llama, Claude, DBRX, or
-  a custom-tuned model on the Databricks Foundation Model API without
-  changing the front end."
+- "AquaIQ is now a *Supervisor agent* on Databricks Agent Bricks. It
+  orchestrates a Knowledge Assistant over synthetic playbooks, a Genie space
+  over synthetic operational tables, and three synthetic Unity Catalog
+  functions for deterministic scenario lookups."
+- "Every answer has the same structure: summary, key signals, recommended
+  actions, risks and assumptions, sources used, and an explicit human
+  validation requirement. Streaming markdown means the answer feels
+  immediate even on a first cold-start."
+- "The trace ID, the tool palette, the source citations, the confidence
+  band — every part is auditable."
+- "Now watch what happens when an executive asks AquaIQ to authorise an
+  operational action. It refuses — politely and predictably — and routes
+  the user back to the appropriate Seqwater function."
+- "Three primitives, one supervisor, one governed answer."
 
-**Wow moment:** The refusal. Executives often expect AI to be
-overconfident. AquaIQ visibly refuses, cites its policy, and asks for human
-review.
+**Wow moment:** The tool palette lighting up live as the Supervisor decides
+where to route — and the refusal at the end. Executives often expect AI to
+be overconfident; AquaIQ visibly refuses, cites its policy, and asks for
+named human review.
+
+---
+
+## 6b. (Optional) Data Explorer — Genie embedded directly (45 seconds)
+
+**Page:** Data Explorer (`/genie`).
+
+**What to click:**
+
+- Land on the page. The synthetic *Seqwater Operations* Genie Space is
+  embedded as an iframe — no tab-switching, no copy-paste between tools.
+- Pick one of the suggestion chips, e.g. *"Show the synthetic 7-day storage
+  trend for North Pine Dam vs Wivenhoe."*
+- Let Genie generate the SQL, run it, and chart the result inline.
+
+**What to say:**
+
+- "AquaIQ gives you the governed, citation-rich synthesis. Genie gives you
+  the underlying numbers in 30 seconds, in your data analysts' language."
+- "Both are powered by the same Unity Catalog data and the same governance
+  policies. Users only see synthetic data they have permission on."
+- "The whole Genie Space is embedded right inside this app via the
+  Databricks embed-as-iframe API — no separate tool to learn, no second
+  login."
+
+**Wow moment:** Genie generates SQL live and the chart renders inside the
+Seqwater app. The audience sees Databricks and the customer's UI as one
+coherent surface.
 
 ---
 

@@ -114,6 +114,7 @@ export interface Citation {
 export interface ChatResponse {
   trace_id: string;
   answer: string;
+  markdown?: string;
   summary: string;
   key_signals: string[];
   recommended_next_actions: string[];
@@ -124,6 +125,13 @@ export interface ChatResponse {
   tools_used: string[];
   is_mock: boolean;
 }
+
+export type ChatStreamEvent =
+  | { event: "delta"; text: string }
+  | { event: "tool_call"; name: string; args: Record<string, unknown> }
+  | { event: "tool_result"; name: string; summary: string }
+  | { event: "sources"; items: Citation[] }
+  | ({ event: "done" } & ChatResponse);
 
 export interface BriefingResponse {
   trace_id: string;
@@ -156,6 +164,14 @@ export interface GovernanceTile {
   detail: string[];
   icon: string;
   accent: string;
+}
+
+export interface GenieEmbedResponse {
+  configured: boolean;
+  embed_url: string | null;
+  space_id: string | null;
+  workspace_host: string | null;
+  reason?: string | null;
 }
 
 export interface AuditRow {

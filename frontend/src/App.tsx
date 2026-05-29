@@ -6,7 +6,9 @@ import WaterSecuritySupply from "./pages/WaterSecuritySupply";
 import AssetResilience from "./pages/AssetResilience";
 import WaterQualityAssurance from "./pages/WaterQualityAssurance";
 import FloodReadinessScenario from "./pages/FloodReadinessScenario";
+import AquaIQAssistant from "./pages/AquaIQAssistant";
 import AquaIQBriefingAnalyst from "./pages/AquaIQBriefingAnalyst";
+import GenieExplorer from "./pages/GenieExplorer";
 import GovernancePlatform from "./pages/GovernancePlatform";
 
 export default function App() {
@@ -20,7 +22,9 @@ export default function App() {
         <Route path="/assets" element={<AssetResilience />} />
         <Route path="/quality" element={<WaterQualityAssurance />} />
         <Route path="/flood" element={<FloodReadinessScenario />} />
-        <Route path="/aquaiq" element={<AquaIQBriefingAnalyst />} />
+        <Route path="/aquaiq" element={<AquaIQAssistant />} />
+        <Route path="/aquaiq/briefing" element={<AquaIQBriefingAnalyst />} />
+        <Route path="/genie" element={<GenieExplorer />} />
         <Route path="/governance" element={<GovernancePlatform />} />
         <Route path="*" element={<Navigate to="/overview" replace />} />
       </Routes>

@@ -6,11 +6,13 @@ import type {
   CapitalProject,
   ChatResponse,
   FloodScenario,
+  GenieEmbedResponse,
   GovernanceTile,
   OverviewResponse,
   ScenarioRunResult,
   WaterQualitySample,
 } from "./types";
+import { streamChat, warmAgent } from "./chatStream";
 
 const BASE = "/api";
 
@@ -64,9 +66,12 @@ export const api = {
   }) => jsonPost<typeof body, ScenarioRunResult>("/flood-scenarios/run", body),
   capitalProjects: () => jsonGet<CapitalProject[]>("/capital-projects"),
   chat: (body: { question: string; history?: { role: string; content: string }[]; selected_asset_id?: string }) =>
-    jsonPost<typeof body, ChatResponse>("/ai/chat", body),
+    jsonPost<typeof body, ChatResponse>("/ai/chat/sync", body),
+  streamChat,
+  warmAgent,
   briefing: (body: { audience?: string; include_sections?: string[]; scenario_id?: string }) =>
     jsonPost<typeof body, BriefingResponse>("/ai/briefing", body),
   audit: () => jsonGet<AuditRow[]>("/governance/audit"),
   governanceTiles: () => jsonGet<GovernanceTile[]>("/governance/tiles"),
+  genieEmbed: () => jsonGet<GenieEmbedResponse>("/genie/embed"),
 };

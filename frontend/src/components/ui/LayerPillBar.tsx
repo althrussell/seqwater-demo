@@ -7,7 +7,6 @@ import {
   Layers,
   Leaf,
   MapPin,
-  Settings2,
 } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
 import { cn } from "@/lib/utils";
@@ -32,7 +31,6 @@ interface Props {
   active: string[];
   onToggle: (id: string) => void;
   layers?: LayerOption[];
-  onOptions?: () => void;
   className?: string;
 }
 
@@ -40,7 +38,6 @@ export default function LayerPillBar({
   active,
   onToggle,
   layers = MAP_LAYERS,
-  onOptions,
   className,
 }: Props) {
   return (
@@ -63,15 +60,6 @@ export default function LayerPillBar({
           </button>
         );
       })}
-      <span className="ml-auto flex">
-        <button
-          onClick={onOptions}
-          className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5 text-[12.5px] font-medium text-ink-secondary transition hover:text-deepBlue"
-        >
-          <Settings2 className="h-3.5 w-3.5" />
-          Layer Options
-        </button>
-      </span>
     </div>
   );
 }

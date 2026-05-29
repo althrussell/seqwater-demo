@@ -44,6 +44,33 @@ app.add_middleware(
 app.include_router(api_router, prefix="/api")
 
 
+@app.on_event("startup")
+async def _on_startup() -> None:
+    """Best-effort warm-up of dependencies that benefit from a cold-start ping.
+
+    - Loads the local TF-IDF document index so the first chat in local mode
+      doesn't pay the index init cost.
+    - Pings the Supervisor serving endpoint when configured. Failures are
+      logged and ignored; the chat path retries on the user's first message.
+    """
+    log = logging.getLogger("startup")
+    try:
+        from backend.agents.retrieval import warmup_index
+
+        warmup_index()
+    except Exception as exc:
+        log.info("Local document index warm-up skipped: %s", exc)
+
+    try:
+        if settings.supervisor_configured:
+            from backend.services.agent_bricks import prewarm_supervisor
+
+            result = await prewarm_supervisor(timeout_s=15.0)
+            log.info("Supervisor prewarm: %s", result)
+    except Exception as exc:
+        log.info("Supervisor prewarm skipped: %s", exc)
+
+
 _FRONTEND_DIST = ROOT_DIR / "frontend" / "dist"
 if _FRONTEND_DIST.exists():
     # Vite bundles JS/CSS/font chunks into dist/assets/. Mount it explicitly so

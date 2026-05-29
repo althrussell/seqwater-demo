@@ -13,12 +13,15 @@ import KpiCard from "@/components/ui/KpiCard";
 import SectionCard from "@/components/ui/SectionCard";
 import StatusBadge from "@/components/ui/StatusBadge";
 import AquaIQSummaryCard from "@/components/ui/AquaIQSummaryCard";
+import HeroBanner from "@/components/ui/HeroBanner";
 import {
   ASSET_MATRIX,
   ASSET_RESILIENCE_KPIS,
   CAPITAL_AQUAIQ,
   CAPITAL_PROJECTS,
   CRITICAL_ASSETS,
+  HERO_COPY,
+  HERO_IMAGES,
 } from "@/lib/demoContent";
 import { useToast } from "@/components/ui/Toast";
 
@@ -33,6 +36,14 @@ export default function AssetResilience() {
   const { toast } = useToast();
   return (
     <div className="space-y-5">
+      <HeroBanner
+        image={HERO_IMAGES.assetResilience}
+        eyebrow={HERO_COPY.assetResilience.eyebrow}
+        headline={HERO_COPY.assetResilience.headline}
+        sub={HERO_COPY.assetResilience.sub}
+        height={220}
+      />
+
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
         {ASSET_RESILIENCE_KPIS.map((k) => (
           <KpiCard
@@ -192,9 +203,18 @@ export default function AssetResilience() {
         title="Capital Project Priorities"
         description="Synthetic ranked pipeline for investment decisioning"
         actions={
-          <a href="#" className="btn-ghost text-[12.5px]">
+          <button
+            onClick={() =>
+              toast({
+                title: "Capital plan",
+                description:
+                  "Synthetic — full capital investment plan would open in the planning workspace.",
+              })
+            }
+            className="btn-ghost text-[12.5px]"
+          >
             View capital plan <ArrowRight className="h-3.5 w-3.5" />
-          </a>
+          </button>
         }
       >
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">

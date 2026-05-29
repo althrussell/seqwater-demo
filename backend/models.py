@@ -209,6 +209,7 @@ class Citation(_Base):
 class ChatResponse(_Base):
     trace_id: str
     answer: str
+    markdown: str = ""
     summary: str
     key_signals: list[str]
     recommended_next_actions: list[str]
@@ -218,6 +219,28 @@ class ChatResponse(_Base):
     confidence: Literal["Low", "Medium", "High"] = "Medium"
     tools_used: list[str] = []
     is_mock: bool = True
+    synthetic_demo_flag: bool = True
+
+
+class WarmResponse(_Base):
+    warm: bool
+    latency_ms: int
+    supervisor_configured: bool
+    reason: str | None = None
+    status_code: int | None = None
+
+
+class GenieEmbedResponse(_Base):
+    """Iframe embed configuration for the Genie Space.
+
+    See: https://docs.databricks.com/aws/en/genie/embed
+    """
+
+    configured: bool
+    embed_url: str | None = None
+    space_id: str | None = None
+    workspace_host: str | None = None
+    reason: str | None = None
     synthetic_demo_flag: bool = True
 
 

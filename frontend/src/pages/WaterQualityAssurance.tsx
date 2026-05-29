@@ -4,7 +4,10 @@ import SectionCard from "@/components/ui/SectionCard";
 import StatusBadge from "@/components/ui/StatusBadge";
 import Sparkline from "@/components/ui/Sparkline";
 import AquaIQSummaryCard from "@/components/ui/AquaIQSummaryCard";
+import HeroBanner from "@/components/ui/HeroBanner";
 import {
+  HERO_COPY,
+  HERO_IMAGES,
   QUALITY_AQUAIQ,
   QUALITY_CHECKLIST,
   QUALITY_INDICATORS,
@@ -15,6 +18,14 @@ import {
 export default function WaterQualityAssurance() {
   return (
     <div className="space-y-5">
+      <HeroBanner
+        image={HERO_IMAGES.waterQuality}
+        eyebrow={HERO_COPY.waterQuality.eyebrow}
+        headline={HERO_COPY.waterQuality.headline}
+        sub={HERO_COPY.waterQuality.sub}
+        height={220}
+      />
+
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
         {QUALITY_KPIS.map((k) => (
           <KpiCard

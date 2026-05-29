@@ -12,10 +12,34 @@
     },
     {
       "name": "llm-endpoint",
-      "description": "Foundation Model API endpoint powering the AquaIQ assistant.",
+      "description": "Foundation Model API endpoint powering AquaIQ in non-Supervisor mode.",
       "serving_endpoint": {
         "name": "databricks-gpt-oss-120b",
         "permission": "CAN_QUERY"
+      }
+    },
+    {
+      "name": "supervisor-endpoint",
+      "description": "Synthetic Seqwater Supervisor MAS endpoint (orchestrates KA + Genie + UC functions).",
+      "serving_endpoint": {
+        "name": "agents_main-seqwater_demo-seqwater_supervisor",
+        "permission": "CAN_QUERY"
+      }
+    },
+    {
+      "name": "ka-endpoint",
+      "description": "Synthetic Seqwater Operational Docs Knowledge Assistant endpoint.",
+      "serving_endpoint": {
+        "name": "agents_main-seqwater_demo-seqwater_operational_docs",
+        "permission": "CAN_QUERY"
+      }
+    },
+    {
+      "name": "genie-space",
+      "description": "Synthetic Seqwater Operations Genie space.",
+      "genie_space": {
+        "space_id": "REPLACE_WITH_RESOLVED_GENIE_SPACE_ID",
+        "permission": "CAN_RUN"
       }
     }
   ],
@@ -25,6 +49,7 @@
     "catalog.schemas:read",
     "catalog.catalogs:read",
     "files.files",
-    "serving.serving-endpoints"
+    "serving.serving-endpoints",
+    "dashboards.genie"
   ]
 }

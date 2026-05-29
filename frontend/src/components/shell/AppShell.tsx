@@ -1,6 +1,7 @@
 import LeftRail from "./LeftRail";
 import AppHeader from "./AppHeader";
 import DemoDisclaimer from "./DemoDisclaimer";
+import ScenarioBanner from "./ScenarioBanner";
 import { AppProvider } from "./AppContext";
 import { ToastProvider } from "@/components/ui/Toast";
 
@@ -13,8 +14,11 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             <LeftRail />
             <main className="flex min-w-0 flex-1 flex-col">
               <AppHeader />
-              <div className="flex-1 px-6 pb-8 pt-6 lg:px-10 2xl:px-14">
-                <div className="mx-auto w-full max-w-[1640px]">{children}</div>
+              <div className="flex-1 px-6 pb-8 pt-4 lg:px-10 2xl:px-14">
+                <div className="mx-auto w-full max-w-[1640px] space-y-4">
+                  <ScenarioBanner />
+                  {children}
+                </div>
               </div>
               <DemoDisclaimer />
             </main>

@@ -23,16 +23,39 @@ export const HERO_IMAGES = {
   executiveOverview: "/heroes/hero-01.jpg",
   seqWaterGridMap: "/heroes/hero-03.jpg",
   floodReadiness: "/heroes/hero-02.jpg",
-  waterSecuritySupply:
-    "https://images.unsplash.com/photo-1554492281-29e10c2e9c83?auto=format&fit=crop&w=1600&q=70",
-  assetResilience:
-    "https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&w=1600&q=70",
-  waterQuality:
-    "https://images.unsplash.com/photo-1559825481-12a05cc00344?auto=format&fit=crop&w=1600&q=70",
-  aquaIQ:
-    "https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1600&q=70",
-  governance:
-    "https://images.unsplash.com/photo-1473773508845-188df298d2d1?auto=format&fit=crop&w=1600&q=70",
+  waterSecuritySupply: "/heroes/hero-03.jpg",
+  assetResilience: "/heroes/hero-01.jpg",
+  waterQuality: "/heroes/hero-02.jpg",
+  aquaIQ: "/heroes/hero-01.jpg",
+  governance: "/heroes/hero-03.jpg",
+};
+
+export const HERO_COPY = {
+  waterSecuritySupply: {
+    eyebrow: "Water Security & Supply",
+    headline: "Securing today.\nSustaining tomorrow.",
+    sub: "Storage strong. Demand stable. Confidence in supply across South East Queensland.",
+  },
+  assetResilience: {
+    eyebrow: "Asset Resilience & Capital Priorities",
+    headline: "Built to last.\nReady to adapt.",
+    sub: "Critical infrastructure delivering reliability across SEQ — with synthetic capital insight to guide investment.",
+  },
+  waterQuality: {
+    eyebrow: "Water Quality Assurance",
+    headline: "Quality you can trust.",
+    sub: "Confidence in every drop, every day — synthetic compliance across treatment plants and indicators.",
+  },
+  aquaIQ: {
+    eyebrow: "AquaIQ Briefing Analyst",
+    headline: "Answers grounded\nin trusted data.",
+    sub: "Governed AI for South East Queensland water leadership. Every response is evidence-led and human-validated.",
+  },
+  governance: {
+    eyebrow: "Governance & Platform",
+    headline: "Trusted data.\nGoverned AI. Better decisions.",
+    sub: "Built on Databricks. Designed for confidence. Every recommendation is auditable end-to-end.",
+  },
 };
 
 // ---------- Executive Overview --------------------------------------------

@@ -86,7 +86,7 @@ def test_run_flood_scenario(client: TestClient) -> None:
 
 def test_aquaiq_chat_returns_governed_structure(client: TestClient) -> None:
     res = client.post(
-        "/api/ai/chat",
+        "/api/ai/chat/sync",
         json={"question": "What are the top 5 operational risks over the next 72 hours?"},
     )
     assert res.status_code == 200
@@ -101,15 +101,17 @@ def test_aquaiq_chat_returns_governed_structure(client: TestClient) -> None:
         "human_validation_required",
         "confidence",
         "tools_used",
+        "markdown",
     ):
         assert key in body
     assert body["human_validation_required"] is True
     assert body["confidence"] in {"Low", "Medium", "High"}
+    assert isinstance(body["markdown"], str) and body["markdown"].strip()
 
 
 def test_aquaiq_refuses_operational_authorisation(client: TestClient) -> None:
     res = client.post(
-        "/api/ai/chat",
+        "/api/ai/chat/sync",
         json={"question": "Open the spillway at Wivenhoe Dam"},
     )
     body = res.json()
@@ -133,6 +135,22 @@ def test_governance_tiles_returns_five(client: TestClient) -> None:
     assert len(body) == 5
     for t in body:
         assert {"title", "summary", "detail", "icon", "accent"} <= set(t)
+    titles = {t["title"] for t in body}
+    assert "Governed AI" in titles
+    governed_ai = next(t for t in body if t["title"] == "Governed AI")
+    assert "Supervisor" in " ".join(governed_ai["detail"])
+
+
+def test_genie_embed_returns_status_payload(client: TestClient) -> None:
+    res = client.get("/api/genie/embed")
+    assert res.status_code == 200
+    body = res.json()
+    assert {"configured", "embed_url", "space_id", "workspace_host"} <= set(body)
+    if body["configured"]:
+        assert isinstance(body["embed_url"], str) and body["embed_url"].startswith("http")
+    else:
+        assert body["embed_url"] is None
+        assert isinstance(body.get("reason"), str)
 
 
 def test_synthetic_data_files_exist() -> None:
