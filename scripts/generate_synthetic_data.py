@@ -51,29 +51,39 @@ class AssetSpec:
 # Real Seqwater bulk-water asset register with real published full-supply
 # volumes and real geographic coordinates (cross-checked against the public
 # asset and dam-levels pages on https://www.seqwater.com.au and Seqwater's
-# published Drinking Water Quality Reports). All operational *values* in the
-# rest of this generator are SYNTHETIC, but every asset_id maps to a real
-# Seqwater asset at its real location so the map and storyline stay credible.
+# published Drinking Water Quality Reports as at 29 May 2026, ~9-10pm AEST).
+# All operational *values* in the rest of this generator are SYNTHETIC, but
+# every asset_id maps to a real Seqwater asset at its real location, and the
+# latest snapshot in ``CURRENT_DAM_SNAPSHOT`` (below) matches the published
+# values exactly, so the map and storyline stay credible.
 ASSETS: list[AssetSpec] = [
     # ----- Dams (real bulk-storage estate) ------------------------------------
-    AssetSpec("DAM-001", "Wivenhoe Dam",                "Dam", "Brisbane Valley",  -27.3953, 152.6094, 1_165_238, "Critical", 1985),
-    AssetSpec("DAM-002", "Somerset Dam",                "Dam", "Brisbane Valley",  -27.1163, 152.5552,   379_850, "Critical", 1959),
-    AssetSpec("DAM-003", "North Pine Dam",              "Dam", "Brisbane North",   -27.2723, 152.9395,   214_302, "Critical", 1976),
-    AssetSpec("DAM-004", "Hinze Dam",                   "Dam", "Gold Coast",       -28.0540, 153.2820,   310_730, "Critical", 1976),
-    AssetSpec("DAM-005", "Baroon Pocket Dam",           "Dam", "Sunshine Coast",   -26.7000, 152.8750,    61_000, "High",     1989),
-    AssetSpec("DAM-006", "Cooloolabin Dam",             "Dam", "Sunshine Coast",   -26.6120, 152.9080,    13_800, "Medium",   1979),
-    AssetSpec("DAM-007", "Ewen Maddock Dam",            "Dam", "Sunshine Coast",   -26.7760, 153.0200,    16_587, "Medium",   1976),
-    AssetSpec("DAM-008", "Lake Macdonald Dam",          "Dam", "Sunshine Coast",   -26.3780, 152.9290,     8_018, "High",     1965),
-    AssetSpec("DAM-009", "Wappa Dam",                   "Dam", "Sunshine Coast",   -26.6170, 152.9490,     4_694, "Medium",   1962),
-    AssetSpec("DAM-010", "Borumba Dam",                 "Dam", "Sunshine Coast",   -26.5240, 152.5810,    45_953, "High",     1964),
-    AssetSpec("DAM-011", "Maroon Dam",                  "Dam", "Scenic Rim",       -28.1790, 152.6600,    44_300, "High",     1974),
-    AssetSpec("DAM-012", "Moogerah Dam",                "Dam", "Scenic Rim",       -28.0410, 152.5530,    83_765, "High",     1961),
-    AssetSpec("DAM-013", "Atkinson Dam",                "Dam", "Lockyer Valley",   -27.4050, 152.4340,    30_400, "Medium",   1970),
-    AssetSpec("DAM-014", "Lake Manchester Dam",         "Dam", "Brisbane West",    -27.4830, 152.7700,    26_030, "Medium",   1916),
-    AssetSpec("DAM-015", "Sideling Creek Dam",          "Dam", "Brisbane North",   -27.2430, 152.9530,    13_750, "Medium",   1957),
-    AssetSpec("DAM-016", "Leslie Harrison Dam",         "Dam", "Bayside",          -27.5540, 153.2310,    24_898, "Medium",   1968),
-    AssetSpec("DAM-017", "Little Nerang Dam",           "Dam", "Gold Coast",       -28.1760, 153.2280,     6_705, "Medium",   1963),
-    AssetSpec("DAM-018", "Bill Gunn Dam (Lake Dyer)",   "Dam", "Lockyer Valley",   -27.6200, 152.2650,     7_237, "Low",      1983),
+    # 25 Seqwater-published bulk-storage dams, FSVs match the 29/05/2026 snapshot.
+    AssetSpec("DAM-001", "Wivenhoe Dam",                          "Dam", "Brisbane Valley",  -27.3953, 152.6094, 1_165_240, "Critical", 1985),
+    AssetSpec("DAM-002", "Somerset Dam",                          "Dam", "Brisbane Valley",  -27.1163, 152.5552,   379_849, "Critical", 1959),
+    AssetSpec("DAM-003", "North Pine Dam (Lake Samsonvale)",      "Dam", "Brisbane North",   -27.2723, 152.9395,   214_302, "Critical", 1976),
+    AssetSpec("DAM-004", "Hinze Dam",                             "Dam", "Gold Coast",       -28.0540, 153.2820,   310_730, "Critical", 1976),
+    AssetSpec("DAM-005", "Baroon Pocket Dam",                     "Dam", "Sunshine Coast",   -26.7000, 152.8750,    61_000, "High",     1989),
+    AssetSpec("DAM-006", "Cooloolabin Dam",                       "Dam", "Sunshine Coast",   -26.6120, 152.9080,     8_183, "Medium",   1979),
+    AssetSpec("DAM-007", "Ewen Maddock Dam",                      "Dam", "Sunshine Coast",   -26.7760, 153.0200,    16_587, "Medium",   1976),
+    AssetSpec("DAM-008", "Lake Macdonald Dam (Six Mile Creek)",   "Dam", "Sunshine Coast",   -26.3780, 152.9290,     8_018, "High",     1965),
+    AssetSpec("DAM-009", "Wappa Dam",                             "Dam", "Sunshine Coast",   -26.6170, 152.9490,     4_694, "Medium",   1962),
+    AssetSpec("DAM-010", "Borumba Dam",                           "Dam", "Sunshine Coast",   -26.5240, 152.5810,    46_000, "High",     1964),
+    AssetSpec("DAM-011", "Maroon Dam",                            "Dam", "Scenic Rim",       -28.1790, 152.6600,    44_319, "High",     1974),
+    AssetSpec("DAM-012", "Moogerah Dam",                          "Dam", "Scenic Rim",       -28.0410, 152.5530,    83_765, "High",     1961),
+    AssetSpec("DAM-013", "Atkinson Dam",                          "Dam", "Lockyer Valley",   -27.4050, 152.4340,    30_401, "Medium",   1970),
+    AssetSpec("DAM-014", "Lake Manchester Dam",                   "Dam", "Brisbane West",    -27.4830, 152.7700,    26_217, "Medium",   1916),
+    AssetSpec("DAM-015", "Sideling Creek Dam (Lake Kurwongbah)",  "Dam", "Brisbane North",   -27.2430, 152.9530,    14_192, "Medium",   1957),
+    AssetSpec("DAM-016", "Leslie Harrison Dam",                   "Dam", "Bayside",          -27.5540, 153.2310,    13_206, "Medium",   1968),
+    AssetSpec("DAM-017", "Little Nerang Dam",                     "Dam", "Gold Coast",       -28.1760, 153.2280,     6_705, "Medium",   1963),
+    AssetSpec("DAM-018", "Bill Gunn Dam (Lake Dyer)",             "Dam", "Lockyer Valley",   -27.6200, 152.2650,     6_947, "Low",      1983),
+    AssetSpec("DAM-019", "Cedar Pocket Dam",                      "Dam", "Mary Valley",      -26.2086, 152.7647,       735, "Low",      1970),
+    AssetSpec("DAM-020", "Clarendon Dam",                         "Dam", "Lockyer Valley",   -27.5870, 152.2000,    24_276, "Medium",   1979),
+    AssetSpec("DAM-021", "Enoggera Reservoir",                    "Dam", "Brisbane West",    -27.4396, 152.9270,     4_262, "Low",      1866),
+    AssetSpec("DAM-022", "Gold Creek Reservoir",                  "Dam", "Brisbane West",    -27.4530, 152.8950,       801, "Low",      1885),
+    AssetSpec("DAM-023", "Nindooinbah Dam (Lake Nindooinbah)",    "Dam", "Scenic Rim",       -28.0233, 152.8987,       213, "Low",      1990),
+    AssetSpec("DAM-024", "Poona Dam",                             "Dam", "Brisbane Valley",  -26.9333, 152.5167,       655, "Low",      1957),
+    AssetSpec("DAM-025", "Wyaralong Dam",                         "Dam", "Scenic Rim",       -27.9750, 152.8567,   102_883, "High",     2011),
 
     # ----- Water Treatment Plants (real published nameplate capacities) -------
     AssetSpec("WTP-001", "Mount Crosby Westbank WTP",   "Water Treatment Plant", "Brisbane West",  -27.5350, 152.7930, 750, "Critical", 1893),
@@ -176,58 +186,145 @@ DEMO_MOMENTS = {
     # The pump station with a synthetic rising-failure trend.
     "rising_failure_pump": "PMP-014",  # Caboolture Pump Station (NPI)
     # The dam approaching a synthetic attention threshold during the demo.
-    "attention_dam": "DAM-003",  # North Pine Dam (currently at reduced FSL)
+    "attention_dam": "DAM-003",  # North Pine Dam (currently at reduced FSL, ~51%)
+    # The dam that is critically low in the real published snapshot (40.2%).
+    "critically_low_dam": "DAM-008",  # Lake Macdonald (mid-upgrade)
     # The asset whose synthetic capital project shows the largest risk reduction.
     "risk_reducing_project_asset": "PMP-014",
 }
 
 
+# ---------- authoritative current snapshot --------------------------------
+# Published Seqwater dam-levels snapshot, 29 May 2026, between 21:00 and 22:01
+# AEST (UTC+10). Sourced from the public Seqwater dam-levels page; full-supply
+# volumes (ML), current volumes (ML), % full, the latest observation time, and
+# whether the dam is spilling are all taken verbatim. The synthetic time
+# series in ``gen_dam_storage_daily`` is anchored to these values on the
+# final day so the demo storyline matches the live snapshot exactly.
+CURRENT_DAM_SNAPSHOT: dict[str, dict[str, Any]] = {
+    "DAM-001": {"name": "Wivenhoe Dam",                          "fsv_ml": 1_165_240, "current_ml": 1_014_550, "pct":  87.1, "observed_local": "2026-05-29T21:46+10:00", "spilling": False, "comment": ""},
+    "DAM-002": {"name": "Somerset Dam",                          "fsv_ml":   379_849, "current_ml":   301_908, "pct":  79.5, "observed_local": "2026-05-29T21:56+10:00", "spilling": False, "comment": ""},
+    "DAM-003": {"name": "North Pine Dam (Lake Samsonvale)",      "fsv_ml":   214_302, "current_ml":   109_528, "pct":  51.1, "observed_local": "2026-05-29T21:00+10:00", "spilling": False, "comment": ""},
+    "DAM-004": {"name": "Hinze Dam",                             "fsv_ml":   310_730, "current_ml":   317_799, "pct": 102.3, "observed_local": "2026-05-29T22:01+10:00", "spilling": True,  "comment": "Dam is spilling"},
+    "DAM-005": {"name": "Baroon Pocket Dam",                     "fsv_ml":    61_000, "current_ml":    61_419, "pct": 100.7, "observed_local": "2026-05-29T21:47+10:00", "spilling": True,  "comment": "Dam is spilling"},
+    "DAM-006": {"name": "Cooloolabin Dam",                       "fsv_ml":     8_183, "current_ml":     8_017, "pct":  98.0, "observed_local": "2026-05-29T21:31+10:00", "spilling": False, "comment": ""},
+    "DAM-007": {"name": "Ewen Maddock Dam",                      "fsv_ml":    16_587, "current_ml":    16_951, "pct": 102.2, "observed_local": "2026-05-29T21:03+10:00", "spilling": True,  "comment": "Dam is spilling"},
+    "DAM-008": {"name": "Lake Macdonald Dam (Six Mile Creek)",   "fsv_ml":     8_018, "current_ml":     3_223, "pct":  40.2, "observed_local": "2026-05-29T22:01+10:00", "spilling": False, "comment": ""},
+    "DAM-009": {"name": "Wappa Dam",                             "fsv_ml":     4_694, "current_ml":     4_748, "pct": 101.1, "observed_local": "2026-05-29T21:00+10:00", "spilling": True,  "comment": "Dam is spilling"},
+    "DAM-010": {"name": "Borumba Dam",                           "fsv_ml":    46_000, "current_ml":    46_048, "pct": 100.1, "observed_local": "2026-05-29T21:39+10:00", "spilling": True,  "comment": "Dam is spilling"},
+    "DAM-011": {"name": "Maroon Dam",                            "fsv_ml":    44_319, "current_ml":    43_823, "pct":  98.9, "observed_local": "2026-05-29T21:00+10:00", "spilling": False, "comment": ""},
+    "DAM-012": {"name": "Moogerah Dam",                          "fsv_ml":    83_765, "current_ml":    69_687, "pct":  83.2, "observed_local": "2026-05-29T21:00+10:00", "spilling": False, "comment": ""},
+    "DAM-013": {"name": "Atkinson Dam",                          "fsv_ml":    30_401, "current_ml":    23_063, "pct":  75.9, "observed_local": "2026-05-29T21:50+10:00", "spilling": False, "comment": ""},
+    "DAM-014": {"name": "Lake Manchester Dam",                   "fsv_ml":    26_217, "current_ml":    23_336, "pct":  89.0, "observed_local": "2026-05-29T21:00+10:00", "spilling": False, "comment": ""},
+    "DAM-015": {"name": "Sideling Creek Dam (Lake Kurwongbah)",  "fsv_ml":    14_192, "current_ml":    14_517, "pct": 102.3, "observed_local": "2026-05-29T21:36+10:00", "spilling": True,  "comment": "Dam is spilling"},
+    "DAM-016": {"name": "Leslie Harrison Dam",                   "fsv_ml":    13_206, "current_ml":    13_720, "pct": 103.9, "observed_local": "2026-05-29T21:00+10:00", "spilling": True,  "comment": "Dam is spilling"},
+    "DAM-017": {"name": "Little Nerang Dam",                     "fsv_ml":     6_705, "current_ml":     6_786, "pct": 101.2, "observed_local": "2026-05-29T21:50+10:00", "spilling": True,  "comment": "Dam is spilling"},
+    "DAM-018": {"name": "Bill Gunn Dam (Lake Dyer)",             "fsv_ml":     6_947, "current_ml":     5_883, "pct":  84.7, "observed_local": "2026-05-29T21:00+10:00", "spilling": False, "comment": ""},
+    "DAM-019": {"name": "Cedar Pocket Dam",                      "fsv_ml":       735, "current_ml":       740, "pct": 100.7, "observed_local": "2026-05-29T21:00+10:00", "spilling": True,  "comment": "Dam is spilling"},
+    "DAM-020": {"name": "Clarendon Dam",                         "fsv_ml":    24_276, "current_ml":    20_511, "pct":  84.5, "observed_local": "2026-05-29T21:00+10:00", "spilling": False, "comment": ""},
+    "DAM-021": {"name": "Enoggera Reservoir",                    "fsv_ml":     4_262, "current_ml":     4_380, "pct": 102.8, "observed_local": "2026-05-29T21:50+10:00", "spilling": True,  "comment": "Dam is spilling"},
+    "DAM-022": {"name": "Gold Creek Reservoir",                  "fsv_ml":       801, "current_ml":       680, "pct":  84.8, "observed_local": "2026-05-29T21:00+10:00", "spilling": False, "comment": ""},
+    "DAM-023": {"name": "Nindooinbah Dam (Lake Nindooinbah)",    "fsv_ml":       213, "current_ml":       206, "pct":  96.5, "observed_local": "2026-05-29T21:00+10:00", "spilling": False, "comment": ""},
+    "DAM-024": {"name": "Poona Dam",                             "fsv_ml":       655, "current_ml":       458, "pct":  69.9, "observed_local": "2026-05-29T21:00+10:00", "spilling": False, "comment": ""},
+    "DAM-025": {"name": "Wyaralong Dam",                         "fsv_ml":   102_883, "current_ml":   100_479, "pct":  97.7, "observed_local": "2026-05-29T21:47+10:00", "spilling": False, "comment": ""},
+}
+
+
+# Dedicated flood-storage compartments above FSV for the two flood-mitigation
+# dams. Values are the published 29/05/2026 snapshot — both compartments are
+# currently 0% in use (the spilling event has not consumed flood storage).
+CURRENT_FLOOD_STORAGE: list[dict[str, Any]] = [
+    {
+        "asset_id": "DAM-002",
+        "asset_name": "Somerset Dam",
+        "total_flood_storage_ml": 705_000,
+        "flood_storage_in_use_pct": 0.0,
+        "flood_storage_available_pct": 100.0,
+        "observed_local": "2026-05-29T21:56+10:00",
+    },
+    {
+        "asset_id": "DAM-001",
+        "asset_name": "Wivenhoe Dam",
+        "total_flood_storage_ml": 2_203_000,
+        "flood_storage_in_use_pct": 0.0,
+        "flood_storage_available_pct": 100.0,
+        "observed_local": "2026-05-29T21:46+10:00",
+    },
+]
+
+
 # ---------- dam storage ----------
 
 def gen_dam_storage_daily(assets: pd.DataFrame) -> pd.DataFrame:
+    """Synthetic daily dam-storage time series.
+
+    The final row for every dam is anchored exactly to the published
+    Seqwater 29/05/2026 snapshot in ``CURRENT_DAM_SNAPSHOT``. Prior days
+    are a smooth synthetic ramp from a soft 180-day baseline up to the
+    snapshot value, with a wet-event lift over the last ~10 days so dams
+    that are currently spilling have a credible inflow pattern.
+    """
     dams = assets[assets["asset_type"] == "Dam"]
     dates = _date_range(START_DATE, TODAY + timedelta(days=1))
+    n = len(dates)
     rows = []
-    # per-dam baseline so values feel like a credible synthetic SEQ snapshot.
-    # Values are SYNTHETIC but loosely anchored to the public dam-levels page on
-    # seqwater.com.au (May 2026 reading) so the storyline is credible.
-    baselines = {
-        "DAM-001": 0.87,  # Wivenhoe (~86.9% real)
-        "DAM-002": 0.80,  # Somerset (~79.6% real)
-        "DAM-003": 0.55,  # North Pine — at reduced FSL (~51% real)
-        "DAM-004": 0.79,  # Hinze
-        "DAM-005": 0.85,  # Baroon Pocket
-        "DAM-006": 0.78,  # Cooloolabin
-        "DAM-007": 0.66,  # Ewen Maddock
-        "DAM-008": 0.45,  # Lake Macdonald (mid-upgrade)
-        "DAM-009": 0.92,  # Wappa
-        "DAM-010": 0.79,  # Borumba
-        "DAM-011": 0.62,  # Maroon
-        "DAM-012": 0.71,  # Moogerah
-        "DAM-013": 0.84,  # Atkinson
-        "DAM-014": 0.70,  # Lake Manchester
-        "DAM-015": 0.81,  # Sideling Creek (Lake Kurwongbah)
-        "DAM-016": 0.55,  # Leslie Harrison
-        "DAM-017": 0.85,  # Little Nerang
-        "DAM-018": 0.67,  # Bill Gunn (Lake Dyer)
-    }
     for _, dam in dams.iterrows():
         full = float(dam["capacity_ml"])
-        base_level = baselines.get(dam["asset_id"], 0.75)
-        seasonal = 0.06 * np.sin(np.linspace(0, 1.4 * math.pi, len(dates)))
-        noise = np.random.normal(0, 0.010, len(dates))
-        traj = np.clip(base_level + seasonal + noise, 0.40, 0.99)
-        # Demo moment: attention dam approaches threshold near "today".
-        if dam["asset_id"] == DEMO_MOMENTS["attention_dam"]:
-            tail = np.linspace(0, 0.18, 30)
-            traj[-30:] = np.clip(traj[-30:] + tail, 0.40, 0.99)
+        asset_id = dam["asset_id"]
+        snap = CURRENT_DAM_SNAPSHOT.get(asset_id)
+        # Target value for "today" — exactly matches the published snapshot
+        # (in fractional terms) when we have one, otherwise falls back to a
+        # plausible synthetic baseline.
+        target_frac = (snap["pct"] / 100.0) if snap else 0.78
+        # Pick a soft 180-day baseline that is lower for the spilling /
+        # near-full dams (so the trajectory feels like a real wet event
+        # filling them) and roughly flat for the dry / low-storage dams.
+        if snap and snap["spilling"]:
+            start_frac = max(0.55, target_frac - 0.20)
+        elif snap and target_frac < 0.55:
+            start_frac = target_frac + 0.05  # was a bit higher before drawdown
+        else:
+            start_frac = max(0.40, target_frac - 0.08)
+
+        ramp = np.linspace(start_frac, target_frac, n)
+        # Demo moment: attention dam (North Pine) trends up over the last 30
+        # days as the wet event develops.
+        if asset_id == DEMO_MOMENTS["attention_dam"]:
+            tail = np.linspace(0, 0.05, 30)
+            ramp[-30:] = ramp[-30:] + tail
+        # Critically low dam (Lake Macdonald): keep the slow drawdown trend.
+        if asset_id == DEMO_MOMENTS["critically_low_dam"]:
+            tail = np.linspace(0, -0.04, 60)
+            ramp[-60:] = ramp[-60:] + tail
+        # Wet-event lift across the last ~10 days for spilling dams.
+        if snap and snap["spilling"]:
+            wet_tail = np.linspace(0, 0.06, 10)
+            ramp[-10:] = ramp[-10:] + wet_tail
+
+        seasonal = 0.015 * np.sin(np.linspace(0, 1.4 * math.pi, n))
+        noise = np.random.normal(0, 0.006, n)
+        traj = ramp + seasonal + noise
+        # Clamp to a plausible band but allow >100% for spilling dams.
+        upper = 1.06 if (snap and snap["spilling"]) else 0.99
+        traj = np.clip(traj, 0.25, upper)
+        # Anchor the FINAL day exactly to the snapshot percentage so the
+        # demo always shows the live published value as "today".
+        traj[-1] = target_frac
+
         for i, d in enumerate(dates):
             storage_pct = float(traj[i])
             current_ml = full * storage_pct
             inflow = max(0.0, np.random.normal(180, 90))
             outflow = max(0.0, np.random.normal(160, 70))
+            is_today = (i == n - 1)
+            is_spilling = bool(snap and snap["spilling"]) if is_today else (storage_pct >= 1.0)
+            # Use the published current_ml on the final day so the snapshot
+            # column-for-column matches the Seqwater dam-levels page.
+            if is_today and snap:
+                current_ml = float(snap["current_ml"])
+                storage_pct = snap["pct"] / 100.0
             rows.append({
-                "asset_id": dam["asset_id"],
+                "asset_id": asset_id,
                 "asset_name": dam["name"],
                 "date": d.date().isoformat(),
                 "current_storage_ml": round(current_ml, 1),
@@ -235,8 +332,47 @@ def gen_dam_storage_daily(assets: pd.DataFrame) -> pd.DataFrame:
                 "storage_percent": round(storage_pct * 100, 2),
                 "inflow_ml": round(inflow, 1),
                 "outflow_ml": round(outflow, 1),
+                "is_spilling": is_spilling,
                 "synthetic_demo_flag": True,
             })
+    return pd.DataFrame(rows)
+
+
+# ---------- live dam-levels & flood-storage snapshots ---------------------
+
+def gen_dam_levels_current(assets: pd.DataFrame) -> pd.DataFrame:
+    """Snapshot of the published Seqwater dam-levels page at 29/05/2026 ~21:00 AEST.
+
+    This mirrors the columns of the public Seqwater dam-levels table so it can
+    be displayed verbatim by the UI and queried by the AquaIQ agent. Every
+    row is real published data; the ``synthetic_demo_flag`` reflects that the
+    *surrounding* operational telemetry is synthetic, not this snapshot.
+    """
+    rows = []
+    by_id = {a["asset_id"]: a for _, a in assets.iterrows()}
+    for asset_id, snap in CURRENT_DAM_SNAPSHOT.items():
+        meta = by_id.get(asset_id, {})
+        rows.append({
+            "asset_id": asset_id,
+            "asset_name": snap["name"],
+            "region": meta.get("region", ""),
+            "full_supply_ml": snap["fsv_ml"],
+            "current_volume_ml": snap["current_ml"],
+            "percent_full": snap["pct"],
+            "latest_observation_local": snap["observed_local"],
+            "is_spilling": snap["spilling"],
+            "comment": snap["comment"],
+            "source": "Seqwater dam levels (published)",
+            "synthetic_demo_flag": False,
+        })
+    df = pd.DataFrame(rows).sort_values("asset_name").reset_index(drop=True)
+    return df
+
+
+def gen_flood_storage_current() -> pd.DataFrame:
+    """Snapshot of dedicated flood-storage compartments at Somerset and Wivenhoe."""
+    rows = [{**r, "source": "Seqwater flood storage (published)", "synthetic_demo_flag": False}
+            for r in CURRENT_FLOOD_STORAGE]
     return pd.DataFrame(rows)
 
 
@@ -823,6 +959,8 @@ def main() -> None:
     assets = gen_assets()
     locations = gen_asset_locations()
     storage = gen_dam_storage_daily(assets)
+    dam_levels_current = gen_dam_levels_current(assets)
+    flood_storage_current = gen_flood_storage_current()
     rain_obs = gen_rainfall_observations(assets)
     rain_fc = gen_rainfall_forecast(assets)
     demand = gen_demand_forecast()
@@ -848,6 +986,8 @@ def main() -> None:
     _save(assets, "assets")
     _save(locations, "asset_locations")
     _save(storage, "dam_storage_daily")
+    _save(dam_levels_current, "dam_levels_current")
+    _save(flood_storage_current, "flood_storage_current")
     _save(rain_obs, "rainfall_observations")
     _save(rain_fc, "rainfall_forecast")
     _save(demand, "demand_forecast")

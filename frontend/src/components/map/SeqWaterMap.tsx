@@ -1,12 +1,17 @@
 /**
- * Cinematic Mapbox GL JS map for the SEQ Water Grid. Renders catchments,
- * pipelines, asset markers (with permanent labels for major assets), alert and
- * water-quality overlays, an optional rainfall heatmap, terrain + hillshade
- * (when satellite/outdoors style is in use) and a globe-projection fly-in on
- * first mount.
+ * Cinematic Mapbox GL JS map for the SEQ Water Grid.
+ *
+ * Renders catchments, pipelines, asset markers (with permanent labels for
+ * major assets), alert and water-quality overlays, an optional rainfall
+ * heatmap, terrain + hillshade, 3D buildings, and a globe-projection fly-in
+ * on first mount.
  *
  * Requires `VITE_MAPBOX_TOKEN` to be set at build time. There is no fallback —
  * if the token is missing, a small empty-state panel is shown.
+ *
+ * The basemap style, projection, terrain, and 3D-buildings settings can all
+ * be swapped at runtime via the props below. When the style URL changes we
+ * rebuild every custom source/layer on the new style's `style.load` event.
  */
 import "mapbox-gl/dist/mapbox-gl.css";
 
@@ -16,46 +21,35 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import type { Asset, AssetRiskRow } from "@/lib/types";
 import { catchmentsFeatureCollection, CATCHMENTS } from "./catchments";
+import { DEFAULT_STYLE_URL, type ProjectionId } from "./mapStyles";
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN as string | undefined;
-const MAPBOX_STYLE =
-  (import.meta.env.VITE_MAPBOX_STYLE as string | undefined) ??
-  "mapbox://styles/mapbox/satellite-streets-v12";
 
 if (MAPBOX_TOKEN) {
   mapboxgl.accessToken = MAPBOX_TOKEN;
 }
 
 const SEQ_CENTER: LngLatLike = [152.95, -27.35];
-const SEQ_BOUNDS: [[number, number], [number, number]] = [
-  [151.8, -28.5],
-  [154.2, -26.0],
-];
 
 /** Pipelines as [lon, lat] pairs. */
 const PIPELINES: [number, number][][] = [
-  // Somerset -> Wivenhoe -> North Pine WTP
   [
     [152.55, -27.07],
     [152.62, -27.37],
     [152.97, -27.27],
   ],
-  // Wivenhoe -> Moggill
   [
     [152.62, -27.37],
     [152.88, -27.58],
   ],
-  // North Pine WTP -> Brisbane North Pump
   [
     [152.97, -27.27],
     [153.07, -27.32],
   ],
-  // Brisbane North Pump -> Gold Coast Desalination Plant
   [
     [153.07, -27.32],
     [153.43, -27.95],
   ],
-  // Sunshine Coast trunk
   [
     [153.05, -26.62],
     [153.05, -27.05],
@@ -121,15 +115,24 @@ interface SeqWaterMapProps {
   selectedId?: string | null;
   onSelect?: (id: string) => void;
   layers: string[];
-  height?: number;
+  /**
+   * Map height. Number is interpreted as pixels; string is passed straight
+   * through (use "100%" or a `calc(...)` to make the map fill a parent that
+   * has its own height).
+   */
+  height?: number | string;
   className?: string;
   labelledAssetNames?: string[];
-  /** Disable user interaction; used by the Executive Overview preview. */
   preview?: boolean;
   initialZoom?: number;
-  /** Override style URL. */
+  /** Mapbox style URL. Defaults to `VITE_MAPBOX_STYLE` or satellite-streets. */
   styleUrl?: string;
-  /** Skip the cinematic globe→SEQ fly-in. */
+  /** `mercator` or `globe`. Defaults to globe for the cinematic intro, mercator afterwards. */
+  projection?: ProjectionId;
+  /** Show terrain DEM + hillshade. Defaults to true. */
+  terrain?: boolean;
+  /** Show 3D building extrusions. Defaults to true; quietly skipped on styles without a building layer. */
+  buildings?: boolean;
   disableIntro?: boolean;
 }
 
@@ -144,6 +147,9 @@ export default function SeqWaterMap({
   preview = false,
   initialZoom,
   styleUrl,
+  projection,
+  terrain = true,
+  buildings = true,
   disableIntro,
 }: SeqWaterMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -151,8 +157,12 @@ export default function SeqWaterMap({
   const markersRef = useRef<mapboxgl.Marker[]>([]);
   const accentMarkersRef = useRef<mapboxgl.Marker[]>([]);
   const labelMarkersRef = useRef<mapboxgl.Marker[]>([]);
-  const styleLoadedRef = useRef(false);
+  // Records the style URL the constructor used; lets the styleUrl effect skip
+  // its first invocation (which would otherwise hit Mapbox before the initial
+  // style has finished loading and throw "Style is not done loading").
+  const initialStyleRef = useRef<string | null>(null);
   const [styleReady, setStyleReady] = useState(false);
+  const [styleVersion, setStyleVersion] = useState(0);
 
   const labelled = useMemo(
     () => new Set(labelledAssetNames ?? Array.from(DEFAULT_LABELLED)),
@@ -165,22 +175,26 @@ export default function SeqWaterMap({
   const showQuality = layers.includes("quality");
   const showRisk = layers.includes("risk");
 
-  // ---- Mount: create map + cinematic intro ----
+  // ---- Mount the map once ----
   useEffect(() => {
     if (!containerRef.current || !MAPBOX_TOKEN) return;
-    const styleId = styleUrl ?? MAPBOX_STYLE;
+    const startStyle = styleUrl ?? DEFAULT_STYLE_URL;
+    initialStyleRef.current = startStyle;
     const wantsIntro = !preview && !disableIntro;
+    const startProjection: ProjectionId = preview
+      ? "mercator"
+      : projection ?? (wantsIntro ? "globe" : "mercator");
+
     const map = new mapboxgl.Map({
       container: containerRef.current,
-      style: styleId,
+      style: startStyle,
       center: SEQ_CENTER,
       zoom: initialZoom ?? (preview ? 7.4 : 8.4),
       pitch: wantsIntro ? 35 : 0,
       bearing: 0,
       attributionControl: !preview,
       interactive: !preview,
-      maxBounds: preview ? undefined : undefined,
-      projection: wantsIntro ? "globe" : "mercator",
+      projection: startProjection,
       antialias: true,
     });
     mapRef.current = map;
@@ -190,256 +204,18 @@ export default function SeqWaterMap({
       map.addControl(new mapboxgl.ScaleControl({ unit: "metric", maxWidth: 120 }), "bottom-right");
       map.addControl(new mapboxgl.FullscreenControl(), "top-right");
     }
-    map.dragRotate.disable();
 
-    map.on("style.load", () => {
-      styleLoadedRef.current = true;
-      setStyleReady(false);
-
-      // Atmosphere / fog for the globe.
-      if (wantsIntro) {
-        map.setFog({
-          color: "rgb(220, 232, 245)",
-          "high-color": "rgb(36, 92, 145)",
-          "horizon-blend": 0.06,
-          "space-color": "rgb(11, 24, 44)",
-          "star-intensity": 0.15,
-        });
-      } else {
-        try {
-          map.setFog({});
-        } catch {
-          /* fog not required */
-        }
-      }
-
-      // Terrain + hillshade if the style supports raster-dem.
-      try {
-        if (!map.getSource("mapbox-dem")) {
-          map.addSource("mapbox-dem", {
-            type: "raster-dem",
-            url: "mapbox://mapbox.mapbox-terrain-dem-v1",
-            tileSize: 512,
-            maxzoom: 14,
-          });
-        }
-        map.setTerrain({ source: "mapbox-dem", exaggeration: 1.25 });
-
-        if (!map.getLayer("seq-hillshade")) {
-          map.addLayer({
-            id: "seq-hillshade",
-            type: "hillshade",
-            source: "mapbox-dem",
-            layout: { visibility: "visible" },
-            paint: {
-              "hillshade-shadow-color": "#1d3a5a",
-              "hillshade-highlight-color": "#fafdff",
-              "hillshade-accent-color": "#3a6a8f",
-              "hillshade-exaggeration": 0.55,
-            },
-          });
-        }
-      } catch (err) {
-        // Some styles don't accept terrain; ignore gracefully.
-        console.warn("Mapbox terrain not available for current style", err);
-      }
-
-      // 3D building footprints — only meaningful on streets-style basemaps.
-      try {
-        const layerExists = (id: string) => Boolean(map.getLayer(id));
-        if (!layerExists("3d-buildings")) {
-          const labelLayer = map
-            .getStyle()
-            .layers?.find((l) => l.type === "symbol" && (l.layout as any)?.["text-field"]);
-          map.addLayer(
-            {
-              id: "3d-buildings",
-              source: "composite",
-              "source-layer": "building",
-              filter: ["==", "extrude", "true"],
-              type: "fill-extrusion",
-              minzoom: 13,
-              paint: {
-                "fill-extrusion-color": "#cfd8e3",
-                "fill-extrusion-height": [
-                  "interpolate",
-                  ["linear"],
-                  ["zoom"],
-                  13,
-                  0,
-                  15,
-                  ["get", "height"],
-                ],
-                "fill-extrusion-base": ["get", "min_height"],
-                "fill-extrusion-opacity": 0.55,
-              },
-            },
-            labelLayer?.id,
-          );
-        }
-      } catch {
-        // No 'composite' source / building layer — fine on satellite-only styles.
-      }
-
-      // Catchment + pipeline sources.
-      if (!map.getSource("catchments")) {
-        map.addSource("catchments", {
-          type: "geojson",
-          data: catchmentsFeatureCollection(),
-        });
-        map.addLayer({
-          id: "catchments-fill",
-          type: "fill",
-          source: "catchments",
-          paint: {
-            "fill-color": ["get", "fill"],
-            "fill-opacity": 0.18,
-          },
-          layout: { visibility: "visible" },
-        });
-        map.addLayer({
-          id: "catchments-fill-rainfall",
-          type: "fill",
-          source: "catchments",
-          paint: {
-            "fill-color": ["get", "rainfallColor"],
-            "fill-opacity": 0.45,
-          },
-          layout: { visibility: "none" },
-        });
-        map.addLayer({
-          id: "catchments-outline",
-          type: "line",
-          source: "catchments",
-          paint: {
-            "line-color": "#5FA777",
-            "line-width": 1.4,
-            "line-opacity": 0.7,
-          },
-          layout: { visibility: "visible" },
-        });
-        map.addLayer({
-          id: "catchments-label",
-          type: "symbol",
-          source: "catchments",
-          minzoom: 7,
-          layout: {
-            "text-field": ["get", "name"],
-            "text-size": 11,
-            "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
-            "text-letter-spacing": 0.06,
-            "text-transform": "uppercase",
-          },
-          paint: {
-            "text-color": "#dff2ff",
-            "text-halo-color": "rgba(10, 46, 77, 0.7)",
-            "text-halo-width": 1.4,
-          },
-        });
-      }
-
-      if (!map.getSource("pipelines")) {
-        map.addSource("pipelines", {
-          type: "geojson",
-          data: {
-            type: "FeatureCollection",
-            features: PIPELINES.map((line, i) => ({
-              type: "Feature",
-              id: i,
-              properties: {},
-              geometry: { type: "LineString", coordinates: line },
-            })),
-          },
-        });
-        map.addLayer({
-          id: "pipelines-casing",
-          type: "line",
-          source: "pipelines",
-          paint: {
-            "line-color": "rgba(10, 46, 77, 0.55)",
-            "line-width": 4,
-            "line-opacity": 0.6,
-          },
-          layout: { "line-cap": "round", "line-join": "round" },
-        });
-        map.addLayer({
-          id: "pipelines-line",
-          type: "line",
-          source: "pipelines",
-          paint: {
-            "line-color": "#00AEEF",
-            "line-width": 2,
-            "line-dasharray": [2, 1.5],
-          },
-          layout: { "line-cap": "round", "line-join": "round" },
-        });
-      }
-
-      // Rainfall heatmap (uses catchment centroids weighted by rainfall mm).
-      if (!map.getSource("rainfall-points")) {
-        map.addSource("rainfall-points", {
-          type: "geojson",
-          data: {
-            type: "FeatureCollection",
-            features: CATCHMENTS.map((c) => {
-              const lngs = c.ring.map((p) => p[0]);
-              const lats = c.ring.map((p) => p[1]);
-              const cLng = (Math.min(...lngs) + Math.max(...lngs)) / 2;
-              const cLat = (Math.min(...lats) + Math.max(...lats)) / 2;
-              return {
-                type: "Feature",
-                properties: { weight: c.rainfallMm / 150 },
-                geometry: { type: "Point", coordinates: [cLng, cLat] },
-              };
-            }),
-          },
-        });
-        map.addLayer({
-          id: "rainfall-heat",
-          type: "heatmap",
-          source: "rainfall-points",
-          maxzoom: 11,
-          layout: { visibility: "none" },
-          paint: {
-            "heatmap-weight": ["get", "weight"],
-            "heatmap-intensity": 0.9,
-            "heatmap-radius": [
-              "interpolate",
-              ["linear"],
-              ["zoom"],
-              6,
-              30,
-              9,
-              80,
-              11,
-              160,
-            ],
-            "heatmap-opacity": 0.6,
-            "heatmap-color": [
-              "interpolate",
-              ["linear"],
-              ["heatmap-density"],
-              0,
-              "rgba(255,255,255,0)",
-              0.2,
-              "rgba(216,240,251,0.6)",
-              0.4,
-              "rgba(134,207,229,0.7)",
-              0.6,
-              "rgba(95,167,119,0.8)",
-              0.8,
-              "rgba(216,138,0,0.85)",
-              1,
-              "rgba(194,65,12,0.9)",
-            ],
-          },
-        });
-      }
-
+    // Re-bind custom sources/layers every time the style is (re)loaded.
+    const onStyleLoad = () => {
+      addCustomLayers(map, { terrain, buildings, wantsIntro });
       setStyleReady(true);
-    });
+      // Bumping the version causes the marker/layer effects to re-run so HTML
+      // markers re-bind cleanly after a style swap.
+      setStyleVersion((v) => v + 1);
+    };
+    map.on("style.load", onStyleLoad);
 
-    // Globe → SEQ fly-in for the cinematic intro.
+    // Globe → SEQ fly-in only on the first mount.
     let disposed = false;
     let mercatorTimer: ReturnType<typeof setTimeout> | null = null;
     if (wantsIntro) {
@@ -454,7 +230,6 @@ export default function SeqWaterMap({
           curve: 1.5,
           essential: true,
         });
-        // Drop back to mercator once we're in close — keeps performance smooth.
         mercatorTimer = setTimeout(() => {
           if (disposed) return;
           try {
@@ -466,23 +241,93 @@ export default function SeqWaterMap({
       });
     }
 
+    // Mapbox doesn't auto-detect parent layout changes. Watch the container
+    // and trigger map.resize() so the canvas tracks any width/height changes
+    // (e.g. when the asset drawer opens and the map column shrinks).
+    let resizeObserver: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== "undefined" && containerRef.current) {
+      resizeObserver = new ResizeObserver(() => {
+        if (mapRef.current) {
+          try {
+            mapRef.current.resize();
+          } catch {
+            /* map may be mid-destruction */
+          }
+        }
+      });
+      resizeObserver.observe(containerRef.current);
+    }
+
     return () => {
       disposed = true;
       if (mercatorTimer) clearTimeout(mercatorTimer);
+      resizeObserver?.disconnect();
       markersRef.current.forEach((m) => m.remove());
       markersRef.current = [];
       accentMarkersRef.current.forEach((m) => m.remove());
       accentMarkersRef.current = [];
       labelMarkersRef.current.forEach((m) => m.remove());
       labelMarkersRef.current = [];
-      mapRef.current?.remove();
+      map.off("style.load", onStyleLoad);
+      map.remove();
       mapRef.current = null;
-      styleLoadedRef.current = false;
+      setStyleReady(false);
     };
+    // We intentionally mount once and react to prop changes in other effects.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ---- Layer visibility ----
+  // ---- React to styleUrl changes ----
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !styleUrl) return;
+    // Skip the very first invocation: the map constructor already loaded this
+    // URL and calling setStyle (or even getStyle) before the initial style is
+    // loaded throws "Style is not done loading".
+    if (initialStyleRef.current === null || initialStyleRef.current === styleUrl) {
+      initialStyleRef.current = styleUrl;
+      return;
+    }
+    setStyleReady(false);
+    try {
+      map.setStyle(styleUrl);
+      initialStyleRef.current = styleUrl;
+    } catch (err) {
+      console.warn("Failed to apply Mapbox style", styleUrl, err);
+    }
+  }, [styleUrl]);
+
+  // ---- React to projection changes ----
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !projection || !styleReady) return;
+    try {
+      map.setProjection(projection);
+    } catch {
+      /* not supported on every style — ignore */
+    }
+  }, [projection, styleReady]);
+
+  // ---- React to terrain / buildings toggles ----
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !styleReady) return;
+    try {
+      if (map.getSource("mapbox-dem")) {
+        map.setTerrain(terrain ? { source: "mapbox-dem", exaggeration: 1.25 } : null);
+      }
+      if (map.getLayer("seq-hillshade")) {
+        map.setLayoutProperty("seq-hillshade", "visibility", terrain ? "visible" : "none");
+      }
+      if (map.getLayer("3d-buildings")) {
+        map.setLayoutProperty("3d-buildings", "visibility", buildings ? "visible" : "none");
+      }
+    } catch {
+      /* not all styles support these knobs */
+    }
+  }, [terrain, buildings, styleReady]);
+
+  // ---- React to layer toggles ----
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !styleReady) return;
@@ -496,7 +341,7 @@ export default function SeqWaterMap({
     setVis("catchments-outline", showCatchments);
     setVis("catchments-label", showCatchments);
     setVis("rainfall-heat", showRainfall);
-  }, [showCatchments, showRainfall, styleReady]);
+  }, [showCatchments, showRainfall, styleReady, styleVersion]);
 
   // ---- Asset markers (HTML) ----
   useEffect(() => {
@@ -552,7 +397,7 @@ export default function SeqWaterMap({
         labelMarkersRef.current.push(labelMarker);
       }
     }
-  }, [assets, selectedId, showAssets, labelled, styleReady, onSelect]);
+  }, [assets, selectedId, showAssets, labelled, styleReady, styleVersion, onSelect]);
 
   // ---- Accent markers (alert + quality) ----
   useEffect(() => {
@@ -584,7 +429,7 @@ export default function SeqWaterMap({
         .addTo(map);
       accentMarkersRef.current.push(marker);
     }
-  }, [showRisk, showQuality, styleReady]);
+  }, [showRisk, showQuality, styleReady, styleVersion]);
 
   // ---- Fly to selected asset ----
   useEffect(() => {
@@ -626,7 +471,6 @@ export default function SeqWaterMap({
   return (
     <div
       ref={containerRef}
-      data-bounds={JSON.stringify(SEQ_BOUNDS)}
       className={cn(
         "relative overflow-hidden rounded-xl border border-border bg-deepNavy",
         className,
@@ -636,7 +480,262 @@ export default function SeqWaterMap({
   );
 }
 
-// --- Marker DOM helpers --------------------------------------------------
+// ---- Custom layer plumbing ---------------------------------------------
+
+interface AddLayersOpts {
+  terrain: boolean;
+  buildings: boolean;
+  wantsIntro: boolean;
+}
+
+function addCustomLayers(map: MapboxMap, opts: AddLayersOpts): void {
+  // Atmosphere / fog (only meaningful when projection is globe).
+  try {
+    if (opts.wantsIntro) {
+      map.setFog({
+        color: "rgb(220, 232, 245)",
+        "high-color": "rgb(36, 92, 145)",
+        "horizon-blend": 0.06,
+        "space-color": "rgb(11, 24, 44)",
+        "star-intensity": 0.15,
+      });
+    } else {
+      map.setFog({});
+    }
+  } catch {
+    /* fog optional */
+  }
+
+  // Terrain + hillshade.
+  try {
+    if (!map.getSource("mapbox-dem")) {
+      map.addSource("mapbox-dem", {
+        type: "raster-dem",
+        url: "mapbox://mapbox.mapbox-terrain-dem-v1",
+        tileSize: 512,
+        maxzoom: 14,
+      });
+    }
+    if (opts.terrain) {
+      map.setTerrain({ source: "mapbox-dem", exaggeration: 1.25 });
+    } else {
+      map.setTerrain(null);
+    }
+    if (!map.getLayer("seq-hillshade")) {
+      map.addLayer({
+        id: "seq-hillshade",
+        type: "hillshade",
+        source: "mapbox-dem",
+        layout: { visibility: opts.terrain ? "visible" : "none" },
+        paint: {
+          "hillshade-shadow-color": "#1d3a5a",
+          "hillshade-highlight-color": "#fafdff",
+          "hillshade-accent-color": "#3a6a8f",
+          "hillshade-exaggeration": 0.55,
+        },
+      });
+    }
+  } catch (err) {
+    console.warn("Terrain unavailable for current style", err);
+  }
+
+  // 3D building extrusions where supported.
+  try {
+    if (!map.getLayer("3d-buildings")) {
+      const labelLayer = map
+        .getStyle()
+        .layers?.find((l) => l.type === "symbol" && (l.layout as any)?.["text-field"]);
+      const styleSources = map.getStyle().sources ?? {};
+      const hasComposite =
+        Object.prototype.hasOwnProperty.call(styleSources, "composite") &&
+        // The standard style uses "composite" but exposes no "building" source-layer.
+        // We have to attempt and let mapbox throw if it isn't there.
+        true;
+      if (hasComposite) {
+        map.addLayer(
+          {
+            id: "3d-buildings",
+            source: "composite",
+            "source-layer": "building",
+            filter: ["==", "extrude", "true"],
+            type: "fill-extrusion",
+            minzoom: 13,
+            layout: { visibility: opts.buildings ? "visible" : "none" },
+            paint: {
+              "fill-extrusion-color": "#cfd8e3",
+              "fill-extrusion-height": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                13,
+                0,
+                15,
+                ["get", "height"],
+              ],
+              "fill-extrusion-base": ["get", "min_height"],
+              "fill-extrusion-opacity": 0.55,
+            },
+          },
+          labelLayer?.id,
+        );
+      }
+    }
+  } catch {
+    /* style has no buildings source-layer */
+  }
+
+  // Catchments.
+  if (!map.getSource("catchments")) {
+    map.addSource("catchments", {
+      type: "geojson",
+      data: catchmentsFeatureCollection(),
+    });
+  }
+  if (!map.getLayer("catchments-fill")) {
+    map.addLayer({
+      id: "catchments-fill",
+      type: "fill",
+      source: "catchments",
+      paint: { "fill-color": ["get", "fill"], "fill-opacity": 0.18 },
+    });
+  }
+  if (!map.getLayer("catchments-fill-rainfall")) {
+    map.addLayer({
+      id: "catchments-fill-rainfall",
+      type: "fill",
+      source: "catchments",
+      paint: { "fill-color": ["get", "rainfallColor"], "fill-opacity": 0.45 },
+      layout: { visibility: "none" },
+    });
+  }
+  if (!map.getLayer("catchments-outline")) {
+    map.addLayer({
+      id: "catchments-outline",
+      type: "line",
+      source: "catchments",
+      paint: { "line-color": "#5FA777", "line-width": 1.4, "line-opacity": 0.7 },
+    });
+  }
+  if (!map.getLayer("catchments-label")) {
+    map.addLayer({
+      id: "catchments-label",
+      type: "symbol",
+      source: "catchments",
+      minzoom: 7,
+      layout: {
+        "text-field": ["get", "name"],
+        "text-size": 11,
+        "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+        "text-letter-spacing": 0.06,
+        "text-transform": "uppercase",
+      },
+      paint: {
+        "text-color": "#dff2ff",
+        "text-halo-color": "rgba(10, 46, 77, 0.7)",
+        "text-halo-width": 1.4,
+      },
+    });
+  }
+
+  // Pipelines.
+  if (!map.getSource("pipelines")) {
+    map.addSource("pipelines", {
+      type: "geojson",
+      data: {
+        type: "FeatureCollection",
+        features: PIPELINES.map((line, i) => ({
+          type: "Feature",
+          id: i,
+          properties: {},
+          geometry: { type: "LineString", coordinates: line },
+        })),
+      },
+    });
+  }
+  if (!map.getLayer("pipelines-casing")) {
+    map.addLayer({
+      id: "pipelines-casing",
+      type: "line",
+      source: "pipelines",
+      paint: { "line-color": "rgba(10, 46, 77, 0.55)", "line-width": 4, "line-opacity": 0.6 },
+      layout: { "line-cap": "round", "line-join": "round" },
+    });
+  }
+  if (!map.getLayer("pipelines-line")) {
+    map.addLayer({
+      id: "pipelines-line",
+      type: "line",
+      source: "pipelines",
+      paint: { "line-color": "#00AEEF", "line-width": 2, "line-dasharray": [2, 1.5] },
+      layout: { "line-cap": "round", "line-join": "round" },
+    });
+  }
+
+  // Rainfall heatmap.
+  if (!map.getSource("rainfall-points")) {
+    map.addSource("rainfall-points", {
+      type: "geojson",
+      data: {
+        type: "FeatureCollection",
+        features: CATCHMENTS.map((c) => {
+          const lngs = c.ring.map((p) => p[0]);
+          const lats = c.ring.map((p) => p[1]);
+          const cLng = (Math.min(...lngs) + Math.max(...lngs)) / 2;
+          const cLat = (Math.min(...lats) + Math.max(...lats)) / 2;
+          return {
+            type: "Feature",
+            properties: { weight: c.rainfallMm / 150 },
+            geometry: { type: "Point", coordinates: [cLng, cLat] },
+          };
+        }),
+      },
+    });
+  }
+  if (!map.getLayer("rainfall-heat")) {
+    map.addLayer({
+      id: "rainfall-heat",
+      type: "heatmap",
+      source: "rainfall-points",
+      maxzoom: 11,
+      layout: { visibility: "none" },
+      paint: {
+        "heatmap-weight": ["get", "weight"],
+        "heatmap-intensity": 0.9,
+        "heatmap-radius": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          6,
+          30,
+          9,
+          80,
+          11,
+          160,
+        ],
+        "heatmap-opacity": 0.6,
+        "heatmap-color": [
+          "interpolate",
+          ["linear"],
+          ["heatmap-density"],
+          0,
+          "rgba(255,255,255,0)",
+          0.2,
+          "rgba(216,240,251,0.6)",
+          0.4,
+          "rgba(134,207,229,0.7)",
+          0.6,
+          "rgba(95,167,119,0.8)",
+          0.8,
+          "rgba(216,138,0,0.85)",
+          1,
+          "rgba(194,65,12,0.9)",
+        ],
+      },
+    });
+  }
+}
+
+// ---- Marker DOM helpers ------------------------------------------------
 
 function buildMarkerEl(
   type: MapAsset["asset_type"],

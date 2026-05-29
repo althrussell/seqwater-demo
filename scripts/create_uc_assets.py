@@ -30,6 +30,7 @@ SCRIPTS = [
     SQL_DIR / "01_create_schema.sql",
     SQL_DIR / "02_create_tables.sql",
     SQL_DIR / "03_create_views.sql",
+    SQL_DIR / "05_create_uc_functions.sql",
     VOLUME_SQL,
 ]
 

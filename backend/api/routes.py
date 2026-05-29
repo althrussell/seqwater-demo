@@ -14,6 +14,8 @@ from backend.models import (
     BriefingResponse,
     ChatRequest,
     ChatResponse,
+    DamLevel,
+    FloodStorage,
     HealthResponse,
     OverviewResponse,
     ScenarioRunRequest,
@@ -71,6 +73,27 @@ def work_orders(limit: int = Query(default=200, le=500)) -> list[dict[str, Any]]
 @router.get("/water-security")
 def water_security() -> dict[str, Any]:
     return repository.water_security_summary()
+
+
+@router.get("/dams/levels", response_model=list[DamLevel])
+def dam_levels_current() -> list[dict[str, Any]]:
+    """Live Seqwater dam-levels snapshot for all 25 published storages."""
+    return repository.dam_levels_current()
+
+
+@router.get("/dams/snapshot")
+def dam_levels_snapshot() -> dict[str, Any]:
+    """Aggregated grid-storage snapshot (total %, spilling count, low dams)."""
+    snap = repository.grid_storage_snapshot()
+    if snap is None:
+        raise HTTPException(status_code=404, detail="No dam-levels snapshot available")
+    return snap
+
+
+@router.get("/flood/storage", response_model=list[FloodStorage])
+def flood_storage_current() -> list[dict[str, Any]]:
+    """Dedicated flood-storage compartment snapshot for Somerset + Wivenhoe."""
+    return repository.flood_storage_current()
 
 
 @router.get("/water-quality")

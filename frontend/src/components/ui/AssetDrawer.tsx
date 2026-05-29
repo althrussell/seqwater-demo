@@ -9,7 +9,7 @@ import {
   Wrench,
   X,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { cn, fmtNumber, postureFromBand } from "@/lib/utils";
 import { useToast } from "./Toast";
@@ -19,6 +19,12 @@ import Sparkline from "./Sparkline";
 interface Props {
   assetId: string | null;
   onClose: () => void;
+  /**
+   * Layout mode. `inline` participates in the parent flex layout (map can
+   * shrink to make room); `overlay` slides over the page using fixed
+   * positioning. Defaults to `inline`.
+   */
+  variant?: "inline" | "overlay";
 }
 
 type TabId = "overview" | "signals" | "risks" | "work-orders" | "documents";
@@ -91,7 +97,7 @@ const SUMMARY_LIBRARY: Record<string, { hero: string; insight: string; checklist
   },
 };
 
-export default function AssetDrawer({ assetId, onClose }: Props) {
+export default function AssetDrawer({ assetId, onClose, variant = "inline" }: Props) {
   const [tab, setTab] = useState<TabId>("overview");
   const { toast } = useToast();
   const { data, isLoading } = useQuery({
@@ -99,6 +105,16 @@ export default function AssetDrawer({ assetId, onClose }: Props) {
     queryFn: () => api.asset(assetId as string),
     enabled: Boolean(assetId),
   });
+
+  // Escape key closes the drawer.
+  useEffect(() => {
+    if (!assetId) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [assetId, onClose]);
 
   if (!assetId) return null;
   const asset = (data ?? {}) as Record<string, any>;
@@ -127,18 +143,43 @@ export default function AssetDrawer({ assetId, onClose }: Props) {
   const turbidityTrend = quality.slice().reverse().map((q) => Number(q.turbidity_NTU));
   const recentWO = (asset.work_orders ?? []) as Array<Record<string, any>>;
 
+  const containerClass =
+    variant === "overlay"
+      ? "fixed inset-y-0 right-0 z-30 flex w-full max-w-[440px] flex-col border-l border-border bg-surface shadow-elevated"
+      : "flex h-full w-full flex-col overflow-hidden rounded-xl border border-border bg-surface shadow-elevated";
+
   return (
     <AnimatePresence>
       {assetId ? (
         <motion.aside
           key="drawer"
-          initial={{ x: "100%" }}
-          animate={{ x: 0 }}
-          exit={{ x: "100%" }}
+          initial={
+            variant === "overlay" ? { x: "100%" } : { opacity: 0, x: 16 }
+          }
+          animate={variant === "overlay" ? { x: 0 } : { opacity: 1, x: 0 }}
+          exit={variant === "overlay" ? { x: "100%" } : { opacity: 0, x: 16 }}
           transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-          className="fixed inset-y-0 right-0 z-30 flex w-full max-w-[440px] flex-col border-l border-border bg-surface shadow-elevated"
+          className={containerClass}
+          role="dialog"
+          aria-label={asset.name ?? "Asset details"}
         >
-          <div className="relative">
+          {/* Sticky bar with prominent close affordance. Always visible. */}
+          <div className="flex flex-none items-center justify-between gap-3 border-b border-border bg-surface px-3 py-2">
+            <div className="min-w-0 truncate text-[11.5px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
+              Asset Briefing
+            </div>
+            <button
+              onClick={onClose}
+              aria-label="Close asset briefing"
+              title="Close (Esc)"
+              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-2 py-1 text-[12px] font-semibold text-ink-secondary transition hover:border-primaryBlue/40 hover:bg-surface-blue/40 hover:text-deepBlue"
+            >
+              <X className="h-3.5 w-3.5" />
+              Close
+            </button>
+          </div>
+
+          <div className="relative flex-none">
             <img
               src={lib.hero}
               alt=""
@@ -148,7 +189,8 @@ export default function AssetDrawer({ assetId, onClose }: Props) {
             <div className="absolute inset-0 bg-gradient-to-t from-deepNavy/55 via-deepNavy/10 to-transparent" />
             <button
               onClick={onClose}
-              aria-label="Close"
+              aria-label="Close asset briefing"
+              title="Close (Esc)"
               className="absolute right-3 top-3 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/95 text-ink-secondary shadow-card transition hover:text-deepBlue"
             >
               <X className="h-4 w-4" />

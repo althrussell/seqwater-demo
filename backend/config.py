@@ -51,6 +51,22 @@ class Settings(BaseSettings):
         default=None, alias="DATABRICKS_VECTOR_SEARCH_INDEX"
     )
 
+    databricks_supervisor_endpoint: str | None = Field(
+        default=None, alias="DATABRICKS_SUPERVISOR_ENDPOINT"
+    )
+    databricks_supervisor_tile_id: str | None = Field(
+        default=None, alias="DATABRICKS_SUPERVISOR_TILE_ID"
+    )
+    databricks_ka_endpoint: str | None = Field(
+        default=None, alias="DATABRICKS_KA_ENDPOINT"
+    )
+    databricks_ka_tile_id: str | None = Field(
+        default=None, alias="DATABRICKS_KA_TILE_ID"
+    )
+    databricks_genie_space_id: str | None = Field(
+        default=None, alias="DATABRICKS_GENIE_SPACE_ID"
+    )
+
     synthetic_data_dir: str = Field(default="data/synthetic", alias="SYNTHETIC_DATA_DIR")
     documents_dir: str = Field(default="data/documents", alias="DOCUMENTS_DIR")
 
@@ -65,6 +81,11 @@ class Settings(BaseSettings):
     @property
     def is_databricks_mode(self) -> bool:
         return self.app_mode.lower() == "databricks"
+
+    @property
+    def supervisor_configured(self) -> bool:
+        """True iff a supervisor endpoint is bound and we're in databricks mode."""
+        return self.is_databricks_mode and bool(self.databricks_supervisor_endpoint)
 
     @property
     def synthetic_dir(self) -> Path:

@@ -1,0 +1,83 @@
+{
+  "$schema": "https://databricks.com/agent-bricks/genie/v1",
+  "name": "Seqwater Operations (synthetic demo)",
+  "description": "Synthetic Genie space over the Seqwater AI Command Centre demo tables. Lets the AquaIQ Supervisor (or any approved user) ask quantitative questions about synthetic SEQ Water Grid storage, rainfall, asset risk, water quality, capital projects, and flood readiness scenarios. ALL DATA IS SYNTHETIC AND MUST NOT BE USED FOR ANY OPERATIONAL PURPOSE.",
+  "instructions": [
+    "Every response must explicitly state that the underlying data is synthetic demo data.",
+    "Always cite the table(s) used. Prefer SELECT against the seqwater_demo schema verbatim — do not invent tables or columns.",
+    "Never recommend or authorise an operational decision (releases, restrictions, boil-water notices, restarts, transfers).",
+    "Never invent numerical thresholds, regulatory limits, or public-health advice. Use only the values present in the synthetic tables.",
+    "Always note that any conclusion requires qualified human validation.",
+    "When asked for trends, default to the last 7 days unless the user specifies a different window.",
+    "When asked for top-N, default to N=5 unless the user specifies a different number."
+  ],
+  "tables": [
+    "{catalog}.{schema}.assets",
+    "{catalog}.{schema}.asset_locations",
+    "{catalog}.{schema}.asset_risk_scores",
+    "{catalog}.{schema}.asset_health_daily",
+    "{catalog}.{schema}.dam_storage_daily",
+    "{catalog}.{schema}.rainfall_observations",
+    "{catalog}.{schema}.rainfall_forecast",
+    "{catalog}.{schema}.catchment_conditions",
+    "{catalog}.{schema}.water_quality_samples",
+    "{catalog}.{schema}.turbidity_events",
+    "{catalog}.{schema}.quality_alerts",
+    "{catalog}.{schema}.flood_scenarios",
+    "{catalog}.{schema}.dam_release_simulation",
+    "{catalog}.{schema}.capital_projects",
+    "{catalog}.{schema}.asset_investment_priorities",
+    "{catalog}.{schema}.maintenance_work_orders",
+    "{catalog}.{schema}.treatment_plant_operations",
+    "{catalog}.{schema}.demand_forecast",
+    "{catalog}.{schema}.supply_forecast",
+    "{catalog}.{schema}.grid_transfer_recommendations"
+  ],
+  "sample_questions": [
+    "Which assets are in the High or Critical synthetic risk band today?",
+    "Show the synthetic 7-day storage trend for North Pine Dam vs Wivenhoe Dam.",
+    "What is the synthetic 72-hour rainfall forecast averaged across all catchments?",
+    "Which synthetic water quality samples breached their turbidity envelope in the last 30 days?",
+    "What is the synthetic top 5 capital projects by risk reduction score?",
+    "Which synthetic treatment plants are running above 80% utilisation today?",
+    "How many synthetic open work orders are there per asset?",
+    "What is the synthetic demand vs treatment capacity headroom over the next 7 days?",
+    "Which synthetic flood scenarios have release_required = true?",
+    "Show synthetic asset health index trend for PMP-014 over the last 14 days.",
+    "What is the synthetic mean rainfall observed in the Pine Rivers catchment over the last 7 days?",
+    "Which synthetic assets have the highest predicted_failure_30d?"
+  ],
+  "certified_queries": [
+    {
+      "name": "synthetic_top_asset_risks",
+      "description": "Top synthetic assets by risk_score, with risk band and recommended action.",
+      "sql": "SELECT asset_name, asset_type, criticality, risk_score, risk_band, predicted_failure_30d, open_work_orders, recommended_action FROM {catalog}.{schema}.asset_risk_scores ORDER BY risk_score DESC LIMIT 10"
+    },
+    {
+      "name": "synthetic_storage_trend_7d",
+      "description": "Synthetic 7-day storage_percent trend for each dam.",
+      "sql": "SELECT asset_name, date, storage_percent FROM {catalog}.{schema}.dam_storage_daily WHERE date >= current_date() - INTERVAL 7 DAYS ORDER BY asset_name, date"
+    },
+    {
+      "name": "synthetic_water_quality_breaches_30d",
+      "description": "Synthetic water quality samples in the Watch or Elevated alert level over the last 30 days.",
+      "sql": "SELECT asset_name, sample_zone, sampled_at, alert_level, turbidity_NTU, recommended_action FROM {catalog}.{schema}.water_quality_samples WHERE alert_level <> 'Normal' AND sampled_at >= current_timestamp() - INTERVAL 30 DAYS ORDER BY sampled_at DESC"
+    },
+    {
+      "name": "synthetic_capital_priorities",
+      "description": "Synthetic top capital projects by risk reduction score.",
+      "sql": "SELECT project_name, asset_name, project_type, estimated_cost_aud, risk_reduction_score, recommended_priority FROM {catalog}.{schema}.capital_projects ORDER BY risk_reduction_score DESC LIMIT 10"
+    },
+    {
+      "name": "synthetic_72h_rainfall_outlook",
+      "description": "Mean synthetic 72-hour rainfall forecast across catchment regions.",
+      "sql": "SELECT region, AVG(forecast_rainfall_mm) AS mean_72h_mm FROM {catalog}.{schema}.rainfall_forecast WHERE horizon_hours = 72 GROUP BY region ORDER BY mean_72h_mm DESC"
+    },
+    {
+      "name": "synthetic_flood_scenarios_active",
+      "description": "Synthetic flood readiness scenarios that flag a release as required.",
+      "sql": "SELECT scenario_id, scenario_name, current_storage_percent, projected_storage_percent, downstream_impact_score, status FROM {catalog}.{schema}.flood_scenarios WHERE release_required = TRUE ORDER BY downstream_impact_score DESC"
+    }
+  ],
+  "synthetic_demo": true
+}

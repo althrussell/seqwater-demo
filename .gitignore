@@ -42,6 +42,9 @@ data/synthetic/*.parquet
 data/synthetic/*.json
 !data/synthetic/.gitkeep
 
+# Generated synthetic PDFs (regenerate via scripts/generate_synthetic_pdfs.py)
+data/documents/pdf/
+
 # TS / Vite build artefacts
 frontend/.tsbuildinfo*
 frontend/tsconfig*.tsbuildinfo

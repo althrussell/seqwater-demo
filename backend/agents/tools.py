@@ -80,6 +80,64 @@ def get_overview() -> dict[str, Any]:
     return {"summary": summary, "data": o}
 
 
+def get_current_dam_levels(dam_name: str | None = None) -> dict[str, Any]:
+    """Return the live Seqwater dam-levels snapshot for one dam or the whole grid.
+
+    Grounds the agent in the *real* published 29/05/2026 values rather than the
+    synthetic time series. When ``dam_name`` is provided, the response narrows
+    to that dam (case-insensitive substring match on the asset name).
+    """
+    rows = repository.dam_levels_current()
+    snap = repository.grid_storage_snapshot()
+    flood = repository.flood_storage_current()
+    if not rows:
+        return {"summary": "No dam-levels snapshot available.", "data": {"dams": [], "snapshot": None}}
+
+    selected = rows
+    if dam_name:
+        needle = dam_name.lower()
+        selected = [r for r in rows if needle in r["asset_name"].lower()]
+
+    if dam_name and selected:
+        lines = [
+            f"{r['asset_name']}: {r['current_volume_ml']:,.0f}/{r['full_supply_ml']:,.0f} ML "
+            f"({r['percent_full']}% full, {'spilling' if r['is_spilling'] else 'within FSV'}, "
+            f"observed {r['latest_observation_local']})"
+            for r in selected
+        ]
+        summary = "Live Seqwater dam levels (published):\n- " + "\n- ".join(lines)
+    elif dam_name:
+        summary = f"No published dam matches '{dam_name}'."
+    else:
+        spilling = [r["asset_name"] for r in rows if r["is_spilling"]]
+        low = [r["asset_name"] for r in rows if r["percent_full"] < 60.0]
+        pieces = [
+            f"Live Seqwater grid storage: {snap['grid_storage_percent']}% "
+            f"({snap['total_current_volume_ml']:,.0f} / {snap['total_full_supply_ml']:,.0f} ML) "
+            f"across {snap['dam_count']} published dams." if snap else "",
+            f"{len(spilling)} dams currently spilling" + (f" ({', '.join(spilling[:5])}{'…' if len(spilling) > 5 else ''})" if spilling else ".") if spilling else "",
+            f"{len(low)} dams below 60% full" + (f" ({', '.join(low)})" if low else "."),
+        ]
+        if flood:
+            pieces.append(
+                "Flood storage compartments: "
+                + "; ".join(
+                    f"{f['asset_name']} {f['flood_storage_in_use_pct']}% in use of {f['total_flood_storage_ml']:,.0f} ML"
+                    for f in flood
+                )
+                + "."
+            )
+        summary = " ".join(p for p in pieces if p)
+    return {
+        "summary": summary,
+        "data": {
+            "snapshot": snap,
+            "dams": selected,
+            "flood_storage": flood,
+        },
+    }
+
+
 TOOLS = {
     "get_water_security_summary": get_water_security_summary,
     "get_top_asset_risks": get_top_asset_risks,
@@ -87,4 +145,5 @@ TOOLS = {
     "run_flood_readiness_scenario": run_flood_readiness_scenario,
     "get_capital_priorities": get_capital_priorities,
     "get_overview": get_overview,
+    "get_current_dam_levels": get_current_dam_levels,
 }

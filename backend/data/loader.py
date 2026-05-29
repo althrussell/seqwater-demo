@@ -14,6 +14,8 @@ mode):
     main.seqwater_demo.assets
     main.seqwater_demo.asset_locations
     main.seqwater_demo.dam_storage_daily
+    main.seqwater_demo.dam_levels_current
+    main.seqwater_demo.flood_storage_current
     main.seqwater_demo.rainfall_observations
     main.seqwater_demo.rainfall_forecast
     main.seqwater_demo.demand_forecast
@@ -83,6 +85,8 @@ TABLES = (
     "assets",
     "asset_locations",
     "dam_storage_daily",
+    "dam_levels_current",
+    "flood_storage_current",
     "rainfall_observations",
     "rainfall_forecast",
     "demand_forecast",

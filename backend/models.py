@@ -38,6 +38,37 @@ class Asset(_Base):
     synthetic_demo_flag: bool = True
 
 
+class DamLevel(_Base):
+    """A single row of the live Seqwater dam-levels snapshot.
+
+    Mirrors the public Seqwater dam-levels page so the API and UI can render
+    the published table verbatim alongside the synthetic operational telemetry.
+    """
+    asset_id: str
+    asset_name: str
+    region: str | None = None
+    full_supply_ml: float
+    current_volume_ml: float
+    percent_full: float
+    latest_observation_local: str
+    is_spilling: bool = False
+    comment: str | None = None
+    source: str = "Seqwater dam levels (published)"
+    synthetic_demo_flag: bool = False
+
+
+class FloodStorage(_Base):
+    """Dedicated flood-storage compartment snapshot for Wivenhoe / Somerset."""
+    asset_id: str
+    asset_name: str
+    total_flood_storage_ml: float
+    flood_storage_in_use_pct: float
+    flood_storage_available_pct: float
+    observed_local: str
+    source: str = "Seqwater flood storage (published)"
+    synthetic_demo_flag: bool = False
+
+
 class AssetRiskRow(_Base):
     asset_id: str
     asset_name: str

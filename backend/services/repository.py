@@ -20,6 +20,54 @@ def _df(name: str) -> pd.DataFrame:
     return get_loader().load(name)
 
 
+def dam_levels_current() -> list[dict[str, Any]]:
+    """Live Seqwater dam-levels snapshot — the authoritative current value.
+
+    Always served from the ``dam_levels_current`` table. Falls back to an empty
+    list when the table hasn't been generated yet (e.g. fresh checkout before
+    ``scripts/generate_synthetic_data.py`` has been run).
+    """
+    df = _df("dam_levels_current")
+    if df.empty:
+        return []
+    return df.sort_values("asset_name").to_dict(orient="records")
+
+
+def flood_storage_current() -> list[dict[str, Any]]:
+    """Live snapshot of Somerset + Wivenhoe dedicated flood storage compartments."""
+    df = _df("flood_storage_current")
+    if df.empty:
+        return []
+    return df.to_dict(orient="records")
+
+
+def grid_storage_snapshot() -> dict[str, Any] | None:
+    """Aggregate the live dam-levels snapshot into a single grid figure.
+
+    Returns ``None`` when no snapshot is available so callers can fall back to
+    the synthetic time series.
+    """
+    df = _df("dam_levels_current")
+    if df.empty:
+        return None
+    total_fsv = float(df["full_supply_ml"].sum())
+    total_current = float(df["current_volume_ml"].sum())
+    if total_fsv <= 0:
+        return None
+    spilling = df[df["is_spilling"]]
+    low_dams = df[df["percent_full"] < 60.0]
+    return {
+        "as_at_local": df["latest_observation_local"].max(),
+        "total_full_supply_ml": round(total_fsv, 1),
+        "total_current_volume_ml": round(total_current, 1),
+        "grid_storage_percent": round((total_current / total_fsv) * 100, 2),
+        "dam_count": int(len(df)),
+        "spilling_count": int(len(spilling)),
+        "spilling_dam_names": spilling["asset_name"].tolist(),
+        "low_dam_names": low_dams["asset_name"].tolist(),
+    }
+
+
 def list_assets() -> list[dict[str, Any]]:
     assets = _df("assets")
     locations = _df("asset_locations")
@@ -90,6 +138,9 @@ def water_security_summary() -> dict[str, Any]:
     supply = _df("supply_forecast")
     transfers = _df("grid_transfer_recommendations")
     catchments = _df("catchment_conditions")
+    snapshot = grid_storage_snapshot()
+    dam_levels = dam_levels_current()
+    flood_storage = flood_storage_current()
 
     storage_pct = 0.0
     storage_trend: list[dict[str, Any]] = []
@@ -112,6 +163,11 @@ def water_security_summary() -> dict[str, Any]:
             .to_dict(orient="records")
         )
 
+    # Prefer the live dam-levels snapshot as the authoritative figure so the
+    # UI reads the same number as the public Seqwater dam-levels page.
+    if snapshot:
+        storage_pct = snapshot["grid_storage_percent"]
+
     forecast_total_72h = 0.0
     if not rain_fc.empty:
         f72 = rain_fc[rain_fc["horizon"] == "72h"]
@@ -124,6 +180,9 @@ def water_security_summary() -> dict[str, Any]:
     return {
         "storage_percent": round(storage_pct, 2),
         "storage_trend": storage_trend,
+        "snapshot": snapshot,
+        "dam_levels_current": dam_levels,
+        "flood_storage_current": flood_storage,
         "forecast_rainfall_mm_72h_avg": round(forecast_total_72h, 1),
         "demand_today_ml": round(demand_today_ml, 1),
         "treatment_capacity_ml_day": round(treatment_capacity, 1),
@@ -229,6 +288,10 @@ def overview() -> dict[str, Any]:
             (latest["current_storage_ml"].sum() / latest["full_supply_ml"].sum()) * 100
         )
 
+    snapshot = grid_storage_snapshot()
+    if snapshot:
+        storage_pct = snapshot["grid_storage_percent"]
+
     open_critical = int(
         ((wo["status"] != "Completed") & (wo["priority"] == "P1 - Critical")).sum()
     ) if not wo.empty else 0
@@ -318,15 +381,32 @@ def overview() -> dict[str, Any]:
             "Convene synthetic water quality review for elevated zones."
         )
 
+    spilling_count = snapshot["spilling_count"] if snapshot else 0
+    spilling_names = snapshot["spilling_dam_names"] if snapshot else []
+    low_names = snapshot["low_dam_names"] if snapshot else []
+    snapshot_context = ""
+    if snapshot:
+        snapshot_context = (
+            f" Published Seqwater snapshot: {spilling_count} dams currently spilling"
+            f"{(' (' + ', '.join(spilling_names[:3]) + (', …' if len(spilling_names) > 3 else '') + ')') if spilling_names else ''};"
+            f" {len(low_names)} below 60% (e.g. " + ", ".join(low_names[:2]) + ")." if low_names else "."
+        )
     summary = (
         f"Synthetic posture: {risk_level.lower()}. Storage {storage_pct:.1f}% across the "
-        f"synthetic SEQ Water Grid. {open_critical} P1 work orders open. "
+        f"SEQ Water Grid. {open_critical} P1 work orders open. "
         f"{quality_alerts} water quality alerts active. {elevated_assets} assets in elevated risk bands."
+        f"{snapshot_context}"
     )
+    if spilling_count >= 3:
+        top_actions.insert(
+            0,
+            f"Brief executive on {spilling_count} dams currently spilling — confirm downstream comms cadence.",
+        )
 
     kpis = [
         {"label": "Water Security", "value": risk_level, "status": "watch" if risk_level == "Watch" else ("elevated" if risk_level == "Elevated" else "ok"), "sublabel": "Synthetic 72-hour posture"},
-        {"label": "Total Storage", "value": f"{storage_pct:.1f}%", "status": "ok" if storage_pct > 60 else "watch", "sublabel": "Across synthetic SEQ dams"},
+        {"label": "Total Storage", "value": f"{storage_pct:.1f}%", "status": "ok" if storage_pct > 60 else "watch", "sublabel": "Live Seqwater snapshot" if snapshot else "Across synthetic SEQ dams"},
+        {"label": "Dams Spilling", "value": str(spilling_count), "status": "watch" if spilling_count >= 3 else "ok", "sublabel": "Live snapshot — flood-mitigation OK"},
         {"label": "Forecast Demand", "value": f"{demand_ml:,.0f} ML/day", "status": "ok", "sublabel": "Synthetic baseline"},
         {"label": "Treatment Capacity", "value": f"{capacity_ml:,.0f} ML/day", "status": "ok", "sublabel": "Synthetic available"},
         {"label": "Critical Work Orders", "value": str(open_critical), "status": "elevated" if open_critical > 5 else "watch" if open_critical > 0 else "ok", "sublabel": "P1 open (synthetic)"},

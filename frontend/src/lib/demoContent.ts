@@ -48,33 +48,37 @@ export interface KpiDef {
   sparkVariant?: "area" | "bar";
 }
 
+// Tuned to match the live Seqwater dam-levels snapshot (29/05/2026 ~21:00 AEST):
+// grid storage 86.0% across 25 published dams; 10 currently spilling; Lake
+// Macdonald, North Pine, Poona below 60%; both Wivenhoe and Somerset flood
+// compartments 100% available.
 export const EXECUTIVE_KPIS: KpiDef[] = [
   {
     title: "Total Grid Storage",
-    value: "72.4%",
-    supportingText: "▼ 1.8% vs yesterday",
-    status: "monitor",
+    value: "86.0%",
+    supportingText: "Live Seqwater snapshot — 29 May",
+    status: "normal",
     icon: Droplets,
-    spark: [70.1, 70.4, 70.9, 71.2, 71.5, 71.9, 72.4],
+    spark: [78.6, 80.2, 81.4, 82.7, 83.9, 85.0, 86.0],
     sparkColor: "#0076BE",
   },
   {
-    title: "Forecast Demand",
-    value: "+8.7%",
-    supportingText: "vs 14-day average",
-    status: "monitor",
-    icon: TrendingUp,
-    spark: [4, 5, 5, 7, 8, 7, 9, 8, 9, 8, 9, 9, 10, 9],
-    sparkColor: "#5FA777",
+    title: "Dams Spilling",
+    value: "10",
+    supportingText: "of 25 published storages",
+    status: "watch",
+    icon: AlertTriangle,
+    spark: [2, 4, 5, 7, 8, 9, 10],
+    sparkColor: "#0076BE",
     sparkVariant: "bar",
   },
   {
-    title: "Treatment Capacity",
-    value: "86%",
-    supportingText: "of total capacity",
+    title: "Flood Storage Available",
+    value: "100%",
+    supportingText: "Somerset + Wivenhoe compartments",
     status: "normal",
     icon: ShieldCheck,
-    spark: [82, 83, 84, 84, 85, 86, 86],
+    spark: [100, 100, 100, 100, 100, 100, 100],
     sparkColor: "#2E7D59",
   },
   {
@@ -82,7 +86,7 @@ export const EXECUTIVE_KPIS: KpiDef[] = [
     value: "4",
     supportingText: "▼ 2 vs yesterday",
     status: "watch",
-    icon: AlertTriangle,
+    icon: Eye,
     spark: [3, 2, 3, 4, 4, 3, 4],
     sparkColor: "#D88A00",
     sparkVariant: "bar",
@@ -133,19 +137,19 @@ export const EXECUTIVE_PRIORITIES: Array<{
   },
 ];
 
-export const EXECUTIVE_AI_SUMMARY = `Rainfall forecasts indicate increased inflows to Wivenhoe and Somerset catchments over the next 72 hours. Elevated turbidity risk at North Pine WTP and Moggill WTP should be monitored. Asset risk is elevated for 7 assets, primarily due to maintenance backlogs and age-related factors. No immediate operational impacts to supply continuity are expected.`;
+export const EXECUTIVE_AI_SUMMARY = `Grid storage sits at 86.0% across the 25 published Seqwater storages, with 10 dams currently spilling (including Hinze, Baroon Pocket, Borumba, Leslie Harrison, Sideling Creek). Both Somerset and Wivenhoe dedicated flood compartments are 100% available. Three storages remain below 60% — Lake Macdonald (40.2%), North Pine (51.1%) and Poona (69.9%). Elevated turbidity risk at North Pine WTP and Landers Shute WTP should be monitored as wet catchments stabilise.`;
 
 export const EXECUTIVE_AI_EVIDENCE: string[] = [
-  "Total grid storage at 72.4%, tracking 1.8% above the 5-year median for late May.",
-  "Rainfall forecast 30–80mm across Wivenhoe, Somerset and North Pine catchments over the next 72 hours.",
-  "2 treatment plants flagged for elevated turbidity risk: North Pine WTP and Moggill WTP.",
-  "7 assets with elevated risk; 11 critical work orders open across the synthetic asset register.",
+  "Total grid storage at 86.0% (live Seqwater snapshot — 29 May ~21:00 AEST).",
+  "10 of 25 dams currently spilling; both Wivenhoe (87.1%) and Somerset (79.5%) remain inside FSV with flood compartments empty.",
+  "Lake Macdonald at 40.2% (mid-upgrade) is the lowest storage; North Pine at 51.1% remains at reduced FSL.",
+  "2 treatment plants flagged for elevated turbidity risk after the wet event: North Pine WTP and Landers Shute WTP.",
 ];
 
 export const EXECUTIVE_AI_REVIEW: string[] = [
-  "Confirm chemical dosing readiness with operations leads at North Pine and Moggill WTPs.",
-  "Validate 72-hour inflow positioning with the dam operations team.",
-  "Review the top 3 critical work orders ahead of the morning ops stand-up.",
+  "Confirm spillway monitoring and downstream comms cadence for the 10 spilling dams.",
+  "Validate North Pine WTP and Landers Shute WTP dosing readiness for post-event turbidity.",
+  "Brief executive on Lake Macdonald 40.2% storage status and the active upgrade program.",
 ];
 
 export interface SourceChip {
@@ -154,11 +158,12 @@ export interface SourceChip {
 }
 
 export const EXECUTIVE_AI_SOURCES: SourceChip[] = [
+  { label: "main.seqwater_demo.dam_levels_current", type: "table" },
+  { label: "main.seqwater_demo.flood_storage_current", type: "table" },
   { label: "main.seqwater_demo.dam_storage_daily", type: "table" },
   { label: "main.seqwater_demo.rainfall_forecast", type: "table" },
   { label: "Synthetic operations brief — 29 May", type: "document" },
   { label: "Foundation Model API (governed)", type: "model" },
-  { label: "Quality compliance view (synthetic)", type: "view" },
 ];
 
 // ---------- Water Security & Supply ---------------------------------------
@@ -166,21 +171,21 @@ export const EXECUTIVE_AI_SOURCES: SourceChip[] = [
 export const SUPPLY_KPIS: KpiDef[] = [
   {
     title: "Total Grid Storage",
-    value: "72.4%",
-    supportingText: "▼ 1.8% vs yesterday",
-    status: "monitor",
+    value: "86.0%",
+    supportingText: "Live Seqwater snapshot — 29 May",
+    status: "normal",
     icon: Droplets,
-    spark: [70.1, 70.4, 70.9, 71.2, 71.5, 71.9, 72.4],
+    spark: [78.6, 80.2, 81.4, 82.7, 83.9, 85.0, 86.0],
     sparkColor: "#0076BE",
   },
   {
-    title: "Forecast Demand (Next 72h)",
-    value: "+8.7%",
-    supportingText: "vs 14-day average",
-    status: "monitor",
-    icon: TrendingUp,
-    spark: [4, 5, 5, 7, 8, 7, 9, 8, 9, 8, 9, 9, 10, 9],
-    sparkColor: "#5FA777",
+    title: "Dams Spilling",
+    value: "10 of 25",
+    supportingText: "Hinze, Baroon, Borumba, Leslie Harrison +6",
+    status: "watch",
+    icon: AlertTriangle,
+    spark: [2, 4, 5, 7, 8, 9, 10],
+    sparkColor: "#0076BE",
     sparkVariant: "bar",
   },
   {
@@ -195,80 +200,101 @@ export const SUPPLY_KPIS: KpiDef[] = [
   {
     title: "Supply Continuity Status",
     value: "Good",
-    supportingText: "No current constraints",
+    supportingText: "No active constraints",
     status: "normal",
     icon: ShieldCheck,
     spark: [],
   },
   {
-    title: "Storage Trend (14 Days)",
-    value: "Stable",
-    supportingText: "Within target range",
-    status: "normal",
-    icon: TrendingUp,
-    spark: [70, 71, 71, 72, 72, 71, 72, 72, 72, 72, 73, 72, 72, 72],
-    sparkColor: "#0076BE",
+    title: "Lowest Storage",
+    value: "40.2%",
+    supportingText: "Lake Macdonald (mid-upgrade)",
+    status: "watch",
+    icon: AlertTriangle,
+    spark: [44, 43, 42, 41, 41, 41, 40],
+    sparkColor: "#D88A00",
   },
   {
-    title: "Climate Outlook (Next 7 Days)",
-    value: "Wetter",
-    supportingText: "Above median forecast",
-    status: "monitor",
-    icon: Droplets,
+    title: "Flood Storage Available",
+    value: "100%",
+    supportingText: "Somerset + Wivenhoe compartments",
+    status: "normal",
+    icon: ShieldCheck,
     spark: [],
   },
 ];
 
+// Derived from the 29/05/2026 Seqwater snapshot:
+// Total full-supply volume across the 25 published dams = 2,574,180 ML
+// Total current volume = 2,212,460 ML (86.0% full).
 export const SUPPLY_BALANCE = {
-  availableMl: 537_200,
+  availableMl: 2_212_460,
   demandMl: 412_300,
-  marginMl: 124_900,
-  marginPercent: 23,
+  marginMl: 1_800_160,
+  marginPercent: 81,
 };
 
+// System totals derived from the live snapshot (current volume in ML):
+//   Wivenhoe System (Wivenhoe + Somerset) = 1,316,458
+//   Gold Coast System (Hinze + Little Nerang) = 324,585
+//   Scenic Rim / Southern (Maroon + Moogerah + Wyaralong + Nindooinbah) = 214,195
+//   Sunshine Coast (Baroon + Cooloolabin + Ewen Maddock + Wappa + Borumba +
+//                   Lake Macdonald + Cedar Pocket) = 141,146
+//   North Pine System = 109,528
+//   Brisbane West / Lockyer / Bayside (Atkinson + Lake Manchester + Bill Gunn +
+//                   Clarendon + Enoggera + Gold Creek + Poona + Sideling Creek +
+//                   Leslie Harrison) = 106,548
 export const SOURCE_CONTRIBUTION = [
-  { name: "Wivenhoe System", value: 225_600, color: "#0076BE" },
-  { name: "North Pine System", value: 128_900, color: "#00AEEF" },
-  { name: "Somerset System", value: 96_600, color: "#5FA777" },
-  { name: "Stanley River System", value: 42_900, color: "#7FA77B" },
-  { name: "Other Sources", value: 43_200, color: "#94A3B8" },
+  { name: "Wivenhoe System", value: 1_316_458, color: "#0076BE" },
+  { name: "Gold Coast System", value: 324_585, color: "#00AEEF" },
+  { name: "Scenic Rim / Southern", value: 214_195, color: "#5FA777" },
+  { name: "Sunshine Coast System", value: 141_146, color: "#7FA77B" },
+  { name: "North Pine System", value: 109_528, color: "#0EA5E9" },
+  { name: "Brisbane West / Lockyer / Bayside", value: 106_548, color: "#94A3B8" },
 ];
 
 export const TREATMENT_PLANT_CAPACITY = [
-  { plant: "North Pine WTP", availableMlDay: 470, percentDesign: 84 },
-  { plant: "Moggill WTP", availableMlDay: 270, percentDesign: 90 },
-  { plant: "Gold Coast WTP", availableMlDay: 180, percentDesign: 75 },
-  { plant: "Brisbane West WTP", availableMlDay: 120, percentDesign: 80 },
-  { plant: "Sunshine Coast WTP", availableMlDay: 95, percentDesign: 70 },
+  { plant: "Mount Crosby (East + Westbank) WTP", availableMlDay: 1_400, percentDesign: 93 },
+  { plant: "North Pine WTP", availableMlDay: 195, percentDesign: 89 },
+  { plant: "Molendinar + Mudgeeraba WTP", availableMlDay: 380, percentDesign: 86 },
+  { plant: "Landers Shute WTP", availableMlDay: 118, percentDesign: 87 },
+  { plant: "Capalaba WTP", availableMlDay: 140, percentDesign: 85 },
 ];
 
 export const SUPPLY_WATCHPOINTS = [
-  { text: "No active water supply constraints", status: "normal" as Status },
   {
-    text: "All critical bulk water storages within normal operating range",
-    status: "normal" as Status,
-  },
-  { text: "No restrictions in place", status: "normal" as Status },
-  {
-    text: "Monitor rainfall and inflows over coming 72 hours",
+    text: "10 of 25 dams currently spilling — confirm downstream comms cadence",
     status: "monitor" as Status,
   },
+  {
+    text: "Lake Macdonald 40.2% (mid-upgrade) — coordinate with Sunshine Coast retailers",
+    status: "watch" as Status,
+  },
+  {
+    text: "Both Wivenhoe and Somerset flood compartments 100% available",
+    status: "normal" as Status,
+  },
+  { text: "No water restrictions in place", status: "normal" as Status },
 ];
 
-export const SUPPLY_AQUAIQ = `Forecast inflows are expected to increase across 3 major catchments over the next 72 hours. Supply outlook remains positive with adequate margins across all systems.`;
+export const SUPPLY_AQUAIQ = `Grid storage is at 86.0% on the live Seqwater snapshot, with 10 of 25 dams spilling after the recent wet event. Both Wivenhoe and Somerset dedicated flood compartments are fully available, and headroom remains comfortable for the next 72 hours of forecast inflows. Three storages — Lake Macdonald (40.2%), North Pine (51.1%) and Poona (69.9%) — remain below 60% and continue to be monitored.`;
 
 export const SUPPLY_KEY_DRIVERS = [
-  "Increased inflows forecast in Brisbane, Pine and Maroochy catchments",
-  "Demand forecast slightly above 14-day average",
-  "All major treatment plants operating within normal parameters",
+  "10 dams currently spilling (Hinze, Baroon Pocket, Borumba, Leslie Harrison +6)",
+  "Both Somerset and Wivenhoe flood compartments 100% available",
+  "Lake Macdonald and North Pine remain below 60% — drawdown / upgrade narratives intact",
 ];
 
-// 60 days of synthetic SEQ storage % (matches the look of the supplied chart)
+// 60 days of synthetic SEQ storage % tracking up to the live 29/05/2026
+// snapshot value (86.0%). Median band remains seasonal context.
 export const STORAGE_HISTORY: { date: string; actual: number; median: number; p10: number; p90: number }[] =
   Array.from({ length: 60 }).map((_, i) => {
-    const base = 74 - i * 0.05 + Math.sin(i / 5) * 1.4 + Math.sin(i / 11) * 0.6;
-    const actual = Math.max(60, Math.min(82, base + (i > 45 ? -1.2 : 0)));
-    const median = 71 + Math.sin(i / 7) * 0.6;
+    // Ramp from ~77% to 86% over the 60-day window, with the last 10 days
+    // jumping ~3% as catchments fill from the wet event.
+    const wetTail = i > 50 ? (i - 50) * 0.35 : 0;
+    const base = 76.5 + i * 0.13 + Math.sin(i / 6) * 0.6 + Math.sin(i / 11) * 0.4 + wetTail;
+    const actual = Math.max(72, Math.min(86.5, base));
+    const median = 75 + Math.sin(i / 7) * 0.6;
     return {
       date: new Date(2026, 3, 1 + i).toISOString().slice(0, 10),
       actual,
@@ -644,15 +670,15 @@ export const AQUAIQ_DEFAULT_QUESTION =
   "What is the outlook for water security across SEQ over the next 3 months?";
 
 export const AQUAIQ_STRUCTURED = {
-  executiveSummary: `Water security outlook is Normal for the next 3 months across SEQ. Storages are above long-term average, demand is tracking below forecast, and there are no material water quality risks.`,
+  executiveSummary: `Water security outlook is Normal for the next 3 months across SEQ. Live Seqwater snapshot shows grid storage at 86.0% with 10 of 25 dams currently spilling and both Wivenhoe and Somerset flood compartments 100% available. Demand is tracking below forecast and there are no material water quality risks beyond the post-event turbidity watch at North Pine WTP and Landers Shute WTP.`,
   evidence: [
     {
-      sourceName: "main.seqwater_demo.dam_storage_daily",
+      sourceName: "main.seqwater_demo.dam_levels_current",
       sourceType: "table" as const,
-      usedFor: "Total storage at 82% (synthetic) across SEQ Water Grid",
+      usedFor: "Live grid storage 86.0% across 25 published dams (29/05/2026 snapshot)",
       confidence: "high" as const,
       detail:
-        "Aggregate of the latest synthetic dam storage record per asset, joined to the full supply volume catalogue.",
+        "Authoritative dam-levels snapshot from the public Seqwater dam-levels page, joined to the synthetic operational telemetry for context.",
     },
     {
       sourceName: "main.seqwater_demo.demand_forecast",
@@ -682,9 +708,9 @@ export const AQUAIQ_STRUCTURED = {
     "Demand assumptions hold within +/- 5% of synthetic baseline.",
   ],
   risks: [
-    "Forecast 72-hour rainfall watch may transiently elevate turbidity at North Pine WTP.",
+    "Post-event turbidity may elevate at North Pine WTP and Landers Shute WTP as the 10 spilling dams continue to discharge.",
+    "Lake Macdonald is at 40.2% on the live snapshot and remains mid-upgrade — coordinate Sunshine Coast retailer messaging.",
     "Two ageing synthetic pumps in Brisbane North could elevate operational risk if pressure rises.",
-    "Capital project delivery slippage could affect FY28 risk reduction profile.",
   ],
   recommendations: [
     "Maintain current monitoring cadence; no change to public messaging required.",
