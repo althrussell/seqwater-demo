@@ -16,122 +16,110 @@ const config: Config = {
         mono: ["JetBrains Mono", "ui-monospace", "SFMono-Regular", "monospace"],
       },
       colors: {
-        // Databricks-inspired neutrals & accent
+        // Seqwater civic enterprise palette
+        canvas: "#F5FAFD",
+        surface: {
+          DEFAULT: "#FFFFFF",
+          blue: "#EAF6FC",
+          blueStrong: "#D8F0FB",
+          green: "#EEF8F2",
+        },
+        primaryBlue: "#0076BE",
+        seqwaterBlue: "#00AEEF",
+        deepBlue: "#004F7C",
+        deepNavy: "#0A2E4D",
+
+        seqwaterGreen: "#5FA777",
+        eucalyptus: "#7FA77B",
+        greenDark: "#2E7D59",
+
         ink: {
-          50: "#F5F5F4",
-          100: "#E7E5E4",
-          200: "#D6D3D1",
-          300: "#A8A29E",
-          400: "#78716C",
-          500: "#57534E",
-          600: "#44403C",
-          700: "#292524",
-          800: "#1C1917",
-          900: "#0E0D0C",
+          DEFAULT: "#16324F",
+          primary: "#16324F",
+          secondary: "#334155",
+          muted: "#64748B",
+          50: "#F8FAFC",
+          100: "#F1F5F9",
+          200: "#E2E8F0",
+          300: "#CBD5E1",
+          400: "#94A3B8",
+          500: "#64748B",
+          600: "#475569",
+          700: "#334155",
+          800: "#1E293B",
+          900: "#0F172A",
         },
-        brand: {
-          50: "#FFF1EE",
-          100: "#FFE0D8",
-          200: "#FFB9A8",
-          300: "#FF8E76",
-          400: "#FF5F3D",
-          500: "#FF3621", // Databricks red/orange
-          600: "#E22B17",
-          700: "#B41F0F",
-          800: "#85160B",
-          900: "#4A0C06",
+
+        border: {
+          DEFAULT: "#D7E7F0",
+          strong: "#B8D7E7",
         },
-        // Water-sector palette
-        water: {
-          50: "#EFF8FF",
-          100: "#DCEEFE",
-          200: "#B6DCFD",
-          300: "#7BC2FB",
-          400: "#3FA1F2",
-          500: "#1B82DB",
-          600: "#1568B3",
-          700: "#15528C",
-          800: "#11406D",
-          900: "#0B2A48",
+
+        status: {
+          normal: "#2E7D59",
+          monitor: "#0076BE",
+          watch: "#D88A00",
+          escalate: "#C2410C",
         },
-        aqua: {
-          50: "#ECFDFB",
-          100: "#CFF8F2",
-          200: "#9DEFE5",
-          300: "#5DDCD0",
-          400: "#26C2B7",
-          500: "#0FA59C",
-          600: "#0B847E",
-          700: "#0B6764",
-          800: "#0B504F",
-          900: "#063B3A",
+
+        // Reserved for the Governance & Platform page only
+        databricks: {
+          red: "#FF3621",
+          orange: "#FF8A00",
         },
-        catchment: {
-          50: "#F2FAEC",
-          100: "#E0F2D2",
-          200: "#BFE3A4",
-          300: "#92CD6F",
-          400: "#69B147",
-          500: "#4F9532",
-          600: "#3D7626",
-          700: "#325C20",
-          800: "#28471B",
-          900: "#19310F",
-        },
-        amberop: {
-          50: "#FFF7E6",
-          100: "#FFE9B8",
-          200: "#FFD980",
-          300: "#FFC04D",
-          400: "#FFA31A",
-          500: "#E68A00",
-          600: "#B86E00",
-          700: "#8A5300",
-          800: "#5C3700",
-          900: "#2E1B00",
-        },
-        risk: {
-          DEFAULT: "#D43E2C",
-          50: "#FCEEEC",
-          100: "#F8D5D0",
-          200: "#F0A89D",
-          300: "#E67769",
-          400: "#DD5040",
-          500: "#D43E2C",
-          600: "#A52F22",
-          700: "#7A231A",
-          800: "#511712",
-          900: "#290A08",
-        },
+      },
+      borderRadius: {
+        sm: "8px",
+        md: "12px",
+        lg: "18px",
+        xl: "24px",
+        "2xl": "28px",
       },
       boxShadow: {
-        glow: "0 0 0 1px rgba(255,54,33,0.15), 0 12px 40px -12px rgba(255,54,33,0.25)",
-        elevated: "0 1px 0 rgba(20,20,25,0.06), 0 14px 40px -10px rgba(20,20,25,0.20)",
-        card: "0 1px 0 rgba(20,20,25,0.04), 0 6px 18px -6px rgba(20,20,25,0.10)",
+        card: "0 8px 24px rgba(15, 48, 73, 0.08)",
+        elevated: "0 16px 48px rgba(15, 48, 73, 0.12)",
+        soft: "0 1px 2px rgba(15, 48, 73, 0.04), 0 1px 4px rgba(15, 48, 73, 0.04)",
+        ring: "0 0 0 4px rgba(0, 118, 190, 0.12)",
       },
       backgroundImage: {
-        "command-grad":
-          "radial-gradient(1200px 700px at 0% 0%, rgba(15,165,156,0.12), transparent 60%), radial-gradient(1100px 600px at 100% 0%, rgba(255,54,33,0.08), transparent 50%), linear-gradient(180deg, #0E0D0C 0%, #15161A 60%, #1C1D22 100%)",
-        "panel-grad":
-          "linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)",
-        "kpi-grad":
-          "linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.00) 100%)",
-        "water-grad":
-          "linear-gradient(135deg, #0B2A48 0%, #15528C 60%, #0FA59C 100%)",
+        "canvas-grad":
+          "linear-gradient(180deg, #F5FAFD 0%, #FFFFFF 60%, #F0F8FC 100%)",
+        "hero-overlay":
+          "linear-gradient(90deg, rgba(10,46,77,0.78) 0%, rgba(10,46,77,0.55) 45%, rgba(10,46,77,0.15) 100%)",
+        "hero-overlay-soft":
+          "linear-gradient(90deg, rgba(10,46,77,0.55) 0%, rgba(10,46,77,0.25) 60%, rgba(10,46,77,0.05) 100%)",
+        "posture-card":
+          "linear-gradient(180deg, #FFFFFF 0%, #F8FCFE 100%)",
+        "sparkline-blue":
+          "linear-gradient(180deg, rgba(0,174,239,0.32) 0%, rgba(0,174,239,0.0) 100%)",
+        "sparkline-green":
+          "linear-gradient(180deg, rgba(95,167,119,0.32) 0%, rgba(95,167,119,0.0) 100%)",
+        "sparkline-amber":
+          "linear-gradient(180deg, rgba(216,138,0,0.28) 0%, rgba(216,138,0,0.0) 100%)",
       },
       keyframes: {
-        pulseSoft: {
-          "0%, 100%": { opacity: "0.6" },
-          "50%": { opacity: "1" },
+        fadeUp: {
+          "0%": { opacity: "0", transform: "translateY(6px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
         },
-        shimmer: {
-          "0%": { backgroundPosition: "-200% 0" },
-          "100%": { backgroundPosition: "200% 0" },
+        fadeIn: {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
+        slideInRight: {
+          "0%": { transform: "translateX(100%)" },
+          "100%": { transform: "translateX(0)" },
+        },
+        pulseSoft: {
+          "0%, 100%": { opacity: "0.7" },
+          "50%": { opacity: "1" },
         },
       },
       animation: {
-        pulseSoft: "pulseSoft 2.4s ease-in-out infinite",
-        shimmer: "shimmer 1.6s linear infinite",
+        fadeUp: "fadeUp 380ms cubic-bezier(0.16,1,0.3,1) both",
+        fadeIn: "fadeIn 240ms ease both",
+        slideInRight: "slideInRight 320ms cubic-bezier(0.16,1,0.3,1) both",
+        pulseSoft: "pulseSoft 2.6s ease-in-out infinite",
       },
     },
   },

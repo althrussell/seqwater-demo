@@ -54,3 +54,43 @@ export function statusFromBand(band: string): "ok" | "watch" | "elevated" | "cri
       return "ok";
   }
 }
+
+export type Posture = "normal" | "monitor" | "watch" | "escalate";
+
+export function postureFromBand(band: string | undefined | null): Posture {
+  if (!band) return "normal";
+  switch (band.toLowerCase()) {
+    case "critical":
+    case "escalate":
+      return "escalate";
+    case "high":
+    case "elevated":
+    case "watch":
+      return "watch";
+    case "medium":
+    case "monitor":
+      return "monitor";
+    default:
+      return "normal";
+  }
+}
+
+export function fmtAEST(d: Date): string {
+  // formatted like "29 May 2026 09:15 AM AEST"
+  const date = d.toLocaleDateString("en-AU", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    timeZone: "Australia/Brisbane",
+  });
+  const time = d
+    .toLocaleTimeString("en-AU", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+      timeZone: "Australia/Brisbane",
+    })
+    .toUpperCase()
+    .replace(/\s+/g, " ");
+  return `${date} ${time} AEST`;
+}

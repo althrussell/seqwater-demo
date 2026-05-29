@@ -1,9 +1,70 @@
-# Seqwater AI Command Centre
+# Water for Life Intelligence Centre
 
-> Governed intelligence for water security, asset resilience, flood readiness,
-> and executive decision-making — built on Databricks.
+> Governed intelligence for water security, asset resilience, water quality
+> assurance, flood readiness, and executive decision-making — built on
+> Databricks.
 
-> **Synthetic demo data only. Not real Seqwater data. Not for operational use.**
+> Internal/demo name: **Seqwater AI Command Centre**.
+
+> **Synthetic demo data only. Not real Seqwater data. Not for operational decisioning.**
+
+## UX direction
+
+The frontend is a light, civic-enterprise experience tuned for executives,
+government stakeholders, operations leaders, and board-level decision makers.
+It is intentionally calm and evidence-led — not a dark cyber control centre,
+not a generic BI tool, and not a hackathon dashboard.
+
+Eight navigation pages, all sharing the same Seqwater-aligned design system:
+
+1. **Executive Overview** — board-facing 30-second posture view with hero,
+   six KPIs, SEQ Water Grid preview, executive priorities, and the AquaIQ
+   executive summary.
+2. **SEQ Water Grid Map** — cinematic Mapbox GL JS map (satellite-streets,
+   terrain DEM + hillshade, optional globe-projection fly-in, 3D building
+   extrusions where the style supports them) with layer pill controls, custom
+   HTML asset markers, permanent labels for major assets, catchment polygons,
+   rainfall forecast heatmap, alert / quality overlays, and a right-side
+   tabbed Asset Briefing Drawer. Requires `VITE_MAPBOX_TOKEN` to be set
+   (see `frontend/.env.example`).
+3. **Water Security & Supply** — six KPIs, storage chart with 5-year median
+   and percentile band, supply-balance formula, source-contribution donut,
+   treatment-plant capacity table, and watchpoints.
+4. **Asset Resilience & Capital Priorities** — six KPIs, asset resilience
+   matrix (criticality vs condition risk), critical-assets table, capital
+   project priority cards, and an AquaIQ capital insight.
+5. **Water Quality Assurance** — KPI row, key-indicators table, 4-up quality
+   trends, plant overview, and an operator review checklist.
+6. **Flood Readiness & Scenario Briefing** — scenario assumptions form,
+   affected-catchments map/list toggle, ranked impact summary, executive
+   action cards, and a calm planning-only disclaimer.
+7. **AquaIQ Briefing Analyst** — analyst workspace (not a chatbot) with a
+   question panel, structured tabs (Executive Summary / Evidence /
+   Assumptions / Risks / Recommendations), evidence cards, human-validation
+   panel, and full source / tool trace.
+8. **Governance & Platform** — five-column Trusted Data → Governed AI →
+   Decisions architecture flow, model serving cards, human-in-the-loop
+   assurance, and a dark-blue proof-points footer. **The only page that uses
+   Databricks brand colour.**
+
+Design tokens (Seqwater-aligned, light):
+
+- canvas `#F5FAFD`, surface `#FFFFFF`, pale blue surface `#EAF6FC`
+- primary blue `#0076BE`, Seqwater blue `#00AEEF`, deep navy `#0A2E4D`
+- Seqwater green `#5FA777`, eucalyptus `#7FA77B`, dark green `#2E7D59`
+- status pills: Normal / Monitor / Watch / Escalate
+- radii: 8 / 12 / 18 / 24 px
+- shadows: soft card and elevated card
+- Databricks red/orange retained only for the Governance & Platform page
+
+Hero imagery: the three highest-visibility pages use supplied Seqwater
+photography (`frontend/public/heroes/hero-01.jpg`, `hero-02.jpg`,
+`hero-03.jpg` — Executive Overview, Flood Readiness, SEQ Water Grid Map
+respectively). The remaining pages use curated public photo URLs.
+
+Every page renders the synthetic-data disclaimer ribbon at the bottom and
+includes an info badge in the header so the demonstration framing is always
+visible.
 
 This is an executive-grade Databricks demo for Seqwater (the Queensland
 Government Bulk Water Supply Authority for South East Queensland). It shows
@@ -350,7 +411,11 @@ pytest -q
 
 ## Troubleshooting
 
-- **Frontend build error: `Cannot find module 'leaflet'`** — run
+- **Map shows a "Mapbox token required" panel** — copy
+  `frontend/.env.example` to `frontend/.env.local` and set
+  `VITE_MAPBOX_TOKEN=pk.…`. Vite bakes env vars at build time, so re-run
+  `npm run build` (or `scripts/deploy_app.py`) after editing.
+- **Frontend build error: `Cannot find module 'mapbox-gl'`** — run
   `npm install` in `frontend/`.
 - **Backend can't find synthetic data** — run
   `python scripts/generate_synthetic_data.py`.

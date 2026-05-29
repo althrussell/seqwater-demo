@@ -3,74 +3,235 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
 }
 
 body {
+  font-family: "Inter", "DM Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
   font-feature-settings: "ss01", "cv11";
-  background: #0E0D0C;
+  color: #16324f;
+  background: #f5fafd;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 @layer components {
-  .panel {
-    @apply rounded-2xl border border-white/5 bg-panel-grad backdrop-blur-sm shadow-card;
+  .card {
+    @apply rounded-lg border border-border bg-surface shadow-card;
   }
-  .panel-elevated {
-    @apply rounded-2xl border border-white/5 bg-panel-grad backdrop-blur-sm shadow-elevated;
+  .card-elevated {
+    @apply rounded-lg border border-border bg-surface shadow-elevated;
   }
-  .kpi-card {
-    @apply relative overflow-hidden rounded-2xl border border-white/5 bg-kpi-grad p-5 shadow-card transition;
-  }
-  .pill {
-    @apply inline-flex items-center gap-1.5 rounded-full border border-white/10 px-2.5 py-1 text-[11px] font-medium uppercase tracking-wider;
-  }
-  .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3.5 py-2 text-sm font-medium text-ink-50 transition hover:bg-white/10 active:bg-white/15 disabled:opacity-50 disabled:cursor-not-allowed;
+  .surface-blue {
+    @apply rounded-lg bg-surface-blue;
   }
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-brand-500 to-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-glow transition hover:from-brand-400 hover:to-brand-500 active:from-brand-600 active:to-brand-700 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex items-center justify-center gap-2 rounded-md bg-primaryBlue px-4 py-2 text-sm font-semibold text-white transition hover:bg-deepBlue active:bg-deepBlue/90 focus:outline-none focus:ring-4 focus:ring-primaryBlue/20 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-md border border-border-strong bg-surface px-4 py-2 text-sm font-semibold text-deepBlue transition hover:bg-surface-blue active:bg-surface-blueStrong focus:outline-none focus:ring-4 focus:ring-primaryBlue/15 disabled:opacity-50 disabled:cursor-not-allowed;
   }
   .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-ink-200 transition hover:bg-white/5 hover:text-ink-50;
+    @apply inline-flex items-center justify-center gap-1.5 rounded-md px-2.5 py-1.5 text-sm font-medium text-ink-secondary transition hover:bg-surface-blue hover:text-deepBlue;
   }
   .input {
-    @apply w-full rounded-xl border border-white/10 bg-white/5 px-3.5 py-2 text-sm text-ink-50 placeholder:text-ink-300 focus:border-brand-400/60 focus:outline-none focus:ring-2 focus:ring-brand-400/20;
+    @apply w-full rounded-md border border-border-strong bg-surface px-3 py-2 text-sm text-deepNavy placeholder:text-ink-muted focus:border-primaryBlue focus:outline-none focus:ring-4 focus:ring-primaryBlue/15;
   }
-  .table-row {
-    @apply border-t border-white/5 hover:bg-white/[0.02];
+  .pill {
+    @apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-medium;
   }
-  .glow-ring {
-    box-shadow:
-      0 0 0 1px rgba(255, 255, 255, 0.06),
-      0 0 0 6px rgba(255, 54, 33, 0.08);
+  .pill-blue {
+    @apply pill bg-surface-blue text-primaryBlue;
   }
-  .scrollbar-clean::-webkit-scrollbar { width: 8px; height: 8px; }
-  .scrollbar-clean::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 8px; }
-  .scrollbar-clean::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.16); }
-  .scrollbar-clean::-webkit-scrollbar-track { background: transparent; }
+  .pill-green {
+    @apply pill bg-surface-green text-greenDark;
+  }
+  .pill-amber {
+    @apply pill bg-[#FFF4E0] text-status-watch;
+  }
+  .pill-rust {
+    @apply pill bg-[#FCE5DA] text-status-escalate;
+  }
+  .pill-neutral {
+    @apply pill bg-ink-100 text-ink-secondary;
+  }
+  .chip-layer {
+    @apply inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1.5 text-xs font-medium text-ink-secondary transition hover:border-primaryBlue/40 hover:text-deepBlue;
+  }
+  .chip-layer-active {
+    @apply border-primaryBlue/30 bg-surface-blue text-primaryBlue;
+  }
+  .table-clean {
+    @apply w-full text-sm;
+  }
+  .table-clean thead th {
+    @apply border-b border-border px-3 py-2 text-left text-[11px] font-medium uppercase tracking-wider text-ink-muted;
+  }
+  .table-clean tbody td {
+    @apply border-b border-border/60 px-3 py-3 text-ink-primary;
+  }
+  .table-clean tbody tr:last-child td {
+    @apply border-b-0;
+  }
+  .table-clean tbody tr:hover td {
+    @apply bg-surface-blue/40;
+  }
+  .scrollbar-clean::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  .scrollbar-clean::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 8px;
+  }
+  .scrollbar-clean::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+  .scrollbar-clean::-webkit-scrollbar-track {
+    background: transparent;
+  }
 }
 
-.leaflet-container {
-  background: #0B2A48;
-  border-radius: 16px;
-  font-family: inherit;
+/* ---- Mapbox GL light overrides ---- */
+.mapboxgl-canvas:focus {
+  outline: none;
 }
-.leaflet-control-attribution {
-  background: rgba(14, 13, 12, 0.6) !important;
-  color: rgba(231, 229, 228, 0.7) !important;
-  border-radius: 8px;
+.mapboxgl-ctrl-attrib {
+  background: rgba(255, 255, 255, 0.85) !important;
+  color: #64748b !important;
+  border-top-left-radius: 8px;
+  font-size: 10px;
 }
-.leaflet-popup-content-wrapper {
-  background: #15161A !important;
-  color: #E7E5E4 !important;
+.mapboxgl-ctrl-attrib a {
+  color: #0076be !important;
+}
+.mapboxgl-ctrl-group {
+  background: #ffffff !important;
+  border-radius: 10px !important;
+  border: 1px solid #d7e7f0 !important;
+  box-shadow: 0 10px 24px -12px rgba(15, 48, 73, 0.2) !important;
+  overflow: hidden;
+}
+.mapboxgl-ctrl-group button {
+  background: #ffffff !important;
+}
+.mapboxgl-ctrl-group button:hover {
+  background: #eaf6fc !important;
+}
+.mapboxgl-ctrl-group button + button {
+  border-top: 1px solid #d7e7f0;
+}
+
+.seq-mapbox-popup .mapboxgl-popup-content {
+  background: #ffffff !important;
+  color: #0a2e4d !important;
   border-radius: 12px !important;
-  box-shadow: 0 12px 32px -8px rgba(0,0,0,0.6) !important;
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid #d7e7f0;
+  box-shadow: 0 16px 32px -12px rgba(15, 48, 73, 0.22) !important;
+  padding: 10px 12px !important;
 }
-.leaflet-popup-tip {
-  background: #15161A !important;
+.seq-mapbox-popup .mapboxgl-popup-tip {
+  border-top-color: #ffffff !important;
+  border-bottom-color: #ffffff !important;
+}
+.seq-popup__title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0a2e4d;
+}
+.seq-popup__sub {
+  margin-top: 2px;
+  font-size: 11.5px;
+  color: #64748b;
+}
+
+/* ---- Mapbox HTML markers (asset chips + permanent labels) ---- */
+.seq-marker-mb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+}
+.seq-marker-mb__chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid #0076be;
+  color: #0076be;
+  box-shadow: 0 4px 12px rgba(15, 48, 73, 0.28);
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+.seq-marker-mb__chip svg {
+  width: 14px;
+  height: 14px;
+}
+.seq-marker-mb:hover .seq-marker-mb__chip {
+  transform: scale(1.1);
+  box-shadow: 0 8px 18px rgba(15, 48, 73, 0.35);
+}
+.seq-marker-mb.is-selected .seq-marker-mb__chip {
+  box-shadow: 0 0 0 4px rgba(0, 174, 239, 0.35), 0 8px 18px rgba(15, 48, 73, 0.35);
+}
+.seq-marker-mb.is-wtp .seq-marker-mb__chip {
+  border-color: #2e7d59;
+  color: #2e7d59;
+}
+.seq-marker-mb.is-pump .seq-marker-mb__chip {
+  background: #0076be;
+  border-color: #ffffff;
+  color: #ffffff;
+}
+.seq-marker-mb.is-reservoir .seq-marker-mb__chip {
+  border-color: #00aeef;
+  color: #00aeef;
+}
+.seq-marker-mb--accent .seq-marker-mb__chip {
+  width: 30px;
+  height: 30px;
+  border: 2px solid #ffffff;
+  background: transparent;
+  box-shadow: 0 4px 14px rgba(15, 48, 73, 0.4);
+}
+.seq-marker-mb--accent.is-alert .seq-marker-mb__chip {
+  border-color: #ffffff;
+}
+.seq-marker-mb--accent.is-quality .seq-marker-mb__chip {
+  border-color: #ffffff;
+}
+
+.seq-map-label-html {
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #0a2e4d;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #d7e7f0;
+  border-radius: 999px;
+  padding: 2px 9px;
+  box-shadow: 0 4px 12px -4px rgba(15, 48, 73, 0.25);
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translateY(-1px);
+}
+
+/* ---- Recharts tweaks ---- */
+.recharts-default-tooltip {
+  border-radius: 12px !important;
+  border: 1px solid #d7e7f0 !important;
+  box-shadow: 0 12px 28px -10px rgba(15, 48, 73, 0.18) !important;
+  background: #ffffff !important;
+}
+.recharts-tooltip-label,
+.recharts-tooltip-item {
+  color: #16324f !important;
 }
