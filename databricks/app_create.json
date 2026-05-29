@@ -1,0 +1,30 @@
+{
+  "name": "seqwater-ai-command-centre",
+  "description": "Seqwater AI Command Centre — synthetic Databricks demo for water security, asset risk, water quality, flood readiness, and the AquaIQ governed AI assistant. All data is synthetic.",
+  "resources": [
+    {
+      "name": "sql-warehouse",
+      "description": "Serverless SQL Warehouse for Unity Catalog queries.",
+      "sql_warehouse": {
+        "id": "b09feb4ffedc1d16",
+        "permission": "CAN_USE"
+      }
+    },
+    {
+      "name": "llm-endpoint",
+      "description": "Foundation Model API endpoint powering the AquaIQ assistant.",
+      "serving_endpoint": {
+        "name": "databricks-gpt-oss-120b",
+        "permission": "CAN_QUERY"
+      }
+    }
+  ],
+  "user_api_scopes": [
+    "sql",
+    "catalog.tables:read",
+    "catalog.schemas:read",
+    "catalog.catalogs:read",
+    "files.files",
+    "serving.serving-endpoints"
+  ]
+}

@@ -1,0 +1,4 @@
+# Synthetic demo data lives here after running:
+#   python scripts/generate_synthetic_data.py
+#
+# All files are deterministic given DEMO_SEED. Safe to delete and regenerate.

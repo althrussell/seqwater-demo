@@ -1,0 +1,40 @@
+# Databricks Apps configuration for the Seqwater AI Command Centre.
+# https://docs.databricks.com/aws/en/dev-tools/databricks-apps/configuration.html
+#
+# Resources (sql-warehouse, llm-endpoint) are bound to the app at create time
+# via `databricks apps create-update`. `valueFrom: <alias>` resolves to the
+# id/name of the bound resource at runtime.
+
+command:
+  - "uvicorn"
+  - "backend.main:app"
+  - "--host"
+  - "0.0.0.0"
+  - "--port"
+  - "8000"
+
+env:
+  - name: APP_MODE
+    value: "databricks"
+  - name: DATABRICKS_CATALOG
+    value: "anzgt_may_us"
+  - name: DATABRICKS_SCHEMA
+    value: "seqwater_demo"
+  - name: DATABRICKS_VOLUME
+    value: "operational_docs"
+  - name: DATABRICKS_LLM_ENDPOINT
+    valueFrom: "llm-endpoint"
+  - name: DATABRICKS_LLM_TEMPERATURE
+    value: "0.1"
+  - name: DATABRICKS_LLM_MAX_TOKENS
+    value: "2048"
+  - name: DATABRICKS_WAREHOUSE_ID
+    valueFrom: "sql-warehouse"
+  - name: DEMO_SEED
+    value: "20260529"
+  - name: DEMO_TIMEZONE
+    value: "Australia/Brisbane"
+  - name: SYNTHETIC_DATA_DIR
+    value: "data/synthetic"
+  - name: DOCUMENTS_DIR
+    value: "data/documents"

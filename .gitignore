@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+
+# Node
+node_modules/
+.pnp
+.pnp.js
+coverage/
+frontend/dist/
+frontend/.vite/
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Generated synthetic data (regenerate via scripts/generate_synthetic_data.py)
+data/synthetic/*.csv
+data/synthetic/*.parquet
+data/synthetic/*.json
+!data/synthetic/.gitkeep
+
+# TS / Vite build artefacts
+frontend/.tsbuildinfo*
+frontend/tsconfig*.tsbuildinfo
+frontend/.tsnode/
+frontend/vite.config.d.ts
+frontend/vite.config.js
+
+# Logs
+logs/
+*.log
+
+# Databricks
+.databricks/

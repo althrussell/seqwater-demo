@@ -1,0 +1,62 @@
+# ============================================================================
+# Seqwater AI Command Centre — Databricks Workflow definition
+#
+# Synthetic demo workflow. Suitable for `databricks bundle deploy` or
+# importing via the Jobs UI. All tasks operate on synthetic UC tables only.
+#
+# Tasks:
+#   1. refresh_synthetic_telemetry      — regenerate hourly telemetry snapshot
+#   2. recalculate_asset_risk           — recompute synthetic risk scoreboard
+#   3. ingest_operational_documents     — refresh Volume + retrieval index
+#   4. refresh_ai_retrieval_index       — refresh vector search if configured
+#   5. generate_daily_executive_brief   — emit synthetic briefing artefact
+# ============================================================================
+
+resources:
+  jobs:
+    seqwater_command_centre_daily:
+      name: "Seqwater AI Command Centre — daily synthetic refresh"
+      tags:
+        synthetic_demo: "true"
+        owner: "field-engineering-demo"
+      max_concurrent_runs: 1
+      schedule:
+        quartz_cron_expression: "0 0 5 ? * MON-FRI"
+        timezone_id: "Australia/Brisbane"
+        pause_status: "PAUSED"
+      tasks:
+        - task_key: refresh_synthetic_telemetry
+          notebook_task:
+            notebook_path: "/Workspace/Demos/Seqwater/refresh_synthetic_telemetry"
+          new_cluster:
+            num_workers: 0
+            spark_version: "15.4.x-scala2.12"
+            node_type_id: "i3.xlarge"
+        - task_key: recalculate_asset_risk
+          depends_on:
+            - task_key: refresh_synthetic_telemetry
+          sql_task:
+            file:
+              path: "../sql/03_create_views.sql"
+            warehouse_id: "${var.warehouse_id}"
+        - task_key: ingest_operational_documents
+          depends_on:
+            - task_key: refresh_synthetic_telemetry
+          notebook_task:
+            notebook_path: "/Workspace/Demos/Seqwater/ingest_operational_documents"
+        - task_key: refresh_ai_retrieval_index
+          depends_on:
+            - task_key: ingest_operational_documents
+          notebook_task:
+            notebook_path: "/Workspace/Demos/Seqwater/refresh_vector_search_index"
+        - task_key: generate_daily_executive_brief
+          depends_on:
+            - task_key: recalculate_asset_risk
+            - task_key: refresh_ai_retrieval_index
+          notebook_task:
+            notebook_path: "/Workspace/Demos/Seqwater/generate_executive_briefing"
+
+variables:
+  warehouse_id:
+    description: "Serverless SQL Warehouse ID for SQL tasks."
+    default: "REPLACE_WITH_WAREHOUSE_ID"
