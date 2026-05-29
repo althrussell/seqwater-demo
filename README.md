@@ -334,9 +334,15 @@ pytest -q
 
 - All data and documents in this repository are SYNTHETIC. Tables and rows
   are tagged with `synthetic_demo_flag = TRUE`.
-- The asset names (Wivenhoe Dam, Mount Crosby WTP, etc.) are used to make the
-  demo recognisable but the values associated with them are entirely
-  generated.
+- Asset names (e.g. Wivenhoe Dam, Somerset Dam, North Pine Dam, Hinze Dam,
+  Mount Crosby Westbank/Eastbank WTPs, Landers Shute WTP, Mudgeeraba WTP,
+  Molendinar WTP, Gold Coast Desalination Plant, Bundamba Advanced WTP,
+  Caboolture Pump Station, etc.) and their geographic coordinates and
+  full-supply volumes are real, drawn from the public Seqwater asset list on
+  [seqwater.com.au](https://www.seqwater.com.au/), so the map is recognisable
+  to executives. Every operational *value* shown alongside them — storage
+  percentages, risk scores, work orders, water-quality samples, costs,
+  forecasts — is synthetic and tagged accordingly.
 - AquaIQ refuses operational authorisation requests. Every output requires
   human validation.
 - Nothing in this repository should be used to inform any operational

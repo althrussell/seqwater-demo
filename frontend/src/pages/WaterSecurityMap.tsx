@@ -12,8 +12,6 @@ const ASSET_TYPES = [
   "Dam",
   "Water Treatment Plant",
   "Pump Station",
-  "Reservoir",
-  "Pipeline Segment",
   "Catchment Monitoring Site",
   "Recreation Site",
   "Desalination Plant",
@@ -70,7 +68,7 @@ export default function WaterSecurityMap() {
 
       <Section
         title="Synthetic SEQ Water Grid map"
-        description="Click a marker to open the asset drawer. Synthetic locations only."
+        description="Real Seqwater asset locations from seqwater.com.au. All values shown are synthetic for demo purposes."
         actions={
           <div className="flex items-center gap-2">
             <Filter className="h-3.5 w-3.5 text-ink-300" />
