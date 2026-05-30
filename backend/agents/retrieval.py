@@ -1,4 +1,4 @@
-"""Lightweight document retrieval over synthetic Markdown corpus.
+"""Lightweight document retrieval over Markdown corpus.
 
 When the configured Vector Search index is available we use it; otherwise we
 fall back to a deterministic keyword/BM25-style scorer over the local Markdown
@@ -78,7 +78,7 @@ def _split_into_chunks(doc_id: str, title: str, body: str, target_size: int = 60
 
 
 class DocumentIndex:
-    """In-memory keyword/TF-IDF-style index over the synthetic doc corpus."""
+    """In-memory keyword/TF-IDF-style index over the doc corpus."""
 
     def __init__(self, docs_dir: Path):
         self.docs_dir = docs_dir
@@ -163,6 +163,6 @@ def warmup_index() -> None:
 def retrieve_documents(query: str, k: int = 4) -> dict[str, Any]:
     results = get_index().search(query, k=k)
     if not results:
-        return {"summary": "No synthetic documents matched the query.", "data": []}
+        return {"summary": "No documents matched the query.", "data": []}
     lines = [f"{r['title']} → {r['text'][:120]}…" for r in results]
     return {"summary": "\n".join(lines), "data": results}

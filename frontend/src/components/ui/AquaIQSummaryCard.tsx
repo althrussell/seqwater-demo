@@ -93,7 +93,7 @@ export default function AquaIQSummaryCard({
                 AquaIQ
               </span>
               <span className="rounded-full border border-border bg-surface-blue/40 px-1.5 py-0.5 text-[9.5px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
-                Synthetic
+
               </span>
             </div>
             <div className="mt-0.5 text-[15px] font-semibold leading-tight text-deepNavy">
@@ -105,13 +105,13 @@ export default function AquaIQSummaryCard({
           </div>
         </header>
 
-        <div className="relative flex flex-1 flex-col gap-3 px-5 pb-4">
-          <div className="rounded-lg border border-surface-blueStrong/60 bg-surface-blue/55 p-3.5 text-[13px] leading-[1.55] text-deepNavy">
+        <div className="relative flex min-h-0 flex-1 flex-col gap-3 px-5 pb-4">
+          <div className="scrollbar-clean min-h-0 flex-1 overflow-auto rounded-lg border border-surface-blueStrong/60 bg-surface-blue/55 p-3.5 text-[13px] leading-[1.55] text-deepNavy">
             {body}
           </div>
 
           {sources && sources.length > 0 ? (
-            <div>
+            <div className="flex-none">
               <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted">
                 Sources
               </div>
@@ -133,7 +133,7 @@ export default function AquaIQSummaryCard({
             </div>
           ) : null}
 
-          <div className="mt-auto flex items-center justify-between gap-3 pt-1">
+          <div className="flex flex-none items-center justify-between gap-3 pt-1">
             {onCta ? (
               <button
                 onClick={onCta}

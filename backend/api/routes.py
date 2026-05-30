@@ -60,7 +60,7 @@ def list_assets() -> list[dict[str, Any]]:
 def get_asset(asset_id: str) -> dict[str, Any]:
     asset = repository.get_asset(asset_id)
     if asset is None:
-        raise HTTPException(status_code=404, detail=f"Synthetic asset {asset_id} not found")
+        raise HTTPException(status_code=404, detail=f"Asset {asset_id} not found")
     return asset
 
 
@@ -114,7 +114,7 @@ def list_scenarios() -> list[dict[str, Any]]:
 def scenario_detail(scenario_id: str) -> dict[str, Any]:
     detail = repository.get_flood_scenario_detail(scenario_id)
     if detail is None:
-        raise HTTPException(status_code=404, detail=f"Synthetic scenario {scenario_id} not found")
+        raise HTTPException(status_code=404, detail=f"Scenario {scenario_id} not found")
     return detail
 
 
@@ -266,10 +266,10 @@ def governance_tiles() -> list[dict[str, Any]]:
     return [
         {
             "title": "Governed data",
-            "summary": "Unity Catalog is the single source of truth for synthetic Seqwater data.",
+            "summary": "Unity Catalog is the single source of truth for Seqwater data.",
             "detail": [
                 "Three-level namespace `main.seqwater_demo.*`",
-                "Synthetic tables: assets, dam_storage_daily, water_quality_samples, asset_risk_scores, flood_scenarios",
+                "Tables: assets, dam_storage_daily, water_quality_samples, asset_risk_scores, flood_scenarios",
                 "Lineage and data quality tracked in catalog views",
             ],
             "icon": "database",
@@ -292,7 +292,7 @@ def governance_tiles() -> list[dict[str, Any]]:
             "detail": [
                 "AquaIQ refuses operational authorisation requests",
                 "Briefings include explicit assumptions and review owners",
-                "Synthetic workflow stubs trigger downstream tasks safely",
+                "Workflow stubs trigger downstream tasks safely",
             ],
             "icon": "shield-check",
             "accent": "emerald",

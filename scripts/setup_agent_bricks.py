@@ -496,7 +496,7 @@ class _SDKBackend(_AgentBricksBackend):
 
         parent = f"knowledge-assistants/{existing_id}"
         volume_path = spec["volume_path"]
-        source_display = "synthetic_seqwater_pdf_corpus"
+        source_display = "seqwater_pdf_corpus"
         try:
             existing_sources = list(client.knowledge_assistants.list_knowledge_sources(parent=parent))
         except Exception:
@@ -505,7 +505,7 @@ class _SDKBackend(_AgentBricksBackend):
         if not already:
             ks = KnowledgeSource(
                 display_name=source_display,
-                description="Synthetic Seqwater operational PDFs.",
+                description="Seqwater operational PDFs.",
                 source_type="FILES",
                 files=FilesSpec(path=volume_path),
             )

@@ -2,7 +2,7 @@
  * Scenario overlays.
  *
  * The scenario selector in the app header lets executives swap between
- * pre-canned operational postures. Every scenario value here is SYNTHETIC and
+ * pre-canned operational postures. Every scenario value here is DEMO and
  * intended for demo / briefing only.
  *
  * Each overlay returns a small set of optional overrides that pages can
@@ -67,7 +67,7 @@ export const SCENARIO_OVERLAYS: Record<string, ScenarioOverlay> = {
     accentClass: "border-primaryBlue/40 bg-surface-blue text-primaryBlue",
     bannerTitle: "Active scenario: 72-hour rainfall watch",
     bannerBody:
-      "Synthetic rainfall band tracking across Lockyer, Bremer and Brisbane River catchments. Posture elevated to Watch.",
+      "Rainfall band tracking across Lockyer, Bremer and Brisbane River catchments. Posture elevated to Watch.",
     heroSub:
       "Active rainfall watch across 3 catchments. Regular monitoring continues across the water grid.",
     posture: {
@@ -117,17 +117,17 @@ export const SCENARIO_OVERLAYS: Record<string, ScenarioOverlay> = {
     accentClass: "border-status-watch/40 bg-[#FFF4E0] text-status-watch",
     bannerTitle: "Active scenario: Summer heatwave",
     bannerBody:
-      "Synthetic 7-day heat event. Demand running +14% above 14-day baseline. Posture elevated to Watch.",
+      "7-day heat event. Demand running +14% above 14-day baseline. Posture elevated to Watch.",
     heroHeadline:
       "Demand running hot. Storage holding firm.\nWatch posture across SEQ.",
     heroSub:
-      "Synthetic 7-day heatwave scenario. Demand surge is testing peak treatment capacity.",
+      "7-day heatwave scenario. Demand surge is testing peak treatment capacity.",
     posture: {
       status: "watch",
       description:
         "Demand surge of +14% against the 14-day baseline. Two pump stations near capacity. Storage trending down 0.6% / day.",
     },
-    executiveSummary: `Synthetic 7-day heatwave is driving peak demand to 1,420 ML/day (+14% vs 14-day baseline). Grid storage is holding at 85.4% but trending down ~0.6% per day. Mt Crosby East and West WTPs are running at 92% and 88% available capacity respectively. Brisbane North pump stations BNE-PS-01 and BNE-PS-04 are operating close to their ageing-asset thresholds — recommend bringing forward planned maintenance windows.`,
+    executiveSummary: `7-day heatwave is driving peak demand to 1,420 ML/day (+14% vs 14-day baseline). Grid storage is holding at 85.4% but trending down ~0.6% per day. Mt Crosby East and West WTPs are running at 92% and 88% available capacity respectively. Brisbane North pump stations BNE-PS-01 and BNE-PS-04 are operating close to their ageing-asset thresholds — recommend bringing forward planned maintenance windows.`,
     executiveReview: [
       "Activate demand-management messaging in Brisbane and Logan service areas.",
       "Confirm chemical dosing inventory and operator coverage at Mt Crosby (East + West).",
@@ -170,27 +170,27 @@ export const SCENARIO_OVERLAYS: Record<string, ScenarioOverlay> = {
     accentClass: "border-status-escalate/40 bg-[#FCE5DA] text-status-escalate",
     bannerTitle: "Active scenario: Supply restoration drill",
     bannerBody:
-      "Synthetic outage at North Pine WTP. Network rebalancing engaged. Posture elevated to Escalate.",
+      "Outage at North Pine WTP. Network rebalancing engaged. Posture elevated to Escalate.",
     heroHeadline:
       "Outage drill in progress.\nNetwork holding through rebalancing.",
     heroSub:
-      "Synthetic North Pine WTP outage scenario. Supply continuity maintained via grid rebalancing and chlorinated bypass.",
+      "North Pine WTP outage scenario. Supply continuity maintained via grid rebalancing and chlorinated bypass.",
     posture: {
       status: "escalate",
       description:
-        "North Pine WTP offline (synthetic outage). Flow rebalanced to Mt Crosby and Landers Shute. Continuity holding; comms cadence increased.",
+        "North Pine WTP offline (outage). Flow rebalanced to Mt Crosby and Landers Shute. Continuity holding; comms cadence increased.",
     },
-    executiveSummary: `Synthetic restoration drill is underway. North Pine WTP is offline for an 8-hour rebalancing exercise; supply has been redistributed to Mt Crosby (East + West) and Landers Shute. Affected service areas are Brisbane North and Moreton Bay. Grid storage remains at 86.0% and downstream chlorine residual remains within target across the bypassed network. Drill validates ICS, executive notification, and customer-comms playbooks.`,
+    executiveSummary: `Restoration drill is underway. North Pine WTP is offline for an 8-hour rebalancing exercise; supply has been redistributed to Mt Crosby (East + West) and Landers Shute. Affected service areas are Brisbane North and Moreton Bay. Grid storage remains at 86.0% and downstream chlorine residual remains within target across the bypassed network. Drill validates ICS, executive notification, and customer-comms playbooks.`,
     executiveReview: [
       "Validate executive notification chain and time-to-acknowledge (target < 15 min).",
       "Confirm Mt Crosby East ramp-up to +18 ML/day and Landers Shute to +9 ML/day.",
-      "Brief Brisbane North and Moreton Bay retailer ops centres on the synthetic outage.",
+      "Brief Brisbane North and Moreton Bay retailer ops centres on the outage.",
       "Capture lessons-learned for the September drill cycle.",
     ],
     priorities: [
       {
         title: "Restore North Pine WTP",
-        description: "Synthetic outage; target restoration window 8 hours.",
+        description: "Outage; target restoration window 8 hours.",
         status: "escalate",
         icon: Wrench,
         evidenceLabel: "incident_actions · maintenance_work_orders",
@@ -210,7 +210,7 @@ export const SCENARIO_OVERLAYS: Record<string, ScenarioOverlay> = {
         status: "monitor",
         chipLabel: "Review",
         icon: ShieldCheck,
-        evidenceLabel: "Customer comms protocol (synthetic)",
+        evidenceLabel: "Customer comms protocol",
         evidenceType: "document",
       },
     ],
@@ -218,22 +218,22 @@ export const SCENARIO_OVERLAYS: Record<string, ScenarioOverlay> = {
   baseline: {
     id: "baseline",
     label: "Baseline operating posture",
-    description: "Steady-state synthetic profile",
+    description: "Steady-state profile",
     icon: ShieldCheck,
     accentClass: "border-greenDark/40 bg-surface-green text-greenDark",
     bannerTitle: "Active scenario: Baseline operating posture",
     bannerBody:
-      "Synthetic steady-state. All catchments, plants and assets within nominal range. Posture Normal.",
+      "Steady-state. All catchments, plants and assets within nominal range. Posture Normal.",
     heroHeadline:
       "Water security stable.\nSupply, quality and assets all within normal range.",
     heroSub:
-      "Steady-state synthetic baseline. No active alerts; cadence is routine.",
+      "Steady-state baseline. No active alerts; cadence is routine.",
     posture: {
       status: "normal",
       description:
         "All catchments, treatment plants and critical assets within nominal range. Cadence is routine across the grid.",
     },
-    executiveSummary: `Baseline synthetic operating posture. Grid storage sits at 86.0% across 25 published storages, no spilling above nominal, demand is tracking 2% below the 14-day baseline, water quality indicators are all within compliance bands and no critical assets are flagged for unplanned maintenance. Routine briefing cadence is appropriate; AquaIQ has no urgent recommendations for executive review.`,
+    executiveSummary: `Baseline operating posture. Grid storage sits at 86.0% across 25 published storages, no spilling above nominal, demand is tracking 2% below the 14-day baseline, water quality indicators are all within compliance bands and no critical assets are flagged for unplanned maintenance. Routine briefing cadence is appropriate; AquaIQ has no urgent recommendations for executive review.`,
     executiveReview: [
       "Maintain routine monitoring cadence; no change to public messaging.",
       "Continue scheduled maintenance program; no acceleration required.",

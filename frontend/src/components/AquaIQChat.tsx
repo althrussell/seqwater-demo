@@ -39,10 +39,10 @@ interface Props {
 }
 
 const SUGGESTIONS = [
-  "What are the synthetic top 5 operational risks over the next 72 hours?",
-  "Summarise the synthetic flood readiness posture for scenario FS-001.",
-  "Which synthetic capital projects reduce the most operational risk?",
-  "What is driving the elevated synthetic water quality risk this month?",
+  "What are the top 5 operational risks over the next 72 hours?",
+  "Summarise the flood readiness posture for scenario FS-001.",
+  "Which capital projects reduce the most operational risk?",
+  "What is driving the elevated water quality risk this month?",
 ];
 
 export default function AquaIQChat({
@@ -212,12 +212,12 @@ export default function AquaIQChat({
   const showSuggestions = turns.length === 0;
 
   return (
-    <div className="flex h-full min-h-[600px] flex-col rounded-lg border border-border bg-white">
+    <div className="flex h-full min-h-0 flex-col rounded-lg border border-border bg-white">
       <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
         <div>
           <div className="text-[12px] font-semibold text-deepNavy">AquaIQ</div>
           <div className="text-[10.5px] text-ink-muted">
-            Streaming via the synthetic Supervisor → Genie + Knowledge Assistant + UC functions
+            Streaming via the Supervisor → Genie + Knowledge Assistant + UC functions
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -226,7 +226,7 @@ export default function AquaIQChat({
               <Loader2 className="h-3.5 w-3.5 animate-spin" /> Stop
             </button>
           ) : null}
-          <StatusBadge status="watch" label="Synthetic demo" size="sm" />
+          <StatusBadge status="watch" label="Demo" size="sm" />
         </div>
       </div>
 
@@ -239,7 +239,7 @@ export default function AquaIQChat({
           <div className="mx-auto max-w-3xl space-y-4">
             <div className="rounded-md border border-border bg-[#F4F7FB] p-4 text-[13px] text-ink-secondary">
               <strong className="text-deepNavy">Welcome to AquaIQ.</strong> Ask
-              anything about synthetic SEQ Water Grid storage, water quality,
+              anything about SEQ Water Grid storage, water quality,
               risk, capital priorities, or operational playbooks. Every answer
               is governed, cited, and requires human validation.
             </div>
@@ -311,7 +311,7 @@ export default function AquaIQChat({
           </button>
         </div>
         <div className="mt-1.5 text-[10.5px] text-ink-muted">
-          AquaIQ outputs are synthetic. Every answer requires human validation.
+          AquaIQ outputs are illustrative. Every answer requires human validation.
         </div>
       </form>
     </div>
@@ -379,7 +379,7 @@ function TurnView({ turn }: { turn: Turn }) {
       {turn.sources.length > 0 ? (
         <div className="rounded-md border border-border bg-surface px-3 py-2.5 text-[12px]">
           <div className="text-[10.5px] font-semibold uppercase tracking-wider text-ink-muted">
-            Synthetic sources used ({turn.sources.length})
+            Sources used ({turn.sources.length})
           </div>
           <ul className="mt-1 space-y-1">
             {turn.sources.map((src, idx) => (

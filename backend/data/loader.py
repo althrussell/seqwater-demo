@@ -112,7 +112,7 @@ TABLES = (
 
 
 class LocalDataLoader:
-    """Loads synthetic CSV data from disk, with simple in-memory caching."""
+    """Loads CSV data from disk, with simple in-memory caching."""
 
     def __init__(self, synthetic_dir: Path):
         self.dir = synthetic_dir
@@ -126,7 +126,7 @@ class LocalDataLoader:
             return self._cache[name].copy()
         path = self.dir / f"{name}.csv"
         if not path.exists():
-            LOG.warning("Synthetic table %s not found at %s", name, path)
+            LOG.warning("Table %s not found at %s", name, path)
             df = pd.DataFrame()
         else:
             df = pd.read_csv(path)
@@ -162,7 +162,7 @@ class DatabricksDataLoader:
 
         s = self.settings
         if not s.databricks_warehouse_id:
-            LOG.warning("DATABRICKS_WAREHOUSE_ID not set; using local synthetic data.")
+            LOG.warning("DATABRICKS_WAREHOUSE_ID not set; using local data.")
             return None
 
         # Inside Databricks Apps the SDK Config auto-detects host + OAuth M2M from
@@ -176,7 +176,7 @@ class DatabricksDataLoader:
             host = cfg.host or s.databricks_host or ""
             host = host.replace("https://", "").rstrip("/")
             if not host:
-                LOG.warning("No Databricks host resolved; using local synthetic data.")
+                LOG.warning("No Databricks host resolved; using local data.")
                 return None
             self._connection = sql.connect(
                 server_hostname=host,

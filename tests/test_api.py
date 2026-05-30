@@ -1,7 +1,7 @@
 """Smoke tests for the Seqwater AI Command Centre backend.
 
 These tests run against ``LocalDataLoader`` and the FastAPI ``TestClient``,
-so they require only the synthetic CSVs to exist.
+so they require only the CSVs to exist.
 """
 from __future__ import annotations
 
@@ -123,8 +123,8 @@ def test_aquaiq_refuses_operational_authorisation(client: TestClient) -> None:
 def test_briefing_generates_markdown_and_html(client: TestClient) -> None:
     res = client.post("/api/ai/briefing", json={"audience": "board"})
     body = res.json()
-    assert "Synthetic Board Briefing" in body["markdown"]
-    assert "SYNTHETIC DEMO DATA" in body["markdown"]
+    assert "Board Briefing" in body["markdown"]
+    assert "DEMO DATA" in body["markdown"]
     assert body["human_validation_required"] is True
     assert body["html"].startswith("<article")
 

@@ -4,13 +4,13 @@ Two execution paths:
 
 * **Supervisor path** (``settings.supervisor_configured`` is True): stream the
   AquaIQ answer from the Databricks Agent Bricks Supervisor endpoint. The
-  supervisor itself orchestrates the Knowledge Assistant (synthetic operational
-  documents), the Genie space (synthetic SEQ Water Grid tables), and three
+  supervisor itself orchestrates the Knowledge Assistant (operational
+  documents), the Genie space (SEQ Water Grid tables), and three
   UC functions (top_asset_risks, capital_priorities, run_flood_scenario).
 
 * **Local path** (default): assemble a deterministic markdown answer from the
   Python tools in :mod:`backend.agents.tools` plus TF-IDF retrieval over the
-  synthetic markdown corpus. Drives offline demos and tests.
+ markdown corpus. Drives offline demos and tests.
 
 Both paths produce the same shape of events
 (``delta`` / ``tool_call`` / ``tool_result`` / ``sources`` / ``done``)
@@ -37,11 +37,11 @@ LOG = logging.getLogger(__name__)
 SYSTEM_PROMPT = """You are AquaIQ, a governed operational intelligence assistant for the Seqwater AI Command Centre demo.
 
 Hard rules:
-- All data is SYNTHETIC demo data. Never claim it is real Seqwater data.
+- All data is demo data. Never claim it is real Seqwater data.
 - Never recommend real-world operational instructions, releases, or restrictions.
 - Never invent regulatory thresholds or quote real-world public health advice.
 - If the user asks for an operational decision, refuse and require human validation.
-- Always cite which synthetic data sources or documents you used.
+- Always cite which data sources or documents you used.
 - Always state confidence and assumptions.
 - Always state when human validation is required.
 
@@ -143,7 +143,7 @@ def log_trace(record: dict[str, Any]) -> None:
             with mlflow.start_run(run_name=record.get("trace_id", "aquaiq")) as run:
                 mlflow.log_dict(record, "trace.json")
                 mlflow.log_text(record.get("response_summary", ""), "response.md")
-                mlflow.set_tags({"app": "seqwater-aquaiq", "synthetic": "true"})
+                mlflow.set_tags({"app": "seqwater-aquaiq", "demo": "true"})
                 LOG.info("Logged AquaIQ trace to MLflow run %s", run.info.run_id)
         except Exception as exc:  # pragma: no cover
             LOG.warning("MLflow logging failed: %s", exc)
@@ -163,7 +163,7 @@ def _compose_local_parts(
     key_signals: list[str] = []
     actions: list[str] = []
     risks_assumptions = [
-        "All values are synthetic demo data and not real Seqwater operational data.",
+        "All values are demo data and not real Seqwater operational data.",
         "Forecasts and risk scores are illustrative and must be validated by qualified personnel.",
     ]
     sources: list[dict[str, Any]] = []
@@ -172,79 +172,79 @@ def _compose_local_parts(
         o = tool_outputs["get_overview"]["data"]
         summary_parts.append(o["ai_executive_summary"])
         key_signals.append(
-            f"72-hour synthetic risk band: {o['seventy_two_hour_risk']}."
+            f"72-hour risk band: {o['seventy_two_hour_risk']}."
         )
         key_signals.append(
-            f"Synthetic storage at {o['storage_percent']}% across the SEQ Water Grid."
+            f"Storage at {o['storage_percent']}% across the SEQ Water Grid."
         )
         actions.extend(o["top_actions"][:3])
-        sources.append({"source": "main.seqwater_demo.asset_risk_scores", "detail": "Synthetic asset risk scoreboard"})
-        sources.append({"source": "main.seqwater_demo.dam_storage_daily", "detail": "Synthetic daily storage trend"})
+        sources.append({"source": "main.seqwater_demo.asset_risk_scores", "detail": "Asset risk scoreboard"})
+        sources.append({"source": "main.seqwater_demo.dam_storage_daily", "detail": "Daily storage trend"})
 
     if "get_water_security_summary" in tool_outputs:
         s = tool_outputs["get_water_security_summary"]["data"]
         key_signals.append(
-            f"Mean synthetic 72h rainfall forecast: {s['forecast_rainfall_mm_72h_avg']} mm."
+            f"Mean 72h rainfall forecast: {s['forecast_rainfall_mm_72h_avg']} mm."
         )
         if s.get("transfers"):
             key_signals.append(
-                f"{len(s['transfers'])} synthetic grid transfer recommendations are available."
+                f"{len(s['transfers'])} grid transfer recommendations are available."
             )
-        sources.append({"source": "main.seqwater_demo.rainfall_forecast", "detail": "Synthetic catchment rainfall forecast"})
-        sources.append({"source": "main.seqwater_demo.demand_forecast", "detail": "Synthetic demand baseline"})
+        sources.append({"source": "main.seqwater_demo.rainfall_forecast", "detail": "Catchment rainfall forecast"})
+        sources.append({"source": "main.seqwater_demo.demand_forecast", "detail": "Demand baseline"})
 
     if "get_top_asset_risks" in tool_outputs:
         risks = tool_outputs["get_top_asset_risks"]["data"]
         if risks:
             key_signals.append(
-                f"Top synthetic risk: {risks[0]['asset_name']} ({risks[0]['risk_band']}, "
+                f"Top risk: {risks[0]['asset_name']} ({risks[0]['risk_band']}, "
                 f"score {risks[0]['risk_score']:.2f})."
             )
             for r in risks[:3]:
                 actions.append(
-                    f"Review {r['asset_name']} (synthetic): {r['recommended_action']}"
+                    f"Review {r['asset_name']}: {r['recommended_action']}"
                 )
-        sources.append({"source": "main.seqwater_demo.asset_risk_scores", "detail": "Top synthetic asset risks"})
+        sources.append({"source": "main.seqwater_demo.asset_risk_scores", "detail": "Top asset risks"})
 
     if "get_water_quality_alerts" in tool_outputs:
         q = tool_outputs["get_water_quality_alerts"]["data"]
         key_signals.append(
-            f"Synthetic water quality: {q['elevated_count']} elevated, {q['watch_count']} watch."
+            f"Water quality: {q['elevated_count']} elevated, {q['watch_count']} watch."
         )
         if q.get("turbidity_events"):
             key_signals.append(
-                f"{len(q['turbidity_events'])} synthetic turbidity events detected."
+                f"{len(q['turbidity_events'])} turbidity events detected."
             )
         actions.append(
-            "Ask synthetic water quality lead to validate analyser calibration and treatment margins."
+            "Ask water quality lead to validate analyser calibration and treatment margins."
         )
-        sources.append({"source": "main.seqwater_demo.water_quality_samples", "detail": "Synthetic sample register"})
+        sources.append({"source": "main.seqwater_demo.water_quality_samples", "detail": "Sample register"})
 
     if "run_flood_readiness_scenario" in tool_outputs:
         s = tool_outputs["run_flood_readiness_scenario"]["data"]
         if s:
             key_signals.append(
-                f"Synthetic scenario {s.get('scenario_name')}: projected storage "
+                f"Scenario {s.get('scenario_name')}: projected storage "
                 f"{s.get('projected_storage_percent')}%, downstream impact "
                 f"{s.get('downstream_impact_score')}."
             )
             actions.append(
-                "Confirm synthetic scenario assumptions with duty hydrologist."
+                "Confirm scenario assumptions with duty hydrologist."
             )
             risks_assumptions.append(
-                "Synthetic flood scenario is illustrative only; not an operational release model."
+                "Flood scenario is illustrative only; not an operational release model."
             )
-        sources.append({"source": "main.seqwater_demo.flood_scenarios", "detail": "Synthetic scenario register"})
+        sources.append({"source": "main.seqwater_demo.flood_scenarios", "detail": "Scenario register"})
 
     if "get_capital_priorities" in tool_outputs:
         projects = tool_outputs["get_capital_priorities"]["data"]
         if projects:
             top = projects[0]
             key_signals.append(
-                f"Top synthetic capital option: {top['project_name']} (priority {top['recommended_priority']}, "
+                f"Top capital option: {top['project_name']} (priority {top['recommended_priority']}, "
                 f"risk reduction {top['risk_reduction_score']:.2f})."
             )
-        sources.append({"source": "main.seqwater_demo.capital_projects", "detail": "Synthetic capital options"})
+        sources.append({"source": "main.seqwater_demo.capital_projects", "detail": "Capital options"})
 
     for r in retrieved:
         sources.append({
@@ -255,10 +255,10 @@ def _compose_local_parts(
 
     if not summary_parts:
         summary_parts.append(
-            "Synthetic posture appears stable. Continue routine monitoring and validate with operations."
+            "Posture appears stable. Continue routine monitoring and validate with operations."
         )
     if not actions:
-        actions.append("Continue routine synthetic monitoring.")
+        actions.append("Continue routine monitoring.")
 
     return {
         "summary": " ".join(summary_parts),
@@ -283,7 +283,7 @@ def _format_markdown(parts: dict[str, Any]) -> str:
         for k in parts["key_signals"]:
             lines.append(f"- {k}")
     else:
-        lines.append("- No notable synthetic signals.")
+        lines.append("- No notable signals.")
     lines.append("")
 
     lines.append("## Recommended next actions")
@@ -292,7 +292,7 @@ def _format_markdown(parts: dict[str, Any]) -> str:
         for i, a in enumerate(parts["recommended_next_actions"], start=1):
             lines.append(f"{i}. {a}")
     else:
-        lines.append("1. Continue routine synthetic monitoring.")
+        lines.append("1. Continue routine monitoring.")
     lines.append("")
 
     lines.append("## Risks / assumptions")
@@ -313,13 +313,13 @@ def _format_markdown(parts: dict[str, Any]) -> str:
                 detail = detail[:217] + "…"
             lines.append(f"| {source} | {detail} |")
     else:
-        lines.append("- No synthetic sources referenced.")
+        lines.append("- No sources referenced.")
     lines.append("")
 
     lines.append("## Human validation required")
     lines.append("")
     lines.append(
-        "Yes — this is synthetic demo output. A qualified human must validate "
+        "Yes — this is demo output. A qualified human must validate "
         "before any operational use."
     )
     return "\n".join(lines).rstrip() + "\n"
@@ -343,7 +343,7 @@ def _legacy_answer_text(parts: dict[str, Any]) -> str:
     lines.append("")
     lines.append("Human validation required")
     lines.append(
-        "Yes — this is synthetic demo output. A qualified human must validate "
+        "Yes — this is demo output. A qualified human must validate "
         "before any operational use."
     )
     return "\n".join(lines)
@@ -357,18 +357,18 @@ def _legacy_answer_text(parts: dict[str, Any]) -> str:
 _REFUSAL_PARTS: dict[str, Any] = {
     "summary": (
         "AquaIQ will not recommend or authorise operational decisions in this demo. "
-        "All synthetic outputs require qualified human review."
+        "All outputs require qualified human review."
     ),
     "key_signals": [
         "Request appears to ask for an operational decision.",
-        "Demo is restricted to synthetic decision-support summaries only.",
+        "Demo is restricted to decision-support summaries only.",
     ],
     "recommended_next_actions": [
         "Engage the appropriate Seqwater operational role for this decision.",
-        "Use AquaIQ to summarise synthetic context only.",
+        "Use AquaIQ to summarise context only.",
     ],
     "risks_assumptions": [
-        "AquaIQ is a synthetic demo assistant.",
+        "AquaIQ is a demo assistant.",
         "It cannot authorise releases, restrictions, or other operational changes.",
     ],
     "sources_used": [
@@ -663,9 +663,9 @@ def _parts_from_markdown(
                 summary = line.strip()
                 break
     if not summary:
-        summary = "Synthetic AquaIQ response."
+        summary = "AquaIQ response."
     if not risks:
-        risks = ["All values are synthetic demo data."]
+        risks = ["All values are demo data."]
     return {
         "summary": summary,
         "key_signals": key_signals[:8],

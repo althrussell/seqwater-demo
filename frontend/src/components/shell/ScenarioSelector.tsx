@@ -27,7 +27,7 @@ export const DEFAULT_SCENARIOS: ScenarioOption[] = [
   {
     id: "baseline",
     label: "Baseline operating posture",
-    description: "Steady-state synthetic profile",
+    description: "Steady-state profile",
   },
 ];
 

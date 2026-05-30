@@ -131,7 +131,7 @@ export default function KpiInsightDrawer(props: Props) {
         props.onClose();
         toast({
           title: "Routing to AquaIQ",
-          description: "Question streaming to the synthetic Supervisor…",
+          description: "Question streaming to the Supervisor…",
           variant: "info",
         });
         break;
@@ -140,7 +140,7 @@ export default function KpiInsightDrawer(props: Props) {
       default:
         toast({
           title: action.toastTitle ?? "Action queued",
-          description: action.toastBody ?? "Synthetic action acknowledged.",
+          description: action.toastBody ?? "Action acknowledged.",
           variant: action.kind === "brief" ? "success" : "info",
         });
         break;

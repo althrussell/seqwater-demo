@@ -1,4 +1,4 @@
-"""Run synthetic data quality checks against the deployed Unity Catalog tables."""
+"""Run data quality checks against the deployed Unity Catalog tables."""
 from __future__ import annotations
 
 import sys

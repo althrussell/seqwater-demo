@@ -1,6 +1,6 @@
 {
   "name": "${APP_NAME}",
-  "description": "Seqwater AI Command Centre — synthetic Databricks demo for water security, asset risk, water quality, flood readiness, and the AquaIQ governed AI assistant. All data is synthetic.",
+  "description": "Seqwater AI Command Centre — Databricks demo for water security, asset risk, water quality, flood readiness, and the AquaIQ governed AI assistant. All data is demo.",
   "resources": [
     {
       "name": "sql-warehouse",
@@ -22,7 +22,7 @@
     },
     {
       "name": "supervisor-endpoint",
-      "description": "Synthetic Seqwater Supervisor MAS endpoint (orchestrates KA + Genie + UC functions).",
+      "description": "Seqwater Supervisor MAS endpoint (orchestrates KA + Genie + UC functions).",
       "_required": ["DATABRICKS_SUPERVISOR_ENDPOINT"],
       "serving_endpoint": {
         "name": "${DATABRICKS_SUPERVISOR_ENDPOINT}",
@@ -31,7 +31,7 @@
     },
     {
       "name": "ka-endpoint",
-      "description": "Synthetic Seqwater Operational Docs Knowledge Assistant endpoint.",
+      "description": "Seqwater Operational Docs Knowledge Assistant endpoint.",
       "_required": ["DATABRICKS_KA_ENDPOINT"],
       "serving_endpoint": {
         "name": "${DATABRICKS_KA_ENDPOINT}",
@@ -40,7 +40,7 @@
     },
     {
       "name": "genie-space",
-      "description": "Synthetic Seqwater Operations Genie space (also embedded in the app).",
+      "description": "Seqwater Operations Genie space (also embedded in the app).",
       "_required": ["DATABRICKS_GENIE_SPACE_ID"],
       "genie_space": {
         "space_id": "${DATABRICKS_GENIE_SPACE_ID}",

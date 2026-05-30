@@ -1,72 +1,72 @@
-# Synthetic Regulator Correspondence — DNRME Drinking Water Reporting
+# Regulator Correspondence — DNRME Drinking Water Reporting
 
-**Status:** SYNTHETIC DEMO ARTEFACT — for executive demonstration only.
-**Owner (synthetic):** Regulatory Affairs
-**Reference (synthetic):** REG-DNRME-2026-04-018
-**Date (synthetic):** 2026-04-18
+**Status:** DEMO ARTEFACT — for executive demonstration only.
+**Owner:** Regulatory Affairs
+**Reference:** REG-DNRME-2026-04-018
+**Date:** 2026-04-18
 **Classification:** Internal demo
 
-> This synthetic regulator correspondence is generated for a Databricks demo
+> This regulator correspondence is generated for a Databricks demo
 > of governed AI-assisted regulatory awareness. It is not a real letter, has
 > not been issued or received by any agency or operator, and must not be
 > used for any real regulatory or governance purpose.
 
-## 1. Synthetic context
+## 1. Context
 
-A synthetic letter from the synthetic Department of Natural Resources, Mines
-and Energy (DNRME) acknowledging receipt of the synthetic Q1 FY2026
-operational reporting submission, and noting two synthetic items requiring
-follow-up at the synthetic next reporting interval.
+A letter from the Department of Natural Resources, Mines
+and Energy (DNRME) acknowledging receipt of the Q1 FY2026
+operational reporting submission, and noting two items requiring
+follow-up at the next reporting interval.
 
-## 2. Synthetic acknowledgements
+## 2. Acknowledgements
 
-The synthetic regulator acknowledges:
+The regulator acknowledges:
 
-- Synthetic Q1 FY2026 quarterly operational data submission, received in
-  full on synthetic 2026-04-02.
-- Synthetic dam safety surveillance attestation for the synthetic North Pine
-  Dam, the synthetic Wivenhoe Dam, and the synthetic Somerset Dam assets.
-- Synthetic monthly water quality reporting, accepted with no synthetic
-  follow-up items for the synthetic January, February, and March windows.
+- Q1 FY2026 quarterly operational data submission, received in
+  full on 2026-04-02.
+- Dam safety surveillance attestation for the North Pine
+  Dam, the Wivenhoe Dam, and the Somerset Dam assets.
+- Monthly water quality reporting, accepted with no
+  follow-up items for the January, February, and March windows.
 
-## 3. Synthetic follow-up items
+## 3. Follow-up items
 
-### 3.1 Synthetic catchment monitoring telemetry continuity
+### 3.1 Catchment monitoring telemetry continuity
 
-The synthetic catchment monitoring site `CMS-PINE-04` recorded synthetic
-telemetry gaps of 4.2% across the synthetic reporting window, marginally
-above the synthetic regulator advisory threshold of 4.0%. The synthetic
-operator is requested to provide a synthetic remediation plan at the next
-synthetic monthly reporting interval.
+The catchment monitoring site `CMS-PINE-04` recorded
+telemetry gaps of 4.2% across the reporting window, marginally
+above the regulator advisory threshold of 4.0%. The
+operator is requested to provide a remediation plan at the next
+monthly reporting interval.
 
-### 3.2 Synthetic AI-assisted decision support disclosures
+### 3.2 AI-assisted decision support disclosures
 
-The synthetic regulator notes the synthetic operator's intent to deploy AI-
-assisted decision support tooling and requests synthetic disclosures on:
+The regulator notes the operator's intent to deploy AI-
+assisted decision support tooling and requests disclosures on:
 
-1. The synthetic data lineage of synthetic operational inputs.
-2. The synthetic governance and audit posture for synthetic AI outputs.
-3. The synthetic human-in-the-loop validation requirements.
-4. The synthetic refusal posture for synthetic operational authorisation
+1. The data lineage of operational inputs.
+2. The governance and audit posture for AI outputs.
+3. The human-in-the-loop validation requirements.
+4. The refusal posture for operational authorisation
    requests.
 
-These synthetic disclosures are due at the synthetic next reporting interval.
+These disclosures are due at the next reporting interval.
 
-## 4. Synthetic operator response notes (internal)
+## 4. Operator response notes (internal)
 
-- The synthetic AquaIQ governance posture, the synthetic AI Interaction Audit
-  table, the synthetic refusal patterns, and the synthetic source citation
-  practices already address the four synthetic disclosure items above.
-- The synthetic CMS-PINE-04 telemetry gap is being actioned via the synthetic
+- The AquaIQ governance posture, the AI Interaction Audit
+  table, the refusal patterns, and the source citation
+  practices already address the four disclosure items above.
+- The CMS-PINE-04 telemetry gap is being actioned via the
   Network Operations work order register.
 
-## 5. Synthetic human-in-the-loop validation
+## 5. Human-in-the-loop validation
 
-Synthetic AI-generated summaries of this synthetic correspondence must cite
-the synthetic source, must not be used for synthetic external responses, and
-must require named synthetic human reviewers from synthetic Regulatory
-Affairs and synthetic Legal before synthetic dispatch.
+AI-generated summaries of this correspondence must cite
+the source, must not be used for external responses, and
+must require named human reviewers from Regulatory
+Affairs and Legal before dispatch.
 
 ---
 
-*Synthetic demo content. Not for operational use.*
+*Demo content. Not for operational use.*

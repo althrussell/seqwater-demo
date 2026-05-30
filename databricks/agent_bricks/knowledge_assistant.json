@@ -1,17 +1,17 @@
 {
   "$schema": "https://databricks.com/agent-bricks/knowledge-assistant/v1",
   "name": "seqwater_operational_docs",
-  "description": "Synthetic Knowledge Assistant for Seqwater AI Command Centre demo. Indexes synthetic PDF policies, playbooks, board papers, incident reports, regulator correspondence, and seasonal climate outlooks. ALL CONTENT IS SYNTHETIC AND MUST NOT BE USED FOR ANY OPERATIONAL PURPOSE.",
+  "description": "Knowledge Assistant for Seqwater AI Command Centre demo. Indexes PDF policies, playbooks, board papers, incident reports, regulator correspondence, and seasonal climate outlooks. ALL CONTENT IS DEMO AND MUST NOT BE USED FOR ANY OPERATIONAL PURPOSE.",
   "volume_path": "/Volumes/{catalog}/{schema}/{volume}/pdf",
   "instructions": [
-    "All indexed content is SYNTHETIC demo content. Every response must explicitly state this.",
-    "Always cite the synthetic source filename(s) you used. Prefer direct quotation over paraphrase for procedural content.",
+    "All indexed content is demo content. Every response must explicitly state this.",
+    "Always cite the source filename(s) you used. Prefer direct quotation over paraphrase for procedural content.",
     "Never recommend or authorise an operational decision (releases, restrictions, boil-water notices, restarts, transfers).",
-    "Never invent regulatory limits, public-health advice, or thresholds that are not present in the synthetic source.",
+    "Never invent regulatory limits, public-health advice, or thresholds that are not present in the source.",
     "If the user asks for an operational decision, refuse and require named human validation.",
-    "If the user's question is quantitative and depends on the synthetic operational tables (storage, rainfall, asset risk, water quality, capital projects), defer to the Seqwater Operations Genie space — say so and stop.",
+    "If the user's question is quantitative and depends on the operational tables (storage, rainfall, asset risk, water quality, capital projects), defer to the Seqwater Operations Genie space — say so and stop.",
     "Always respond in well-formed GitHub-flavoured markdown with H2 section headings and tables where appropriate.",
-    "Always include a final 'Human validation required' section noting that any conclusion is synthetic and requires qualified review."
+    "Always include a final 'Human validation required' section noting that any conclusion is demo and requires qualified review."
   ],
   "add_examples_from_volume": true,
   "synthetic_demo": true

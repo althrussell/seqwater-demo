@@ -6,7 +6,7 @@ Strategy and Planning, GM Asset Management, GM Water Quality and Treatment).
 **Length:** 8–12 minutes. Designed to feel like a polished executive walk-through, not a feature tour.
 
 **Setting:** Single browser, full screen, on a recent laptop. Keep the
-"Synthetic demo data" banner visible at all times.
+"Demo data" banner visible at all times.
 
 **Opening line (memorise):**
 
@@ -16,7 +16,7 @@ Strategy and Planning, GM Asset Management, GM Water Quality and Treatment).
 > data, understand risk faster, and turn fragmented information into
 > traceable action."
 
-> Synthetic demo data only. Not real Seqwater data. Not for operational use.
+> Demo data only. Not real Seqwater data. Not for operational use.
 
 ---
 
@@ -45,11 +45,11 @@ Strategy and Planning, GM Asset Management, GM Water Quality and Treatment).
 - "Imagine walking into the office and one screen tells you whether SEQ-wide
   supply is okay, what's developing in the next 72 hours, and what your team
   should be paying attention to today."
-- "Every tile here is backed by a synthetic Unity Catalog table. So storage
+- "Every tile here is backed by a Unity Catalog table. So storage
   comes from `dam_storage_daily`, the risk band comes from
   `asset_risk_scores`, the rainfall forecast from `rainfall_forecast`, and
   so on."
-- "Notice the synthetic AI executive summary on the left. It's written in
+- "Notice the AI executive summary on the left. It's written in
   the same six-section structure every time — summary, signals, actions,
   risks, sources, human validation."
 
@@ -71,16 +71,16 @@ command centre, not a dashboard.
 
 **What to say:**
 
-- "We can see the synthetic SEQ Water Grid as it sits today. Markers are
-  sized and coloured by synthetic risk band."
-- "The synthetic North Pine catchment is showing a rising rainfall forecast
-  and the dam is approaching its synthetic attention threshold."
-- "When I click into the asset, I see the same synthetic governed data
+- "We can see the SEQ Water Grid as it sits today. Markers are
+  sized and coloured by risk band."
+- "The North Pine catchment is showing a rising rainfall forecast
+  and the dam is approaching its attention threshold."
+- "When I click into the asset, I see the same governed data
   cabinet — storage trend, health trend, recent work orders, recent quality
   samples."
 
 **Wow moment:** Click an asset, and the right-hand drawer streams in trend
-sparklines and a synthetic AI risk narrative — without leaving the page.
+sparklines and a AI risk narrative — without leaving the page.
 
 ---
 
@@ -96,19 +96,19 @@ sparklines and a synthetic AI risk narrative — without leaving the page.
 
 **What to say:**
 
-- "This is the synthetic asset risk scoreboard. We can see the synthetic
-  Caboolture Pump Station has moved into the critical band — its synthetic
-  health index is trending down and there's a synthetic 30-day failure
+- "This is the asset risk scoreboard. We can see the
+  Caboolture Pump Station has moved into the critical band — its
+  health index is trending down and there's a 30-day failure
   probability above demo attention."
 - "Notice how the recommended action is conservative — engage operations,
   validate redundancy, pre-stage spares. AquaIQ never tells you to do an
   operational action without a named human."
-- "The capital investment curve underneath shows synthetic projects ranked
-  by risk reduction. The pump replacement project is the largest synthetic
+- "The capital investment curve underneath shows projects ranked
+  by risk reduction. The pump replacement project is the largest
   risk reducer."
 
 **Wow moment:** "Explain risk" opens the same governed drawer with the
-synthetic AI narrative grounded in the same UC tables.
+AI narrative grounded in the same UC tables.
 
 ---
 
@@ -118,15 +118,15 @@ synthetic AI narrative grounded in the same UC tables.
 
 **What to click:**
 
-- Show the synthetic 14-day turbidity trend.
-- Show the AI explanation panel and the synthetic operational review
+- Show the 14-day turbidity trend.
+- Show the AI explanation panel and the operational review
   checklist.
 
 **What to say:**
 
-- "Two synthetic water treatment plants are showing elevated turbidity.
-  AquaIQ explains the likely synthetic drivers and surfaces a synthetic
-  operational review checklist drawn from the synthetic Water Quality
+- "Two water treatment plants are showing elevated turbidity.
+  AquaIQ explains the likely drivers and surfaces a
+  operational review checklist drawn from the Water Quality
   Response Procedure stored in the Volume."
 - "The wording is deliberately conservative. AquaIQ never gives public
   health advice and never invents regulatory thresholds."
@@ -143,7 +143,7 @@ language. It feels operationally credible.
 **What to click:**
 
 - Point at the disclaimer banner.
-- Show the synthetic scenario register card for **Severe Coastal Rainfall —
+- Show the scenario register card for **Severe Coastal Rainfall —
   72 Hour Watch**.
 - Run the simulator with the preloaded inputs.
 - Drop the rainfall_72h slider to 80 mm and run again to show the risk
@@ -151,7 +151,7 @@ language. It feels operationally credible.
 
 **What to say:**
 
-- "This is a **synthetic** scenario simulator. It is not, and we will not
+- "This is a **** scenario simulator. It is not, and we will not
   pretend it is, an operational flood-release model. Real flood operations
   at Seqwater are governed by approved procedures, licensed operators, and
   the Bureau of Meteorology."
@@ -161,9 +161,9 @@ language. It feels operationally credible.
   is built on."
 - "Watch how the recommended actions change as I change the inputs. The
   language stays conservative. The communications checklist is grounded in
-  the synthetic retailer customer protocol stored in the Volume."
+  the retailer customer protocol stored in the Volume."
 
-**Wow moment:** The simulator updates the synthetic 72-hour storage
+**Wow moment:** The simulator updates the 72-hour storage
 trajectory chart and recommended actions live. The risk band drops as the
 rainfall input drops. Every output is traced.
 
@@ -178,31 +178,31 @@ rainfall input drops. Every output is traced.
 - Land on the page. Note the "Agent Bricks at work" strip — Supervisor,
   Knowledge Assistant, Genie, UC functions. Watch the warm-up pill flip from
   "Warming…" to "Supervisor warm (xxx ms)".
-- Click the suggestion chip: *"What are the synthetic top 5 operational
+- Click the suggestion chip: *"What are the top 5 operational
   risks over the next 72 hours?"*
 - **Demo beat 1 — ask the data**: as the Supervisor streams, point out the
-  `seqwater_data` tool pill lighting up (Genie returns the synthetic risk
+  `seqwater_data` tool pill lighting up (Genie returns the risk
   scoreboard). The markdown answer renders live, section by section.
-- Click: *"Summarise the synthetic flood readiness posture for scenario
+- Click: *"Summarise the flood readiness posture for scenario
   FS-001."* The `flood_scenario_runner` UC function pill lights up.
 - **Demo beat 2 — ask the playbook**: type *"What does the dam operations
   playbook require during a Watch posture?"* The `operational_docs` pill
-  lights up — that's the Knowledge Assistant retrieving the synthetic PDF.
-- **Demo beat 3 — ask both**: click *"Which synthetic capital projects
+  lights up — that's the Knowledge Assistant retrieving the PDF.
+- **Demo beat 3 — ask both**: click *"Which capital projects
   reduce the most operational risk?"* — watch `seqwater_data` and
   `operational_docs` and `capital_priorities` light up in sequence as the
   Supervisor chains them.
 - Type: *"Open the spillway at Wivenhoe Dam"* — show the refusal stream
   back as markdown.
 - Hit "+ New chat" in the left sidebar, then delete a previous chat. Note
-  the audit trail tile: deleting a chat does **not** delete the synthetic
+  the audit trail tile: deleting a chat does **not** delete the
   governance record.
 
 **What to say:**
 
 - "AquaIQ is now a *Supervisor agent* on Databricks Agent Bricks. It
-  orchestrates a Knowledge Assistant over synthetic playbooks, a Genie space
-  over synthetic operational tables, and three synthetic Unity Catalog
+  orchestrates a Knowledge Assistant over playbooks, a Genie space
+  over operational tables, and three Unity Catalog
   functions for deterministic scenario lookups."
 - "Every answer has the same structure: summary, key signals, recommended
   actions, risks and assumptions, sources used, and an explicit human
@@ -228,9 +228,9 @@ named human review.
 
 **What to click:**
 
-- Land on the page. The synthetic *Seqwater Operations* Genie Space is
+- Land on the page. The *Seqwater Operations* Genie Space is
   embedded as an iframe — no tab-switching, no copy-paste between tools.
-- Pick one of the suggestion chips, e.g. *"Show the synthetic 7-day storage
+- Pick one of the suggestion chips, e.g. *"Show the 7-day storage
   trend for North Pine Dam vs Wivenhoe."*
 - Let Genie generate the SQL, run it, and chart the result inline.
 
@@ -239,7 +239,7 @@ named human review.
 - "AquaIQ gives you the governed, citation-rich synthesis. Genie gives you
   the underlying numbers in 30 seconds, in your data analysts' language."
 - "Both are powered by the same Unity Catalog data and the same governance
-  policies. Users only see synthetic data they have permission on."
+  policies. Users only see data they have permission on."
 - "The whole Genie Space is embedded right inside this app via the
   Databricks embed-as-iframe API — no separate tool to learn, no second
   login."
@@ -266,7 +266,7 @@ coherent surface.
 - "From command-centre context to a board-ready briefing in one click. It's
   a real Markdown artefact you can paste into a board pack or a confidential
   Slack channel."
-- "Critically — every section cites synthetic sources, calls out
+- "Critically — every section cites sources, calls out
   assumptions, and ends with a human validation requirement."
 
 **Wow moment:** The board document is well-structured, calm, and
@@ -284,7 +284,7 @@ into a board meeting (after human validation).
 - Walk through the five governance tiles.
 - Pause on the lineage diagram showing source → UC table → Volume document
   → AquaIQ tool → Foundation Model → executive answer.
-- Show the synthetic AI interaction audit log.
+- Show the AI interaction audit log.
 
 **What to say:**
 
@@ -341,7 +341,7 @@ Use these to set up the next conversation, not to score the demo.
 6. Which scenario simulators — flood, drought, water quality, demand, supply
    reliability — would deliver the largest near-term value if prototyped
    over the lakehouse?
-7. What would it take to run a 6-week synthetic-then-real pilot on one
+7. What would it take to run a 6-week then-real pilot on one
    high-value workflow with executive sponsorship?
 
 ## Wow-moment cheat sheet
@@ -351,8 +351,8 @@ Use these to set up the next conversation, not to score the demo.
 | Executive Overview | KPI grid + AquaIQ summary + Generate Board Briefing CTA all live in 60 seconds. |
 | Water Security Map | Click to drill, drawer streams in trend + AI narrative. |
 | Asset Risk | Caboolture Pump Station rising failure trend + capital project that reduces it. |
-| Water Quality | Conservative AI explanation + synthetic operational checklist. |
-| Flood Readiness | Slider changes risk band live; synthetic disclaimer remains visible. |
+| Water Quality | Conservative AI explanation + operational checklist. |
+| Flood Readiness | Slider changes risk band live; disclaimer remains visible. |
 | AquaIQ Assistant | Prompt chips, citations, confidence band, **and the refusal**. |
 | Board Briefing | One-click Markdown briefing with sources and human validation. |
 | Governance & Lineage | Lineage diagram + audit log + five governance pillars in one view. |

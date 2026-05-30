@@ -1,6 +1,6 @@
-"""Synthetic data generator for the Seqwater AI Command Centre demo.
+"""Data generator for the Seqwater AI Command Centre demo.
 
-All values are clearly synthetic and labelled SYNTHETIC. Do NOT treat any output
+All values are clearly and labelled DEMO. Do NOT treat any output
 as real Seqwater operational data. The generator is deterministic given a seed
 so that demo runs are repeatable.
 
@@ -32,7 +32,7 @@ np.random.seed(SEED)
 TODAY = datetime(2026, 5, 29, tzinfo=timezone.utc)
 START_DATE = TODAY - timedelta(days=180)
 HOURLY_START = TODAY - timedelta(days=7)
-SYNTHETIC_TAG = "SYNTHETIC"
+SYNTHETIC_TAG = "DEMO"
 
 
 @dataclass(frozen=True)
@@ -52,7 +52,7 @@ class AssetSpec:
 # volumes and real geographic coordinates (cross-checked against the public
 # asset and dam-levels pages on https://www.seqwater.com.au and Seqwater's
 # published Drinking Water Quality Reports as at 29 May 2026, ~9-10pm AEST).
-# All operational *values* in the rest of this generator are SYNTHETIC, but
+# All operational *values* in the rest of this generator are DEMO, but
 # every asset_id maps to a real Seqwater asset at its real location, and the
 # latest snapshot in ``CURRENT_DAM_SNAPSHOT`` (below) matches the published
 # values exactly, so the map and storyline stay credible.
@@ -179,17 +179,17 @@ def gen_asset_locations() -> pd.DataFrame:
 # ---------- demo moments ----------
 
 DEMO_MOMENTS = {
-    # Catchments / dams that receive the synthetic developing weather event.
+    # Catchments / dams that receive the developing weather event.
     "rainfall_event_assets": ["DAM-001", "DAM-002", "DAM-003", "DAM-005", "CMS-001", "CMS-002", "CMS-003"],
-    # Plants we want to put on a synthetic turbidity watch (real assets).
+    # Plants we want to put on a turbidity watch (real assets).
     "turbidity_plants": ["WTP-003", "WTP-004"],  # North Pine WTP + Landers Shute WTP
-    # The pump station with a synthetic rising-failure trend.
+    # The pump station with a rising-failure trend.
     "rising_failure_pump": "PMP-014",  # Caboolture Pump Station (NPI)
-    # The dam approaching a synthetic attention threshold during the demo.
+    # The dam approaching a attention threshold during the demo.
     "attention_dam": "DAM-003",  # North Pine Dam (currently at reduced FSL, ~51%)
     # The dam that is critically low in the real published snapshot (40.2%).
     "critically_low_dam": "DAM-008",  # Lake Macdonald (mid-upgrade)
-    # The asset whose synthetic capital project shows the largest risk reduction.
+    # The asset whose capital project shows the largest risk reduction.
     "risk_reducing_project_asset": "PMP-014",
 }
 
@@ -198,7 +198,7 @@ DEMO_MOMENTS = {
 # Published Seqwater dam-levels snapshot, 29 May 2026, between 21:00 and 22:01
 # AEST (UTC+10). Sourced from the public Seqwater dam-levels page; full-supply
 # volumes (ML), current volumes (ML), % full, the latest observation time, and
-# whether the dam is spilling are all taken verbatim. The synthetic time
+# whether the dam is spilling are all taken verbatim. The time
 # series in ``gen_dam_storage_daily`` is anchored to these values on the
 # final day so the demo storyline matches the live snapshot exactly.
 CURRENT_DAM_SNAPSHOT: dict[str, dict[str, Any]] = {
@@ -256,11 +256,11 @@ CURRENT_FLOOD_STORAGE: list[dict[str, Any]] = [
 # ---------- dam storage ----------
 
 def gen_dam_storage_daily(assets: pd.DataFrame) -> pd.DataFrame:
-    """Synthetic daily dam-storage time series.
+    """Daily dam-storage time series.
 
     The final row for every dam is anchored exactly to the published
     Seqwater 29/05/2026 snapshot in ``CURRENT_DAM_SNAPSHOT``. Prior days
-    are a smooth synthetic ramp from a soft 180-day baseline up to the
+    are a smooth ramp from a soft 180-day baseline up to the
     snapshot value, with a wet-event lift over the last ~10 days so dams
     that are currently spilling have a credible inflow pattern.
     """
@@ -274,7 +274,7 @@ def gen_dam_storage_daily(assets: pd.DataFrame) -> pd.DataFrame:
         snap = CURRENT_DAM_SNAPSHOT.get(asset_id)
         # Target value for "today" — exactly matches the published snapshot
         # (in fractional terms) when we have one, otherwise falls back to a
-        # plausible synthetic baseline.
+        # plausible baseline.
         target_frac = (snap["pct"] / 100.0) if snap else 0.78
         # Pick a soft 180-day baseline that is lower for the spilling /
         # near-full dams (so the trajectory feels like a real wet event
@@ -346,7 +346,7 @@ def gen_dam_levels_current(assets: pd.DataFrame) -> pd.DataFrame:
     This mirrors the columns of the public Seqwater dam-levels table so it can
     be displayed verbatim by the UI and queried by the AquaIQ agent. Every
     row is real published data; the ``synthetic_demo_flag`` reflects that the
-    *surrounding* operational telemetry is synthetic, not this snapshot.
+    *surrounding* operational telemetry is demo, not this snapshot.
     """
     rows = []
     by_id = {a["asset_id"]: a for _, a in assets.iterrows()}
@@ -437,7 +437,7 @@ def gen_demand_forecast() -> pd.DataFrame:
         rows.append({
             "date": d.date().isoformat(),
             "demand_ml_day": round(float(ml), 1),
-            "scenario_name": "Synthetic baseline forecast",
+            "scenario_name": "Baseline forecast",
             "synthetic_demo_flag": True,
         })
     return pd.DataFrame(rows)
@@ -447,12 +447,12 @@ def gen_supply_forecast() -> pd.DataFrame:
     rows = []
     for offset in range(0, 14):
         d = TODAY + timedelta(days=offset)
-        # treatment_capacity_ml_day across the synthetic grid.
+        # treatment_capacity_ml_day across the grid.
         capacity = 1900 + np.random.normal(0, 8)
         rows.append({
             "date": d.date().isoformat(),
             "treatment_capacity_ml_day": round(float(capacity), 1),
-            "scenario_name": "Synthetic baseline supply",
+            "scenario_name": "Baseline supply",
             "synthetic_demo_flag": True,
         })
     return pd.DataFrame(rows)
@@ -461,13 +461,13 @@ def gen_supply_forecast() -> pd.DataFrame:
 def gen_grid_transfer_recommendations() -> pd.DataFrame:
     rows = [
         {"from_region": "Sunshine Coast", "to_region": "Brisbane North", "grid_transfer_ml_day": 38.5,
-         "rationale": "Synthetic: balance treatment headroom via the Northern Pipeline Interconnector ahead of forecast rainfall window.",
+         "rationale": "Demo: balance treatment headroom via the Northern Pipeline Interconnector ahead of forecast rainfall window.",
          "confidence": "Medium", "synthetic_demo_flag": True},
         {"from_region": "Brisbane Valley", "to_region": "Gold Coast", "grid_transfer_ml_day": 22.0,
-         "rationale": "Synthetic: pre-position storage via the Southern Regional Water Pipeline during the synthetic turbidity watch.",
+         "rationale": "Demo: pre-position storage via the Southern Regional Water Pipeline during the turbidity watch.",
          "confidence": "Medium", "synthetic_demo_flag": True},
         {"from_region": "Brisbane West", "to_region": "Bayside", "grid_transfer_ml_day": 14.5,
-         "rationale": "Synthetic: maintain Mount Crosby blend ratios into the Capalaba zone ahead of the demand peak.",
+         "rationale": "Demo: maintain Mount Crosby blend ratios into the Capalaba zone ahead of the demand peak.",
          "confidence": "High", "synthetic_demo_flag": True},
     ]
     return pd.DataFrame(rows)
@@ -506,16 +506,16 @@ def gen_maintenance_work_orders(assets: pd.DataFrame) -> pd.DataFrame:
     statuses = ["Open", "In Progress", "Awaiting Parts", "Completed"]
     priorities = ["P1 - Critical", "P2 - High", "P3 - Medium", "P4 - Low"]
     descriptions = [
-        "Synthetic: routine inspection finding requiring follow-up.",
-        "Synthetic: vibration anomaly detected on rotating equipment.",
-        "Synthetic: instrument drift on online analyser.",
-        "Synthetic: gasket replacement scheduled.",
-        "Synthetic: SCADA telemetry intermittent dropouts.",
-        "Synthetic: protective coating degradation observed.",
-        "Synthetic: pump bearing temperature trending up.",
-        "Synthetic: pressure transducer recalibration required.",
-        "Synthetic: chlorine analyser cell replacement.",
-        "Synthetic: dosing pump diaphragm inspection.",
+        "Demo: routine inspection finding requiring follow-up.",
+        "Demo: vibration anomaly detected on rotating equipment.",
+        "Demo: instrument drift on online analyser.",
+        "Demo: gasket replacement scheduled.",
+        "Demo: SCADA telemetry intermittent dropouts.",
+        "Demo: protective coating degradation observed.",
+        "Demo: pump bearing temperature trending up.",
+        "Demo: pressure transducer recalibration required.",
+        "Demo: chlorine analyser cell replacement.",
+        "Demo: dosing pump diaphragm inspection.",
     ]
     n = 64
     for i in range(n):
@@ -697,8 +697,8 @@ def gen_flood_scenarios() -> pd.DataFrame:
             "projected_storage_percent": 91.4,
             "release_required": True,
             "downstream_impact_score": 0.62,
-            "recommended_actions": "Synthetic: convene flood operations review; pre-position field crews; brief retailers.",
-            "action_owner": "Synthetic Operations Lead",
+            "recommended_actions": "Demo: convene flood operations review; pre-position field crews; brief retailers.",
+            "action_owner": "Operations Lead",
             "status": "Active demo scenario",
             "synthetic_demo_flag": True,
         },
@@ -712,8 +712,8 @@ def gen_flood_scenarios() -> pd.DataFrame:
             "projected_storage_percent": 70.5,
             "release_required": False,
             "downstream_impact_score": 0.18,
-            "recommended_actions": "Synthetic: monitor; no executive escalation required.",
-            "action_owner": "Synthetic Duty Hydrologist",
+            "recommended_actions": "Demo: monitor; no executive escalation required.",
+            "action_owner": "Duty Hydrologist",
             "status": "Reference scenario",
             "synthetic_demo_flag": True,
         },
@@ -727,8 +727,8 @@ def gen_flood_scenarios() -> pd.DataFrame:
             "projected_storage_percent": 98.6,
             "release_required": True,
             "downstream_impact_score": 0.84,
-            "recommended_actions": "Synthetic: escalate to executive flood operations cell; coordinate with state agencies.",
-            "action_owner": "Synthetic Flood Operations Lead",
+            "recommended_actions": "Demo: escalate to executive flood operations cell; coordinate with state agencies.",
+            "action_owner": "Flood Operations Lead",
             "status": "Stress test scenario",
             "synthetic_demo_flag": True,
         },
@@ -742,8 +742,8 @@ def gen_flood_scenarios() -> pd.DataFrame:
             "projected_storage_percent": 58.4,
             "release_required": False,
             "downstream_impact_score": 0.22,
-            "recommended_actions": "Synthetic: monitor turbidity at downstream WTPs; verify analyser availability.",
-            "action_owner": "Synthetic Water Quality Lead",
+            "recommended_actions": "Demo: monitor turbidity at downstream WTPs; verify analyser availability.",
+            "action_owner": "Water Quality Lead",
             "status": "Reference scenario",
             "synthetic_demo_flag": True,
         },
@@ -757,8 +757,8 @@ def gen_flood_scenarios() -> pd.DataFrame:
             "projected_storage_percent": 92.8,
             "release_required": True,
             "downstream_impact_score": 0.71,
-            "recommended_actions": "Synthetic: stand up extended ops; align with retailers and emergency services.",
-            "action_owner": "Synthetic Operations Lead",
+            "recommended_actions": "Demo: stand up extended ops; align with retailers and emergency services.",
+            "action_owner": "Operations Lead",
             "status": "Stress test scenario",
             "synthetic_demo_flag": True,
         },
@@ -801,19 +801,19 @@ def gen_incident_actions() -> pd.DataFrame:
     rows = [
         {"action_id": "ACT-001", "scenario_id": "FS-001",
          "action": "Validate latest rainfall and inflow observations with duty hydrologist.",
-         "owner": "Duty Hydrologist (synthetic)", "status": "Pending", "due_in_hours": 4,
+         "owner": "Duty Hydrologist", "status": "Pending", "due_in_hours": 4,
          "synthetic_demo_flag": True},
         {"action_id": "ACT-002", "scenario_id": "FS-001",
-         "action": "Brief water quality leads on turbidity contingency at North Pine and Landers Shute (synthetic).",
-         "owner": "Water Quality Lead (synthetic)", "status": "Pending", "due_in_hours": 6,
+         "action": "Brief water quality leads on turbidity contingency at North Pine and Landers Shute.",
+         "owner": "Water Quality Lead", "status": "Pending", "due_in_hours": 6,
          "synthetic_demo_flag": True},
         {"action_id": "ACT-003", "scenario_id": "FS-001",
-         "action": "Confirm spares and crew readiness for synthetic Caboolture Pump Station.",
-         "owner": "Maintenance Lead (synthetic)", "status": "In Progress", "due_in_hours": 8,
+         "action": "Confirm spares and crew readiness for Caboolture Pump Station.",
+         "owner": "Maintenance Lead", "status": "In Progress", "due_in_hours": 8,
          "synthetic_demo_flag": True},
         {"action_id": "ACT-004", "scenario_id": "FS-001",
-         "action": "Draft retailer customer communication aligned to synthetic protocol.",
-         "owner": "Stakeholder Comms (synthetic)", "status": "Pending", "due_in_hours": 12,
+         "action": "Draft retailer customer communication aligned to protocol.",
+         "owner": "Stakeholder Comms", "status": "Pending", "due_in_hours": 12,
          "synthetic_demo_flag": True},
     ]
     return pd.DataFrame(rows)
@@ -932,7 +932,7 @@ def gen_ai_audit_seed() -> pd.DataFrame:
             "tools_used": "get_top_asset_risks; get_water_security_summary; retrieve_documents",
             "sources_used": "asset_risk_scores; dam_storage_daily; rainfall_forecast; synthetic_dam_operations_playbook",
             "confidence": "Medium",
-            "response_summary": "Synthetic: elevated catchment rainfall, turbidity watch at North Pine WTP, rising failure trend at Caboolture Pump Station (NPI).",
+            "response_summary": "Demo: elevated catchment rainfall, turbidity watch at North Pine WTP, rising failure trend at Caboolture Pump Station (NPI).",
             "human_validation_required": True,
             "synthetic_demo_flag": True,
         },
@@ -944,7 +944,7 @@ def gen_ai_audit_seed() -> pd.DataFrame:
             "tools_used": "generate_executive_briefing; get_water_security_summary",
             "sources_used": "asset_risk_scores; flood_scenarios; water_quality_samples; capital_projects",
             "confidence": "Medium",
-            "response_summary": "Synthetic briefing generated with risks, recommended actions, and assumptions.",
+            "response_summary": "Briefing generated with risks, recommended actions, and assumptions.",
             "human_validation_required": True,
             "synthetic_demo_flag": True,
         },
@@ -955,7 +955,7 @@ def gen_ai_audit_seed() -> pd.DataFrame:
 # ---------- runner ----------
 
 def main() -> None:
-    print(f"Seqwater AI Command Centre — synthetic data generator (seed={SEED})")
+    print(f"Seqwater AI Command Centre — data generator (seed={SEED})")
     assets = gen_assets()
     locations = gen_asset_locations()
     storage = gen_dam_storage_daily(assets)
@@ -1019,7 +1019,7 @@ def main() -> None:
     }
     (OUT_DIR / "manifest.json").write_text(json.dumps(manifest, indent=2))
     print(f"  wrote manifest.json")
-    print("Synthetic data generation complete.")
+    print("Data generation complete.")
 
 
 if __name__ == "__main__":

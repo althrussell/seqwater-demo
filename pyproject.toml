@@ -1,7 +1,7 @@
 [project]
 name = "seqwater-ai-command-centre"
 version = "0.1.0"
-description = "Seqwater AI Command Centre — Databricks executive demo (synthetic data only)."
+description = "Seqwater AI Command Centre — Databricks executive demo (data only)."
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [

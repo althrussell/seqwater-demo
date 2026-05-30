@@ -1,5 +1,5 @@
 /**
- * Stylised synthetic SEQ catchment polygons. Not geographically authoritative;
+ * Stylised SEQ catchment polygons. Not geographically authoritative;
  * tuned for visual narrative on the SEQ Water Grid Map page.
  *
  * Coordinates are stored as GeoJSON [lon, lat] tuples so they can be fed
@@ -12,7 +12,7 @@ export interface CatchmentPoly {
   id: string;
   name: string;
   fill: string;
-  rainfallMm: number; // synthetic 72h forecast
+  rainfallMm: number; // 72h forecast
   /** Outer ring, [lon, lat]. */
   ring: LngLat[];
 }

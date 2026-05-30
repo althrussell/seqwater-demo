@@ -441,7 +441,7 @@ export default function SeqWaterMap({
       }).setHTML(
         `<div class="seq-popup">
            <div class="seq-popup__title">${escapeHtml(acc.name)}</div>
-           <div class="seq-popup__sub">Synthetic ${acc.variant === "alert" ? "watch" : "quality"} marker</div>
+           <div class="seq-popup__sub">${acc.variant === "alert" ? "watch" : "quality"} marker</div>
          </div>`,
       );
       const marker = new mapboxgl.Marker({ element: el, anchor: "center" })

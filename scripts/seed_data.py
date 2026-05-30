@@ -1,4 +1,4 @@
-"""Seed synthetic CSVs and operational documents into Unity Catalog on s2.
+"""Seed CSVs and operational documents into Unity Catalog on s2.
 
 Steps:
   1. Stage every CSV from ``data/synthetic`` into a sub-folder of the demo Volume.
@@ -75,7 +75,7 @@ def upload_csvs(client, cfg: TargetConfig) -> None:
 
 def upload_documents(client, cfg: TargetConfig) -> None:
     target = docs_dir(cfg)
-    print(f"--> uploading synthetic documents into {target}")
+    print(f"--> uploading documents into {target}")
     for src in sorted(DOCS.glob("*.md")):
         with open(src, "rb") as fh:
             client.files.upload(
@@ -87,9 +87,9 @@ def upload_documents(client, cfg: TargetConfig) -> None:
 
 
 def upload_pdfs(client, cfg: TargetConfig) -> None:
-    """Stage the synthetic PDFs (and their KA Q/A JSON companions) into the Volume.
+    """Stage the PDFs (and their KA Q/A JSON companions) into the Volume.
 
-    The synthetic Knowledge Assistant points at ``/pdf`` and discovers
+    The Knowledge Assistant points at ``/pdf`` and discovers
     examples from the side-by-side ``.json`` files when
     ``add_examples_from_volume=true`` (see
     ``databricks/agent_bricks/knowledge_assistant.json``).
@@ -102,7 +102,7 @@ def upload_pdfs(client, cfg: TargetConfig) -> None:
         )
         return
     target = pdf_dir(cfg)
-    print(f"--> uploading synthetic PDFs (and KA examples) into {target}")
+    print(f"--> uploading PDFs (and KA examples) into {target}")
     files = sorted([p for p in pdf_src.iterdir() if p.suffix in (".pdf", ".json")])
     if not files:
         print(f"   skip PDF upload: {pdf_src} is empty.")
@@ -157,7 +157,7 @@ def truncate_then_copy(client, cfg: TargetConfig) -> None:
 def main() -> None:
     if not SYN.exists() or not any(SYN.glob("*.parquet")):
         raise SystemExit(
-            "Synthetic data missing. Run `python scripts/generate_synthetic_data.py` first."
+            "Data missing. Run `python scripts/generate_synthetic_data.py` first."
         )
     cfg = TargetConfig.from_env()
     client = get_workspace_client()
@@ -170,7 +170,7 @@ def main() -> None:
     truncate_then_copy(client, cfg)
     upload_documents(client, cfg)
     upload_pdfs(client, cfg)
-    print("Synthetic data + documents + PDFs seeded into Unity Catalog.")
+    print("Data + documents + PDFs seeded into Unity Catalog.")
 
 
 if __name__ == "__main__":

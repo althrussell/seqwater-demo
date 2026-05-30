@@ -30,22 +30,23 @@ export default function FloodReadinessScenario() {
   const { toast } = useToast();
 
   return (
-    <div className="space-y-5">
+    <div className="flex h-[var(--page-h)] min-h-0 flex-col gap-2">
       <HeroBanner
         image={HERO_IMAGES.floodReadiness}
         eyebrow="Flood Readiness & Scenario Briefing"
         headline={"Prepared today.\nSafer tomorrow."}
-        sub="Synthetic scenario planning for executive briefing. Not for operational decisioning."
-        height={240}
+        sub="Scenario planning for executive briefing. Not for operational decisioning."
+        height={130}
       />
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
+      <div className="grid min-h-0 flex-1 grid-cols-1 gap-2 lg:grid-cols-12">
         <SectionCard
           title="Scenario Assumptions"
-          description="Configure the synthetic planning scenario"
-          className="lg:col-span-5"
+          description="Configure the planning scenario"
+          className="min-h-0 lg:col-span-5"
+          bodyClassName="p-3 min-h-0"
         >
-          <div className="space-y-3">
+          <div className="scrollbar-clean h-full min-h-0 space-y-2 overflow-auto pr-1">
             <ScenarioSelect
               label="Rainfall Scenario"
               value={scenario.rainfallScenario}
@@ -79,22 +80,23 @@ export default function FloodReadinessScenario() {
             <button
               onClick={() =>
                 toast({
-                  title: "Synthetic scenario updated",
+                  title: "Scenario updated",
                   description: "Affected catchments and actions refreshed.",
                 })
               }
-              className="btn-primary w-full"
+              className="btn-primary w-full !py-1.5 text-[12.5px]"
             >
-              Apply synthetic scenario
+              Apply scenario
             </button>
           </div>
         </SectionCard>
 
         <SectionCard
           title="Affected Catchments"
-          description="Synthetic spatial projection"
-          className="lg:col-span-7"
+          description="Spatial projection"
+          className="min-h-0 lg:col-span-7"
           padded={false}
+          bodyClassName="p-0 min-h-0"
           actions={
             <div className="flex items-center rounded-md border border-border bg-surface text-[12px]">
               <button
@@ -124,84 +126,89 @@ export default function FloodReadinessScenario() {
 
       <SectionCard
         title="Catchment Impact Summary"
-        description="Synthetic projected peak levels and confidence"
+        description="Projected peak levels and confidence"
         padded={false}
+        className="min-h-0 flex-none"
+        bodyClassName="p-0"
+        actions={
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#FFF4E0] px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-wider text-status-watch">
+            <AlertTriangle className="h-3 w-3" />
+            Planning view only — {FLOOD_DISCLAIMER.split(".")[0]}
+          </span>
+        }
       >
-        <table className="table-clean">
-          <thead>
-            <tr>
-              <th>Catchment</th>
-              <th>Impact level</th>
-              <th>Peak level (synthetic)</th>
-              <th>Confidence</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {CATCHMENT_IMPACTS.map((c) => (
-              <tr key={c.catchment}>
-                <td className="font-semibold text-deepNavy">{c.catchment}</td>
-                <td>
-                  <span
-                    className="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-semibold capitalize"
-                    style={{
-                      background: IMPACT_COLOR[c.impact] + "20",
-                      color: IMPACT_COLOR[c.impact],
-                    }}
-                  >
-                    <span
-                      className="h-1.5 w-1.5 rounded-full"
-                      style={{ background: IMPACT_COLOR[c.impact] }}
-                    />
-                    {c.impact}
-                  </span>
-                </td>
-                <td>{c.peakLevel}</td>
-                <td>
-                  <span className="pill-blue">{c.confidence}</span>
-                </td>
-                <td className="text-right">
-                  <ChevronRight className="ml-auto h-4 w-4 text-ink-muted" />
-                </td>
+        <div className="scrollbar-clean max-h-[180px] overflow-auto">
+          <table className="table-clean">
+            <thead>
+              <tr>
+                <th>Catchment</th>
+                <th>Impact level</th>
+                <th>Peak level</th>
+                <th>Confidence</th>
+                <th></th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {CATCHMENT_IMPACTS.map((c) => (
+                <tr key={c.catchment}>
+                  <td className="font-semibold text-deepNavy">{c.catchment}</td>
+                  <td>
+                    <span
+                      className="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-semibold capitalize"
+                      style={{
+                        background: IMPACT_COLOR[c.impact] + "20",
+                        color: IMPACT_COLOR[c.impact],
+                      }}
+                    >
+                      <span
+                        className="h-1.5 w-1.5 rounded-full"
+                        style={{ background: IMPACT_COLOR[c.impact] }}
+                      />
+                      {c.impact}
+                    </span>
+                  </td>
+                  <td>{c.peakLevel}</td>
+                  <td>
+                    <span className="pill-blue">{c.confidence}</span>
+                  </td>
+                  <td className="text-right">
+                    <ChevronRight className="ml-auto h-4 w-4 text-ink-muted" />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </SectionCard>
 
-      <SectionCard title="Executive Actions" description="Synthetic action cards for executive review">
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-5">
+      <SectionCard
+        title="Executive Actions"
+        className="flex-none"
+        bodyClassName="p-3"
+      >
+        <div className="grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-5">
           {EXECUTIVE_ACTIONS.map((a) => (
             <button
               key={a.title}
               onClick={() =>
                 toast({
                   title: `${a.title} queued`,
-                  description: "Synthetic action recorded for briefing.",
+                  description: "Action recorded for briefing.",
                 })
               }
-              className="group flex flex-col items-start gap-2 rounded-md border border-border bg-surface p-3.5 text-left transition hover:border-primaryBlue/30 hover:shadow-card"
+              className="group flex max-h-[92px] flex-col items-start gap-1 overflow-hidden rounded-md border border-border bg-surface p-2 text-left transition hover:border-primaryBlue/30 hover:shadow-card"
             >
-              <span className="flex h-8 w-8 items-center justify-center rounded-md bg-surface-blue text-primaryBlue">
-                <a.icon className="h-4 w-4" />
-              </span>
-              <div className="text-[13.5px] font-semibold text-deepNavy">{a.title}</div>
-              <div className="text-[12px] text-ink-muted">{a.description}</div>
-              <span className="mt-auto inline-flex items-center gap-1 text-[12px] font-semibold text-primaryBlue group-hover:text-deepBlue">
-                Queue action <ChevronRight className="h-3.5 w-3.5" />
-              </span>
+              <div className="flex items-center gap-1.5">
+                <span className="flex h-6 w-6 flex-none items-center justify-center rounded-md bg-surface-blue text-primaryBlue">
+                  <a.icon className="h-3.5 w-3.5" />
+                </span>
+                <div className="text-[12.5px] font-semibold leading-tight text-deepNavy">{a.title}</div>
+              </div>
+              <div className="line-clamp-2 text-[11px] leading-snug text-ink-muted">{a.description}</div>
             </button>
           ))}
         </div>
       </SectionCard>
-
-      <div className="flex items-start gap-3 rounded-md border border-status-watch/30 bg-[#FFF4E0] px-4 py-3 text-[13px] text-status-watch">
-        <AlertTriangle className="mt-0.5 h-4 w-4 flex-none" />
-        <div>
-          <div className="font-semibold">Planning view only</div>
-          <p className="mt-0.5 text-[12.5px] text-ink-secondary">{FLOOD_DISCLAIMER}</p>
-        </div>
-      </div>
     </div>
   );
 }
@@ -219,13 +226,13 @@ function ScenarioSelect({
 }) {
   return (
     <label className="block">
-      <div className="mb-1 text-[11.5px] font-semibold uppercase tracking-wider text-ink-muted">
+      <div className="mb-0.5 text-[10.5px] font-semibold uppercase tracking-wider text-ink-muted">
         {label}
       </div>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="input"
+        className="input !py-1 text-[12.5px]"
       >
         {options.map((o) => (
           <option key={o}>{o}</option>
@@ -237,8 +244,8 @@ function ScenarioSelect({
 
 function SyntheticCatchmentMap() {
   return (
-    <div className="relative h-[300px] overflow-hidden">
-      <svg viewBox="0 0 600 320" className="h-full w-full">
+    <div className="relative h-full min-h-0 overflow-hidden">
+      <svg viewBox="0 0 600 320" preserveAspectRatio="xMidYMid slice" className="h-full w-full">
         <defs>
           <linearGradient id="ocean2" x1="1" y1="0" x2="0" y2="0">
             <stop offset="0%" stopColor="#D8F0FB" />
@@ -270,7 +277,7 @@ function SyntheticCatchmentMap() {
         </div>
       </div>
       <div className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-md border border-border bg-surface/90 px-2 py-1 text-[11px] text-ink-muted shadow-card backdrop-blur">
-        <Layers className="h-3 w-3 text-primaryBlue" /> Synthetic projection
+        <Layers className="h-3 w-3 text-primaryBlue" /> Projection
       </div>
     </div>
   );
@@ -303,21 +310,21 @@ function CatchmentBlob({
 
 function CatchmentList() {
   return (
-    <div className="p-4">
-      <ul className="space-y-2">
+    <div className="scrollbar-clean h-full min-h-0 overflow-auto p-3">
+      <ul className="space-y-1.5">
         {CATCHMENT_IMPACTS.map((c) => (
           <li
             key={c.catchment}
-            className="flex items-center justify-between rounded-md border border-border bg-surface px-3 py-2.5"
+            className="flex items-center justify-between rounded-md border border-border bg-surface px-2.5 py-2"
           >
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5">
               <span
-                className="inline-block h-2.5 w-2.5 rounded-full"
+                className="inline-block h-2 w-2 rounded-full"
                 style={{ background: IMPACT_COLOR[c.impact] }}
               />
               <div>
-                <div className="text-[13px] font-semibold text-deepNavy">{c.catchment}</div>
-                <div className="text-[11px] text-ink-muted">
+                <div className="text-[12.5px] font-semibold text-deepNavy">{c.catchment}</div>
+                <div className="text-[10.5px] text-ink-muted">
                   Peak {c.peakLevel} · {c.confidence} confidence
                 </div>
               </div>

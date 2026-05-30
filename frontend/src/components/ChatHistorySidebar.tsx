@@ -40,7 +40,7 @@ export default function ChatHistorySidebar({
   }, []);
 
   return (
-    <aside className="flex h-full min-h-[480px] w-full flex-col gap-2 rounded-lg border border-border bg-surface p-3">
+    <aside className="flex h-full min-h-0 w-full flex-col gap-2 rounded-lg border border-border bg-surface p-3">
       <button
         onClick={onNewThread}
         className="btn-primary w-full justify-center text-[12.5px]"
@@ -147,7 +147,7 @@ export default function ChatHistorySidebar({
         )}
       </div>
       <div className="border-t border-border pt-2 text-[10.5px] text-ink-muted">
-        Chats are stored in your browser only. The synthetic
+        Chats are stored in your browser only. The
         <code className="mx-1 rounded bg-[#F4F7FB] px-1 font-mono">ai_interaction_audit</code>
         table is the immutable governance record.
       </div>

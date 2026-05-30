@@ -1,7 +1,7 @@
 """Tests for the AquaIQ NDJSON streaming chat endpoint and warm endpoint.
 
 These tests exercise the local fallback path (no Supervisor configured) so they
-run end-to-end against the in-process FastAPI app with only the synthetic
+run end-to-end against the in-process FastAPI app with only the
 CSVs as a dependency.
 """
 from __future__ import annotations
@@ -77,7 +77,7 @@ def test_chat_stream_concatenated_deltas_match_markdown(client: TestClient) -> N
 def test_chat_stream_emits_tool_events_in_local_mode(client: TestClient) -> None:
     events = _drain_ndjson(
         client,
-        {"question": "What are the synthetic top asset risks?"},
+        {"question": "What are the top asset risks?"},
     )
     kinds = [e.get("event") for e in events]
     assert "tool_call" in kinds, "local mode should emit at least one tool_call"
@@ -116,7 +116,7 @@ def test_chat_sync_wraps_stream(client: TestClient) -> None:
     """The /chat/sync endpoint should produce the same shape as the done event."""
     res = client.post(
         "/api/ai/chat/sync",
-        json={"question": "Give me a synthetic operational summary."},
+        json={"question": "Give me an operational summary."},
     )
     assert res.status_code == 200
     body = res.json()

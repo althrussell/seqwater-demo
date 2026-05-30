@@ -1,4 +1,4 @@
-"""Synthetic flood readiness scenario simulator.
+"""Flood readiness scenario simulator.
 
 Deliberately conservative: the simulator uses simple, transparent linear
 projections so the user can see exactly how inputs flow to outputs. It is NOT
@@ -47,26 +47,26 @@ def run_scenario(
     affected = [r["asset_name"] for r in risk[:5]]
     quality = repository.water_quality_summary()
     if quality["elevated_count"] > 0 or rainfall_forecast_mm_72h > 200:
-        wq_risk = "Elevated synthetic turbidity risk at downstream WTPs."
+        wq_risk = "Elevated turbidity risk at downstream WTPs."
     elif rainfall_forecast_mm_72h > 100:
-        wq_risk = "Synthetic turbidity watch at downstream WTPs."
+        wq_risk = "Turbidity watch at downstream WTPs."
     else:
-        wq_risk = "Synthetic water quality stable."
+        wq_risk = "Water quality stable."
 
     actions = [
-        "Validate latest synthetic rainfall and inflow inputs with duty hydrologist.",
-        "Confirm synthetic treatment plant operating margins with water quality lead.",
-        "Pre-stage synthetic spares for top-3 risk assets identified by AquaIQ.",
-        "Issue synthetic retailer customer communication aligned to protocol.",
+        "Validate latest rainfall and inflow inputs with duty hydrologist.",
+        "Confirm treatment plant operating margins with water quality lead.",
+        "Pre-stage spares for top-3 risk assets identified by AquaIQ.",
+        "Issue retailer customer communication aligned to protocol.",
     ]
     if risk_class in ("Respond", "Coordinate"):
-        actions.insert(0, "Escalate synthetic posture to executive flood operations cell.")
+        actions.insert(0, "Escalate posture to executive flood operations cell.")
 
     comms_checklist = [
-        "Confirm synthetic facts and sources used in this draft.",
-        "Confirm named human reviewer for the synthetic communication.",
-        "Confirm next synthetic update cadence and channel.",
-        "Document synthetic assumptions and unknowns clearly.",
+        "Confirm facts and sources used in this draft.",
+        "Confirm named human reviewer for the communication.",
+        "Confirm next update cadence and channel.",
+        "Document assumptions and unknowns clearly.",
     ]
 
     trajectory = []

@@ -59,7 +59,7 @@ export default function KpiCard({
       aria-label={interactive ? `${title} — explore insight` : undefined}
       className={cn(
         "group relative flex flex-col rounded-lg border border-border bg-surface shadow-card transition",
-        size === "sm" ? "p-3.5" : "px-3.5 py-3.5 min-h-[136px]",
+        size === "sm" ? "p-3" : "px-3 py-2.5 min-h-[104px]",
         interactive
           ? "cursor-pointer hover:border-primaryBlue/40 hover:shadow-elevated focus:outline-none focus-visible:ring-4 focus-visible:ring-primaryBlue/20"
           : "hover:shadow-elevated",
@@ -67,16 +67,16 @@ export default function KpiCard({
       )}
     >
       <div className="flex items-start justify-between gap-2">
-        <div className="flex min-w-0 flex-1 items-start gap-2">
+        <div className="flex min-w-0 flex-1 items-start gap-1.5">
           {Icon ? (
-            <span className="mt-0.5 flex h-6 w-6 flex-none items-center justify-center rounded-md bg-surface-blue text-primaryBlue">
-              <Icon className="h-3.5 w-3.5" />
+            <span className="mt-0.5 flex h-5 w-5 flex-none items-center justify-center rounded-md bg-surface-blue text-primaryBlue">
+              <Icon className="h-3 w-3" />
             </span>
           ) : null}
           {/* Title is allowed to wrap to 2 lines so labels like
               "Catchments on Watch" or "Critical Work Orders" never truncate. */}
           <div
-            className="min-w-0 flex-1 break-words text-[12px] font-semibold leading-[1.3] tracking-[0.01em] text-deepNavy"
+            className="min-w-0 flex-1 break-words text-[11px] font-semibold leading-[1.25] tracking-[0.01em] text-deepNavy"
             title={title}
           >
             {title}
@@ -84,20 +84,20 @@ export default function KpiCard({
         </div>
         {status ? <StatusBadge status={status} size="sm" /> : null}
       </div>
-      <div className="mt-2 text-[28px] font-semibold leading-none tracking-tight text-deepNavy">
+      <div className="mt-1.5 text-[22px] font-semibold leading-none tracking-tight text-deepNavy">
         <CountUp value={value} />
       </div>
       {supportingText ? (
-        <div className="mt-1 text-[11.5px] leading-[1.35] text-ink-muted">
+        <div className="mt-0.5 line-clamp-2 text-[10.5px] leading-[1.3] text-ink-muted">
           {supportingText}
         </div>
       ) : null}
       {sparklineData ? (
-        <div className="mt-auto pt-2 -mb-1">
+        <div className="mt-auto pt-1.5 -mb-1">
           <Sparkline
             data={sparklineData}
             stroke={sparklineColor ?? "#00AEEF"}
-            height={28}
+            height={22}
             variant={sparklineVariant}
           />
         </div>

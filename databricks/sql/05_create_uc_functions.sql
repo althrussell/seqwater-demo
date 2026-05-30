@@ -4,9 +4,9 @@
 -- Three table-valued UC functions used as child-agent tools by the
 -- Seqwater Supervisor agent. They mirror the deterministic Python tools in
 -- backend/agents/tools.py so the live agent and local-mode mock answer with
--- identical semantics over identical synthetic data.
+-- identical semantics over identical data.
 --
--- All values are SYNTHETIC demo data. {catalog}.{schema} placeholders are
+-- All values are demo data. {catalog}.{schema} placeholders are
 -- substituted by scripts/databricks_sql.py.
 -- ============================================================================
 
@@ -22,7 +22,7 @@ RETURNS TABLE (
   open_work_orders      INT,
   recommended_action    STRING
 )
-COMMENT 'Synthetic top-N asset risk scoreboard. Returns the highest-risk synthetic assets in descending order. SYNTHETIC DEMO DATA — NOT FOR OPERATIONAL USE.'
+COMMENT 'Top-N asset risk scoreboard. Returns the highest-risk assets in descending order. DEMO DATA — NOT FOR OPERATIONAL USE.'
 RETURN
   SELECT
     asset_id,
@@ -61,7 +61,7 @@ RETURNS TABLE (
   delivery_risk        STRING,
   recommended_priority STRING
 )
-COMMENT 'Synthetic top-N capital project options ordered by risk reduction score. SYNTHETIC DEMO DATA — NOT FOR OPERATIONAL USE.'
+COMMENT 'Top-N capital project options ordered by risk reduction score. DEMO DATA — NOT FOR OPERATIONAL USE.'
 RETURN
   SELECT
     project_id,
@@ -104,7 +104,7 @@ RETURNS TABLE (
   peak_release_ml            DOUBLE,
   hours_simulated            INT
 )
-COMMENT 'Synthetic flood readiness scenario detail. Joins the synthetic scenario register with the synthetic dam release simulation summary for the requested scenario_id. SYNTHETIC DEMO DATA — NOT AN OPERATIONAL RELEASE MODEL.'
+COMMENT 'Flood readiness scenario detail. Joins the scenario register with the dam release simulation summary for the requested scenario_id. DEMO DATA — NOT AN OPERATIONAL RELEASE MODEL.'
 RETURN
   SELECT
     s.scenario_id,

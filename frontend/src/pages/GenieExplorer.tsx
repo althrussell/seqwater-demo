@@ -13,11 +13,11 @@ import { api } from "@/lib/api";
 import type { GenieEmbedResponse } from "@/lib/types";
 
 const SAMPLE_PROMPTS = [
-  "Show the synthetic 7-day storage trend for North Pine Dam vs Wivenhoe.",
-  "Which synthetic assets are in High or Critical risk band today?",
-  "Top 10 synthetic water quality samples by turbidity in the last 30 days.",
-  "How many synthetic open critical work orders per region?",
-  "Synthetic projected storage trajectory for flood scenario FS-001.",
+  "Show the 7-day storage trend for North Pine Dam vs Wivenhoe.",
+  "Which assets are in High or Critical risk band today?",
+  "Top 10 water quality samples by turbidity in the last 30 days.",
+  "How many open critical work orders per region?",
+  "Projected storage trajectory for flood scenario FS-001.",
 ];
 
 export default function GenieExplorer() {
@@ -48,91 +48,82 @@ export default function GenieExplorer() {
   }, [config, error]);
 
   return (
-    <div className="space-y-4">
-      <SectionCard
-        title="Embedded Genie Space"
-        description="Synthetic Seqwater Operations — natural language → SQL over Unity Catalog"
-        actions={
-          <div className="flex items-center gap-2">
-            <span
-              className={
-                "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium " +
-                (status.kind === "ready"
-                  ? "bg-emerald-50 text-emerald-700"
-                  : status.kind === "error"
-                  ? "bg-rose-50 text-rose-700"
-                  : status.kind === "unconfigured"
-                  ? "bg-amber-50 text-amber-700"
-                  : "bg-slate-100 text-slate-600")
-              }
-            >
-              {status.kind === "loading" && <Loader2 className="h-3 w-3 animate-spin" />}
-              {status.kind === "ready" && <Sparkles className="h-3 w-3" />}
-              {status.kind === "error" && <AlertTriangle className="h-3 w-3" />}
-              {status.kind === "unconfigured" && <AlertTriangle className="h-3 w-3" />}
-              {status.kind === "ready"
-                ? `Genie space ${config?.space_id ?? ""}`
-                : status.kind}
-            </span>
-            {config?.configured ? (
-              <>
-                <button
-                  type="button"
-                  onClick={reloadIframe}
-                  className="inline-flex items-center gap-1 rounded-md border border-border bg-surface px-2 py-1 text-[11.5px] text-ink-secondary hover:border-primaryBlue/40 hover:text-deepNavy"
+    <div className="flex h-[var(--page-h)] min-h-0 flex-col gap-2">
+      <div className="flex flex-none flex-wrap items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2 shadow-card">
+        <div className="flex items-center gap-2">
+          <Database className="h-4 w-4 text-primaryBlue" />
+          <div className="text-[12.5px] font-semibold text-deepNavy">Genie Space</div>
+          <span className="hidden text-[11px] text-ink-muted sm:inline">
+            Seqwater Operations — natural language → SQL over Unity Catalog
+          </span>
+        </div>
+        <div className="ml-auto flex flex-none items-center gap-1.5">
+          <span
+            className={
+              "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10.5px] font-medium " +
+              (status.kind === "ready"
+                ? "bg-emerald-50 text-emerald-700"
+                : status.kind === "error"
+                ? "bg-rose-50 text-rose-700"
+                : status.kind === "unconfigured"
+                ? "bg-amber-50 text-amber-700"
+                : "bg-slate-100 text-slate-600")
+            }
+          >
+            {status.kind === "loading" && <Loader2 className="h-3 w-3 animate-spin" />}
+            {status.kind === "ready" && <Sparkles className="h-3 w-3" />}
+            {status.kind === "error" && <AlertTriangle className="h-3 w-3" />}
+            {status.kind === "unconfigured" && <AlertTriangle className="h-3 w-3" />}
+            {status.kind === "ready"
+              ? `space ${config?.space_id ?? ""}`
+              : status.kind}
+          </span>
+          <span className="hidden items-center gap-1 text-[10.5px] text-ink-muted md:inline-flex">
+            <ShieldCheck className="h-3 w-3 text-primaryBlue" />
+            Governed access · UC permissions
+          </span>
+          {config?.configured ? (
+            <>
+              <button
+                type="button"
+                onClick={reloadIframe}
+                className="inline-flex items-center gap-1 rounded-md border border-border bg-surface px-2 py-0.5 text-[11px] text-ink-secondary hover:border-primaryBlue/40 hover:text-deepNavy"
+              >
+                <RefreshCw className="h-3 w-3" /> Reload
+              </button>
+              {config.embed_url ? (
+                <a
+                  href={config.embed_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 rounded-md border border-border bg-surface px-2 py-0.5 text-[11px] text-ink-secondary hover:border-primaryBlue/40 hover:text-deepNavy"
                 >
-                  <RefreshCw className="h-3 w-3" /> Reload
-                </button>
-                {config.embed_url ? (
-                  <a
-                    href={config.embed_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 rounded-md border border-border bg-surface px-2 py-1 text-[11.5px] text-ink-secondary hover:border-primaryBlue/40 hover:text-deepNavy"
-                  >
-                    <ExternalLink className="h-3 w-3" /> Open in Databricks
-                  </a>
-                ) : null}
-              </>
-            ) : null}
+                  <ExternalLink className="h-3 w-3" /> Open in Databricks
+                </a>
+              ) : null}
+            </>
+          ) : null}
+        </div>
+        <div className="flex w-full flex-none items-center gap-1.5 overflow-hidden border-t border-border pt-1.5">
+          <span className="flex-none text-[10px] font-semibold uppercase tracking-wider text-ink-muted">
+            Try
+          </span>
+          <div className="scrollbar-clean flex flex-1 items-center gap-1.5 overflow-x-auto">
+            {SAMPLE_PROMPTS.map((p) => (
+              <span
+                key={p}
+                className="flex-none rounded-full border border-border bg-surface px-2.5 py-0.5 text-[10.5px] text-ink-secondary"
+              >
+                {p}
+              </span>
+            ))}
           </div>
-        }
-      >
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-          <ArchTile
-            icon={Database}
-            label="Genie Space"
-            body="Seqwater Operations — synthetic UC tables exposed for governed natural-language SQL."
-          />
-          <ArchTile
-            icon={Sparkles}
-            label="Embedded as iframe"
-            body="Per Databricks docs: Share → Embed space, then paste DATABRICKS_GENIE_EMBED_URL."
-          />
-          <ArchTile
-            icon={ShieldCheck}
-            label="Governed access"
-            body="Users only see data they have UC permission on. Audit + lineage stay in Unity Catalog."
-          />
         </div>
-      </SectionCard>
+      </div>
 
-      <SectionCard title="Try a synthetic question" padded={false} bodyClassName="p-3">
-        <div className="flex flex-wrap gap-2">
-          {SAMPLE_PROMPTS.map((p) => (
-            <span
-              key={p}
-              className="rounded-full border border-border bg-surface px-3 py-1 text-[11.5px] text-ink-secondary"
-            >
-              {p}
-            </span>
-          ))}
-        </div>
-      </SectionCard>
-
-      <SectionCard padded={false} bodyClassName="p-0">
+      <SectionCard padded={false} bodyClassName="p-0 min-h-0" className="min-h-0 flex-1">
         {status.kind === "ready" && config?.embed_url ? (
-          <div className="relative w-full overflow-hidden rounded-b-lg" style={{ height: "78vh", minHeight: 560 }}>
+          <div className="relative h-full min-h-0 w-full overflow-hidden rounded-b-lg">
             <iframe
               key={iframeKey}
               title="Seqwater Genie Space"
@@ -155,26 +146,6 @@ export default function GenieExplorer() {
   );
 }
 
-function ArchTile({
-  icon: Icon,
-  label,
-  body,
-}: {
-  icon: React.ComponentType<{ className?: string }>;
-  label: string;
-  body: string;
-}) {
-  return (
-    <div className="rounded-md border border-border bg-surface p-3">
-      <div className="flex items-center gap-2 text-[11.5px] font-semibold text-deepNavy">
-        <Icon className="h-3.5 w-3.5 text-primaryBlue" />
-        {label}
-      </div>
-      <p className="mt-1 text-[11.5px] text-ink-secondary">{body}</p>
-    </div>
-  );
-}
-
 function EmptyState({
   kind,
   message,
@@ -188,13 +159,13 @@ function EmptyState({
 }) {
   if (kind === "loading") {
     return (
-      <div className="flex h-[60vh] min-h-[420px] items-center justify-center text-[13px] text-ink-muted">
+      <div className="flex h-full min-h-0 items-center justify-center text-[13px] text-ink-muted">
         <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Resolving Genie embed configuration…
       </div>
     );
   }
   return (
-    <div className="flex h-[60vh] min-h-[420px] flex-col items-center justify-center gap-3 px-6 text-center">
+    <div className="scrollbar-clean flex h-full min-h-0 flex-col items-center justify-center gap-3 overflow-auto px-6 py-4 text-center">
       <AlertTriangle className="h-8 w-8 text-amber-500" />
       <div className="max-w-xl text-[13px] text-ink-secondary">
         <div className="text-[14px] font-semibold text-deepNavy">

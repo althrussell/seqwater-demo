@@ -1,16 +1,16 @@
-"""Generate synthetic, branded PDFs from the demo markdown corpus.
+"""Generate branded PDFs from the demo markdown corpus.
 
 For every ``.md`` file in ``data/documents/``, emit:
 
 * ``data/documents/pdf/<basename>.pdf`` — A4 PDF with title page, body, watermark,
-  footer, and "Synthetic Demo" badge.
+  footer, and "Demo" badge.
 * ``data/documents/pdf/<basename>.json`` — Knowledge Assistant example pairs that
   ``manage_ka(action="create_or_update", add_examples_from_volume=true)`` will
   pick up automatically once the volume is uploaded.
 
 The PDFs are deliberately conservative in styling so they read as authentic
-internal demo artefacts. Every page has a "SYNTHETIC DEMO DATA — NOT FOR
-OPERATIONAL USE" footer and a diagonal "SYNTHETIC" watermark.
+internal demo artefacts. Every page has a "DEMO DATA — NOT FOR
+OPERATIONAL USE" footer and a diagonal "DEMO" watermark.
 
 Run from the repo root:
 
@@ -350,9 +350,9 @@ def _draw_page_chrome(canvas, doc) -> None:
     canvas.rect(0, page_h - 12 * mm, page_w, 12 * mm, stroke=0, fill=1)
     canvas.setFillColor(colors.white)
     canvas.setFont("Helvetica-Bold", 9)
-    canvas.drawString(20 * mm, page_h - 8 * mm, "Seqwater AI Command Centre — Synthetic Demo Document")
+    canvas.drawString(20 * mm, page_h - 8 * mm, "Seqwater AI Command Centre — Demo Document")
     canvas.setFont("Helvetica", 8)
-    canvas.drawRightString(page_w - 20 * mm, page_h - 8 * mm, "SYNTHETIC — NOT FOR OPERATIONAL USE")
+    canvas.drawRightString(page_w - 20 * mm, page_h - 8 * mm, "DEMO — NOT FOR OPERATIONAL USE")
     canvas.restoreState()
 
     canvas.saveState()
@@ -361,7 +361,7 @@ def _draw_page_chrome(canvas, doc) -> None:
     canvas.drawString(
         20 * mm,
         12 * mm,
-        "SYNTHETIC DEMO DATA — NOT FOR OPERATIONAL USE — illustrative content only.",
+        "DEMO DATA — NOT FOR OPERATIONAL USE — illustrative content only.",
     )
     canvas.drawRightString(page_w - 20 * mm, 12 * mm, f"Page {doc.page}")
     canvas.restoreState()
@@ -371,7 +371,7 @@ def _draw_page_chrome(canvas, doc) -> None:
     canvas.rotate(35)
     canvas.setFont("Helvetica-Bold", 110)
     canvas.setFillColor(colors.Color(0.85, 0.88, 0.93, alpha=0.18))
-    canvas.drawCentredString(0, 0, "SYNTHETIC")
+    canvas.drawCentredString(0, 0, "DEMO")
     canvas.restoreState()
 
 
@@ -383,9 +383,9 @@ def _build_doc(out_path: Path) -> BaseDocTemplate:
         rightMargin=20 * mm,
         topMargin=20 * mm,
         bottomMargin=20 * mm,
-        title="Seqwater Synthetic Demo Document",
-        author="Seqwater AI Command Centre (synthetic demo)",
-        subject="Synthetic demo content",
+        title="Seqwater Demo Document",
+        author="Seqwater AI Command Centre (demo)",
+        subject="Demo content",
     )
     frame = Frame(
         doc.leftMargin,
@@ -406,12 +406,12 @@ def _flowables_for_blocks(
 ) -> list:
     flow: list = []
 
-    flow.append(Paragraph("SYNTHETIC EXECUTIVE DEMO DOCUMENT", styles["MetaLabel"]))
+    flow.append(Paragraph("DEMO EXECUTIVE DEMO DOCUMENT", styles["MetaLabel"]))
     flow.append(Paragraph(title, styles["Title"]))
     flow.append(
         Paragraph(
             "Generated for the Seqwater AI Command Centre Databricks demo. "
-            "All content is synthetic and must not be used for any operational purpose.",
+            "All content is demo and must not be used for any operational purpose.",
             styles["Subtitle"],
         )
     )
@@ -525,162 +525,162 @@ def _render_table(rows: list[list[str]], styles: dict[str, ParagraphStyle]) -> T
 KA_EXAMPLES: dict[str, list[dict[str, str]]] = {
     "synthetic_dam_operations_playbook": [
         {
-            "question": "What synthetic checklist applies during a Watch posture for dams?",
+            "question": "What checklist applies during a Watch posture for dams?",
             "guideline": (
-                "Cite the synthetic Dam Operations Playbook section 3 (Watch checklist). "
-                "List the five checklist items verbatim. Note synthetic data and require "
+                "Cite the Dam Operations Playbook section 3 (Watch checklist). "
+                "List the five checklist items verbatim. Note data and require "
                 "human-in-the-loop validation."
             ),
         },
         {
-            "question": "Which posture levels does the synthetic dam playbook define?",
+            "question": "Which posture levels does the dam playbook define?",
             "guideline": (
                 "Cite the four bands from section 2 (Routine, Watch, Respond, Coordinate) "
-                "with their synthetic indicative responses. State synthetic nature."
+                "with their indicative responses. State nature."
             ),
         },
     ],
     "synthetic_water_quality_response_procedure": [
         {
-            "question": "What synthetic indicators are monitored under the water quality procedure?",
+            "question": "What indicators are monitored under the water quality procedure?",
             "guideline": (
                 "Cite section 2: turbidity, pH, chlorine residual, conductivity, temperature, "
-                "E. coli detections. State synthetic nature and require human review for any "
+                "E. coli detections. State nature and require human review for any "
                 "operational interpretation."
             ),
         },
         {
-            "question": "What synthetic actions are recommended at the Watch alert level?",
+            "question": "What actions are recommended at the Watch alert level?",
             "guideline": (
                 "Cite section 3: Increase sampling frequency and notify treatment supervisor. "
-                "State the synthetic source."
+                "State the source."
             ),
         },
     ],
     "synthetic_asset_criticality_framework": [
         {
-            "question": "How does the synthetic asset criticality framework rank assets?",
+            "question": "How does the asset criticality framework rank assets?",
             "guideline": (
-                "Cite the synthetic framework's tiering scheme. Note synthetic nature. "
-                "Reference the asset_risk_scores synthetic table for the live ranking."
+                "Cite the framework's tiering scheme. Note nature. "
+                "Reference the asset_risk_scores table for the live ranking."
             ),
         },
     ],
     "synthetic_capital_prioritisation_framework": [
         {
-            "question": "What synthetic factors drive capital prioritisation in the framework?",
+            "question": "What factors drive capital prioritisation in the framework?",
             "guideline": (
-                "Cite the synthetic framework. Mention synthetic risk reduction score and "
-                "alignment with the synthetic asset criticality framework."
+                "Cite the framework. Mention risk reduction score and "
+                "alignment with the asset criticality framework."
             ),
         },
     ],
     "synthetic_flood_readiness_executive_briefing_template": [
         {
-            "question": "Generate a synthetic flood readiness briefing for the executive team.",
+            "question": "Generate a flood readiness briefing for the executive team.",
             "guideline": (
-                "Use the synthetic template structure verbatim. Populate with synthetic "
-                "context but flag that all values are synthetic and require validation."
+                "Use the template structure verbatim. Populate with "
+                "context but flag that all values are demo and require validation."
             ),
         },
     ],
     "synthetic_retailer_customer_communications_protocol": [
         {
-            "question": "What synthetic communications are required during a Watch posture?",
+            "question": "What communications are required during a Watch posture?",
             "guideline": (
-                "Cite the synthetic protocol. Highlight synthetic notification timing and "
+                "Cite the protocol. Highlight notification timing and "
                 "approver roles. Defer external comms to designated leads."
             ),
         },
     ],
     "synthetic_dam_safety_inspection_north_pine_2026": [
         {
-            "question": "What synthetic findings were recorded for North Pine Dam in May 2026?",
+            "question": "What findings were recorded for North Pine Dam in May 2026?",
             "guideline": (
-                "Cite the synthetic inspection report section 3. List the three findings "
-                "verbatim with their synthetic recommendations. State synthetic nature."
+                "Cite the inspection report section 3. List the three findings "
+                "verbatim with their recommendations. State nature."
             ),
         },
         {
-            "question": "What is the aggregate synthetic risk band for North Pine Dam after the inspection?",
+            "question": "What is the aggregate risk band for North Pine Dam after the inspection?",
             "guideline": (
-                "Cite section 4: Watch. State that the synthetic risk would migrate to "
-                "Respond if the synthetic 72h forecast were realised. Require human review."
+                "Cite section 4: Watch. State that the risk would migrate to "
+                "Respond if the 72h forecast were realised. Require human review."
             ),
         },
     ],
     "synthetic_incident_report_pmp014_caboolture_2026q2": [
         {
-            "question": "Summarise the synthetic PMP-014 incident report.",
+            "question": "Summarise the PMP-014 incident report.",
             "guideline": (
-                "Cite the synthetic incident report. Quote the synthetic timeline, root cause "
-                "hypotheses, and the four synthetic recommended next actions. Note synthetic data."
+                "Cite the incident report. Quote the timeline, root cause "
+                "hypotheses, and the four recommended next actions. Note data."
             ),
         },
         {
-            "question": "What synthetic capital options are linked to PMP-014?",
+            "question": "What capital options are linked to PMP-014?",
             "guideline": (
-                "Cite the synthetic incident report section 4 and the synthetic capital "
-                "business case for the synthetic PMP-014 Replacement and Reliability Programme."
+                "Cite the incident report section 4 and the capital "
+                "business case for the PMP-014 Replacement and Reliability Programme."
             ),
         },
     ],
     "synthetic_monthly_water_quality_report_2026_05": [
         {
-            "question": "Which synthetic plants were on a Watch indicator in May 2026?",
+            "question": "Which plants were on a Watch indicator in May 2026?",
             "guideline": (
-                "Cite section 3 of the synthetic monthly report. Name the synthetic North "
-                "Pine WTP and synthetic Landers Shute WTP and their context."
+                "Cite section 3 of the monthly report. Name the North "
+                "Pine WTP and Landers Shute WTP and their context."
             ),
         },
         {
-            "question": "What synthetic recommended actions follow from the May water quality report?",
+            "question": "What recommended actions follow from the May water quality report?",
             "guideline": (
-                "Cite section 5 verbatim. Note synthetic nature and require qualified review."
+                "Cite section 5 verbatim. Note nature and require qualified review."
             ),
         },
     ],
     "synthetic_capital_business_case_pump_replacement": [
         {
-            "question": "What synthetic options were considered for PMP-014 replacement?",
+            "question": "What options were considered for PMP-014 replacement?",
             "guideline": (
-                "Cite the synthetic options table (Option 0 through Option 3) with "
-                "synthetic capital costs and risk reduction scores. Note Option 3 is the "
-                "synthetic recommended option."
+                "Cite the options table (Option 0 through Option 3) with "
+                "capital costs and risk reduction scores. Note Option 3 is the "
+                "recommended option."
             ),
         },
     ],
     "synthetic_board_paper_q2_2026_water_security": [
         {
-            "question": "What synthetic supply position is reported for Q2 FY2026?",
+            "question": "What supply position is reported for Q2 FY2026?",
             "guideline": (
-                "Cite the synthetic board paper section 3 metrics: 71.4% storage, 62 mm "
+                "Cite the board paper section 3 metrics: 71.4% storage, 62 mm "
                 "72h forecast, 0.68 catchment saturation index, 1,210 ML/day demand."
             ),
         },
         {
-            "question": "What synthetic recommended actions does the synthetic board paper request?",
+            "question": "What recommended actions does the board paper request?",
             "guideline": (
-                "Cite section 8: note posture, endorse synthetic PMP-014 programme, note AI "
+                "Cite section 8: note posture, endorse PMP-014 programme, note AI "
                 "governance update, confirm next reporting cycle."
             ),
         },
     ],
     "synthetic_regulator_correspondence_dnrme_2026_04": [
         {
-            "question": "What synthetic regulatory follow-up items are outstanding?",
+            "question": "What regulatory follow-up items are outstanding?",
             "guideline": (
-                "Cite section 3 of the synthetic regulator correspondence: synthetic CMS-PINE-04 "
-                "telemetry continuity remediation plan and synthetic AI-assisted decision "
+                "Cite section 3 of the regulator correspondence: CMS-PINE-04 "
+                "telemetry continuity remediation plan and AI-assisted decision "
                 "support disclosures."
             ),
         },
     ],
     "synthetic_climate_outlook_seq_winter_2026": [
         {
-            "question": "What synthetic catchment regions are forecast above-average rainfall?",
+            "question": "What catchment regions are forecast above-average rainfall?",
             "guideline": (
-                "Cite section 2 of the synthetic outlook: synthetic Pine Rivers and synthetic "
+                "Cite section 2 of the outlook: Pine Rivers and "
                 "Sunshine Coast catchments. Note above-average overnight minima."
             ),
         },
@@ -736,10 +736,10 @@ def main() -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     md_files = sorted(DOCS_DIR.glob("synthetic_*.md"))
     if not md_files:
-        LOG.error("No synthetic markdown files found in %s", DOCS_DIR)
+        LOG.error("No markdown files found in %s", DOCS_DIR)
         sys.exit(1)
 
-    LOG.info("Generating synthetic PDFs for %d markdown files", len(md_files))
+    LOG.info("Generating PDFs for %d markdown files", len(md_files))
     summary: list[dict[str, str]] = []
     for md in md_files:
         try:

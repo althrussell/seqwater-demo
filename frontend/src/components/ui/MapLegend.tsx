@@ -90,16 +90,13 @@ export default function MapLegend({
   return (
     <div
       className={
-        "rounded-lg border border-border bg-surface/96 px-3 py-2.5 text-[11.5px] text-ink-secondary shadow-card backdrop-blur " +
+        "rounded-lg border border-border-strong bg-surface px-3 py-2.5 text-[11.5px] font-medium text-deepNavy shadow-elevated " +
         (className ?? "")
       }
     >
       <div className="mb-2 flex items-center justify-between gap-2">
         <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-deepNavy">
           {title}
-        </span>
-        <span className="rounded-full bg-surface-blue px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-[0.14em] text-primaryBlue">
-          Synthetic
         </span>
       </div>
       <ul className="grid grid-cols-1 gap-1.5">
@@ -118,14 +115,14 @@ export function RainfallLegend({ className }: { className?: string }) {
   return (
     <div
       className={
-        "rounded-lg border border-border bg-surface/96 px-3 py-2.5 text-[11.5px] text-ink-secondary shadow-card backdrop-blur " +
+        "rounded-lg border border-border-strong bg-surface px-3 py-2.5 text-[11.5px] font-medium text-deepNavy shadow-elevated " +
         (className ?? "")
       }
     >
       <div className="mb-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-deepNavy">
         Rainfall (mm)
       </div>
-      <div className="mb-1 text-[10.5px] text-ink-muted">Next 72 hours</div>
+      <div className="mb-1 text-[10.5px] text-ink-secondary">Next 72 hours</div>
       <div
         className="h-2 rounded"
         style={{
@@ -133,7 +130,7 @@ export function RainfallLegend({ className }: { className?: string }) {
             "linear-gradient(90deg,#EEF8F2 0%,#D8F0FB 25%,#86CFE5 45%,#5FA777 60%,#D88A00 78%,#C2410C 100%)",
         }}
       />
-      <div className="mt-1 flex justify-between text-[10.5px] text-ink-muted">
+      <div className="mt-1 flex justify-between text-[10.5px] font-semibold text-deepNavy">
         <span>1</span>
         <span>10</span>
         <span>25</span>

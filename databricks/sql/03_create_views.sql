@@ -2,7 +2,7 @@
 -- Seqwater AI Command Centre — Unity Catalog views
 --
 -- Convenience views for the executive command centre and AquaIQ tool calls.
--- All values are SYNTHETIC. {catalog}.{schema} placeholders are substituted by
+-- All values are DEMO. {catalog}.{schema} placeholders are substituted by
 -- scripts/databricks_sql.py.
 -- ============================================================================
 

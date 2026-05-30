@@ -1,6 +1,6 @@
 {
-  "display_name": "Seqwater AI Command Centre — Executive Overview (synthetic)",
-  "description": "Synthetic demo dashboard mirroring the Executive Overview page in the Databricks App. Not real Seqwater data.",
+  "display_name": "Seqwater AI Command Centre — Executive Overview",
+  "description": "Demo dashboard mirroring the Executive Overview page in the Databricks App. Not real Seqwater data.",
   "tags": ["synthetic_demo", "seqwater", "field_engineering"],
   "datasets": [
     {
@@ -12,7 +12,7 @@
     },
     {
       "name": "ds_top_risks",
-      "displayName": "Top synthetic asset risks",
+      "displayName": "Top asset risks",
       "queryLines": [
         "SELECT asset_name, asset_type, risk_band, risk_score, predicted_failure_30d, open_work_orders",
         "FROM main.seqwater_demo.v_top_asset_risks LIMIT 10"
@@ -20,7 +20,7 @@
     },
     {
       "name": "ds_storage_trend",
-      "displayName": "Synthetic SEQ-wide storage trend",
+      "displayName": "SEQ-wide storage trend",
       "queryLines": [
         "SELECT date, ROUND(SUM(current_storage_ml) / SUM(full_supply_ml) * 100, 2) AS storage_percent",
         "FROM main.seqwater_demo.dam_storage_daily",
@@ -29,7 +29,7 @@
     },
     {
       "name": "ds_quality_alerts",
-      "displayName": "Synthetic water quality alert breakdown",
+      "displayName": "Water quality alert breakdown",
       "queryLines": [
         "SELECT alert_level, COUNT(*) AS samples",
         "FROM main.seqwater_demo.water_quality_samples GROUP BY alert_level"

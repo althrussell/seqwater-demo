@@ -10,9 +10,9 @@ Checks
 ------
 
 1. ``SELECT 1 FROM {catalog}.{schema}.assets LIMIT 1`` — table SELECT on the
-   synthetic schema.
+ schema.
 2. ``LIST '/Volumes/{catalog}/{schema}/{volume}/pdf/'`` — Volume READ on the
-   synthetic PDF subpath (where the KA looks for source documents).
+ PDF subpath (where the KA looks for source documents).
 3. ``SELECT * FROM {catalog}.{schema}.top_asset_risks(3)`` — UC function
    EXECUTE.
 4. ``POST /serving-endpoints/{supervisor}/invocations`` with a 1-token noop —
@@ -235,7 +235,7 @@ def _check_genie(client, space_id: str) -> CheckResult:
             r = hc.post(
                 url,
                 headers=headers,
-                json={"content": "What is the synthetic asset count?"},
+                json={"content": "What is the asset count?"},
             )
         if r.status_code >= 400:
             raise RuntimeError(f"HTTP {r.status_code}: {r.text[:120]}")

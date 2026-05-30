@@ -1,93 +1,93 @@
-# Synthetic Board Paper — Q2 2026 Water Security Update
+# Board Paper — Q2 2026 Water Security Update
 
-**Status:** SYNTHETIC DEMO ARTEFACT — for executive demonstration only.
-**Owner (synthetic):** Office of the CEO
-**Audience (synthetic):** Board of Directors
-**Reporting period (synthetic):** Q2 FY2026
+**Status:** DEMO ARTEFACT — for executive demonstration only.
+**Owner:** Office of the CEO
+**Audience:** Board of Directors
+**Reporting period:** Q2 FY2026
 **Classification:** Internal demo
 
-> This is a synthetic board paper, generated to demonstrate how a Databricks
+> This is a board paper, generated to demonstrate how a Databricks
 > Knowledge Assistant retrieves governance-grade material for a Seqwater
 > executive demo. It is not a real board paper, has not been reviewed by
 > any board, and must not be used in any real governance forum.
 
-## 1. Synthetic purpose
+## 1. Purpose
 
-To brief the synthetic Board on the synthetic state of water security across
-the SEQ Water Grid for the synthetic Q2 FY2026 reporting window, and to
-record synthetic board endorsement of the synthetic capital options proposed
-by the synthetic Capital Prioritisation Framework.
+To brief the Board on the state of water security across
+the SEQ Water Grid for the Q2 FY2026 reporting window, and to
+record board endorsement of the capital options proposed
+by the Capital Prioritisation Framework.
 
-## 2. Synthetic key messages
+## 2. Key messages
 
-1. The synthetic SEQ Water Grid remained inside the synthetic operating
-   envelope across the synthetic reporting window.
-2. The synthetic 72-hour synthetic operational risk band is **Watch**, driven
-   primarily by synthetic catchment saturation and synthetic asset risk
-   composition rather than by synthetic storage levels.
-3. Two synthetic capital projects are recommended for synthetic endorsement.
-4. AI-assisted decision support is in synthetic demo deployment under the
+1. The SEQ Water Grid remained inside the operating
+   envelope across the reporting window.
+2. The 72-hour operational risk band is **Watch**, driven
+   primarily by catchment saturation and asset risk
+   composition rather than by storage levels.
+3. Two capital projects are recommended for endorsement.
+4. AI-assisted decision support is in demo deployment under the
    AquaIQ governance posture.
 
-## 3. Synthetic supply position
+## 3. Supply position
 
-| Metric (synthetic)                       | Value (synthetic) |
+| Metric                       | Value |
 |------------------------------------------|-------------------|
-| Synthetic SEQ-wide storage               | 71.4%             |
-| Synthetic 72h forecast rainfall (mean)   | 62 mm             |
-| Synthetic catchment saturation index     | 0.68              |
-| Synthetic demand today                   | 1,210 ML/day      |
-| Synthetic treatment capacity             | 1,950 ML/day      |
-| Synthetic supply-demand headroom         | +740 ML/day       |
+| SEQ-wide storage               | 71.4%             |
+| 72h forecast rainfall (mean)   | 62 mm             |
+| Catchment saturation index     | 0.68              |
+| Demand today                   | 1,210 ML/day      |
+| Treatment capacity             | 1,950 ML/day      |
+| Supply-demand headroom         | +740 ML/day       |
 
-## 4. Synthetic asset risk posture
+## 4. Asset risk posture
 
-The synthetic asset risk scoreboard records 4 synthetic assets in the
-**High** band, with the synthetic Caboolture Pump Station (`PMP-014`)
-trending toward the **Critical** band. The synthetic Asset Risk and Capital
-Prioritisation frameworks recommend the synthetic PMP-014 Replacement and
-Reliability Programme as the synthetic top-priority capital option.
+The asset risk scoreboard records 4 assets in the
+**High** band, with the Caboolture Pump Station (`PMP-014`)
+trending toward the **Critical** band. The Asset Risk and Capital
+Prioritisation frameworks recommend the PMP-014 Replacement and
+Reliability Programme as the top-priority capital option.
 
-## 5. Synthetic water quality posture
+## 5. Water quality posture
 
-Two synthetic treatment plants — synthetic North Pine WTP and synthetic
-Landers Shute WTP — recorded sustained synthetic Watch indicators on
-turbidity through the back half of the synthetic reporting window. No
-synthetic Elevated indicators breached treated water synthetic threshold
+Two treatment plants — North Pine WTP and
+Landers Shute WTP — recorded sustained Watch indicators on
+turbidity through the back half of the reporting window. No
+Elevated indicators breached treated water threshold
 bands.
 
-## 6. Synthetic capital recommendations
+## 6. Capital recommendations
 
-| # | Synthetic project                                  | Synthetic priority | Synthetic capital | Synthetic risk reduction |
+| # | Project                                  | Priority | Capital | Risk reduction |
 |---|-----------------------------------------------------|--------------------|-------------------|---------------------------|
 | 1 | PMP-014 Replacement and Reliability Programme       | 1                  | $5.9M             | 0.62                      |
-| 2 | Synthetic Pine Rivers Pipeline Resilience Project   | 2                  | $7.2M             | 0.41                      |
+| 2 | Pine Rivers Pipeline Resilience Project   | 2                  | $7.2M             | 0.41                      |
 
-## 7. Synthetic AI governance update
+## 7. AI governance update
 
-The synthetic AquaIQ assistant is in synthetic demo deployment with three
-synthetic Agent Bricks: a synthetic Genie space over the synthetic SEQ
-operational tables, a synthetic Knowledge Assistant over synthetic policy
-and procedure documents, and a synthetic Supervisor agent that orchestrates
-the two and applies governance rails. Every synthetic interaction is
-recorded in the synthetic AI Interaction Audit table.
+The AquaIQ assistant is in demo deployment with three
+Agent Bricks: a Genie space over the SEQ
+operational tables, a Knowledge Assistant over policy
+and procedure documents, and a Supervisor agent that orchestrates
+the two and applies governance rails. Every interaction is
+recorded in the AI Interaction Audit table.
 
-## 8. Synthetic recommended board actions
+## 8. Recommended board actions
 
-1. **Note** the synthetic Q2 FY2026 supply, asset, and quality posture.
-2. **Endorse** the synthetic PMP-014 Replacement and Reliability Programme
-   for synthetic next-stage scoping.
-3. **Note** the synthetic AI governance update and the synthetic AquaIQ
+1. **Note** the Q2 FY2026 supply, asset, and quality posture.
+2. **Endorse** the PMP-014 Replacement and Reliability Programme
+   for next-stage scoping.
+3. **Note** the AI governance update and the AquaIQ
    demo posture.
-4. **Confirm** the synthetic next reporting cycle.
+4. **Confirm** the next reporting cycle.
 
-## 9. Synthetic human-in-the-loop validation
+## 9. Human-in-the-loop validation
 
-This synthetic board paper must be reviewed by the synthetic CEO, synthetic
-COO, and synthetic CFO before synthetic submission to the synthetic Board.
-AI-generated summaries derived from this synthetic paper must cite this
-synthetic source and explicitly state the synthetic nature of the data.
+This board paper must be reviewed by the CEO,
+COO, and CFO before submission to the Board.
+AI-generated summaries derived from this paper must cite this
+source and explicitly state the nature of the data.
 
 ---
 
-*Synthetic demo content. Not for operational use.*
+*Demo content. Not for operational use.*

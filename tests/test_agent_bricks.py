@@ -41,12 +41,12 @@ def test_summarize_tool_args_parses_json_and_falls_back() -> None:
 def test_normalise_citations_handles_dicts_and_strings() -> None:
     items = ab._normalise_citations(
         [
-            {"source": "main.seqwater_demo.assets", "detail": "synthetic"},
+            {"source": "main.seqwater_demo.assets", "detail": "demo"},
             "raw-string-citation",
             {"title": "doc.pdf", "snippet": "snippet text", "url": "/Volumes/x/y"},
         ]
     )
-    assert {"source": "main.seqwater_demo.assets", "detail": "synthetic"} in items
+    assert {"source": "main.seqwater_demo.assets", "detail": "demo"} in items
     assert any(i["source"] == "raw-string-citation" for i in items)
     pdf = next(i for i in items if i["source"] == "doc.pdf")
     assert pdf["href"] == "/Volumes/x/y"
@@ -169,8 +169,8 @@ def test_normalise_event_emits_sources_block() -> None:
 
     chunk = {
         "citations": [
-            {"source": "doc1", "detail": "synthetic"},
-            {"source": "doc2", "detail": "synthetic"},
+            {"source": "doc1", "detail": "demo"},
+            {"source": "doc2", "detail": "demo"},
         ]
     }
     events = _drain(
@@ -215,11 +215,11 @@ async def test_stream_supervisor_yields_done_with_aggregated_state(monkeypatch) 
 
     sse_body = (
         'data: {"choices":[{"delta":{"content":"## Summary\\n"}}]}\n'
-        'data: {"choices":[{"delta":{"content":"All synthetic.\\n"}}]}\n'
+        'data: {"choices":[{"delta":{"content":"All.\\n"}}]}\n'
         'data: {"choices":[{"delta":{"tool_calls":[{"index":0,"function":'
         '{"name":"seqwater_data","arguments":"{}"}}]}}]}\n'
         'data: {"choices":[{"finish_reason":"tool_calls","delta":{}}]}\n'
-        'data: {"citations":[{"source":"main.seqwater_demo.assets","detail":"synthetic"}]}\n'
+        'data: {"citations":[{"source":"main.seqwater_demo.assets","detail":"demo"}]}\n'
         "data: [DONE]\n"
     )
 

@@ -1,7 +1,7 @@
 /**
  * Canonical demo content for the Water for Life Intelligence Centre.
  *
- * Values in this module are SYNTHETIC. They are tuned to match the supplied
+ * Values in this module are DEMO. They are tuned to match the supplied
  * reference screenshots so the live UI can be presented with confidence.
  * Live trend and list data continues to flow from the FastAPI backend.
  */
@@ -44,12 +44,12 @@ export const HERO_COPY = {
   assetResilience: {
     eyebrow: "Asset Resilience & Capital Priorities",
     headline: "Built to last.\nReady to adapt.",
-    sub: "Critical infrastructure delivering reliability across SEQ — with synthetic capital insight to guide investment.",
+    sub: "Critical infrastructure delivering reliability across SEQ — with capital insight to guide investment.",
   },
   waterQuality: {
     eyebrow: "Water Quality Assurance",
     headline: "Quality you can trust.",
-    sub: "Confidence in every drop, every day — synthetic compliance across treatment plants and indicators.",
+    sub: "Confidence in every drop, every day — compliance across treatment plants and indicators.",
   },
   aquaIQ: {
     eyebrow: "AquaIQ Briefing Analyst",
@@ -66,7 +66,7 @@ export const HERO_COPY = {
 // ---------- Executive Overview --------------------------------------------
 
 /**
- * Curated synthetic asset set used by the Executive Overview SEQ Water Grid
+ * Curated asset set used by the Executive Overview SEQ Water Grid
  * preview map. We intentionally restrict this list to a calm, well-spaced
  * group of named assets so the executive panel reads as a Seqwater
  * geospatial intelligence layer rather than a crowded satellite snapshot.
@@ -256,7 +256,7 @@ export const EXECUTIVE_AI_SOURCES: SourceChip[] = [
   { label: "main.seqwater_demo.flood_storage_current", type: "table" },
   { label: "main.seqwater_demo.dam_storage_daily", type: "table" },
   { label: "main.seqwater_demo.rainfall_forecast", type: "table" },
-  { label: "Synthetic operations brief — 29 May", type: "document" },
+  { label: "Operations brief — 29 May", type: "document" },
   { label: "Foundation Model API (governed)", type: "model" },
 ];
 
@@ -379,7 +379,7 @@ export const SUPPLY_KEY_DRIVERS = [
   "Lake Macdonald and North Pine remain below 60% — drawdown / upgrade narratives intact",
 ];
 
-// 60 days of synthetic SEQ storage % tracking up to the live 29/05/2026
+// 60 days of SEQ storage % tracking up to the live 29/05/2026
 // snapshot value (86.0%). Median band remains seasonal context.
 export const STORAGE_HISTORY: { date: string; actual: number; median: number; p10: number; p90: number }[] =
   Array.from({ length: 60 }).map((_, i) => {
@@ -440,7 +440,7 @@ export const ASSET_RESILIENCE_KPIS: KpiDef[] = [
   {
     title: "Capital Pipeline",
     value: "$420M",
-    supportingText: "synthetic, 5-year",
+    supportingText: "5-year",
     status: "normal",
     icon: TrendingUp,
     spark: [380, 390, 400, 410, 415, 420, 420],
@@ -551,7 +551,7 @@ export const CAPITAL_PROJECTS: CapitalProjectCard[] = [
   {
     priority: 1,
     name: "North Pine WTP Upgrade",
-    estimatedCost: "$185M synthetic",
+    estimatedCost: "$185M",
     riskReductionScore: 92,
     delivery: "FY27 – FY29",
     rationale:
@@ -560,7 +560,7 @@ export const CAPITAL_PROJECTS: CapitalProjectCard[] = [
   {
     priority: 2,
     name: "Logan River Pipeline Duplication",
-    estimatedCost: "$120M synthetic",
+    estimatedCost: "$120M",
     riskReductionScore: 84,
     delivery: "FY28 – FY30",
     rationale:
@@ -569,16 +569,16 @@ export const CAPITAL_PROJECTS: CapitalProjectCard[] = [
   {
     priority: 3,
     name: "Hinze Dam Safety Enhancement",
-    estimatedCost: "$78M synthetic",
+    estimatedCost: "$78M",
     riskReductionScore: 71,
     delivery: "FY27 – FY28",
     rationale:
-      "Strengthens dam safety posture in line with synthetic regulatory direction and community resilience commitments.",
+      "Strengthens dam safety posture in line with regulatory direction and community resilience commitments.",
   },
   {
     priority: 4,
     name: "Advanced Metering Program",
-    estimatedCost: "$37M synthetic",
+    estimatedCost: "$37M",
     riskReductionScore: 56,
     delivery: "FY27 – FY29",
     rationale:
@@ -586,7 +586,7 @@ export const CAPITAL_PROJECTS: CapitalProjectCard[] = [
   },
 ];
 
-export const CAPITAL_AQUAIQ = `Synthetic investment analysis indicates the highest near-term risk reduction comes from water treatment resilience and raw water transfer reliability projects. Prioritisation should be validated against engineering assessments, regulatory commitments and approved capital planning processes.`;
+export const CAPITAL_AQUAIQ = `Investment analysis indicates the highest near-term risk reduction comes from water treatment resilience and raw water transfer reliability projects. Prioritisation should be validated against engineering assessments, regulatory commitments and approved capital planning processes.`;
 
 // ---------- Water Quality Assurance ---------------------------------------
 
@@ -686,7 +686,7 @@ export const QUALITY_CHECKLIST = [
   "Customer notifications check",
 ];
 
-export const QUALITY_AQUAIQ = `Elevated turbidity is likely due to forecast rainfall and catchment runoff. Results shown are synthetic and require water quality team validation before any operational response.`;
+export const QUALITY_AQUAIQ = `Elevated turbidity is likely due to forecast rainfall and catchment runoff. Results shown are illustrative and require water quality team validation before any operational response.`;
 
 // ---------- Flood Readiness ----------------------------------------------
 
@@ -731,7 +731,7 @@ export const CATCHMENT_IMPACTS: CatchmentImpact[] = [
 export const EXECUTIVE_ACTIONS = [
   {
     title: "Activate incident team",
-    description: "Assemble the synthetic incident command roster.",
+    description: "Assemble the incident command roster.",
     icon: ShieldCheck,
   },
   {
@@ -751,7 +751,7 @@ export const EXECUTIVE_ACTIONS = [
   },
   {
     title: "Mobilise resources",
-    description: "Pre-position synthetic field crews and equipment.",
+    description: "Pre-position field crews and equipment.",
     icon: Wrench,
   },
 ];
@@ -772,39 +772,39 @@ export const AQUAIQ_STRUCTURED = {
       usedFor: "Live grid storage 86.0% across 25 published dams (29/05/2026 snapshot)",
       confidence: "high" as const,
       detail:
-        "Authoritative dam-levels snapshot from the public Seqwater dam-levels page, joined to the synthetic operational telemetry for context.",
+        "Authoritative dam-levels snapshot from the public Seqwater dam-levels page, joined to the operational telemetry for context.",
     },
     {
       sourceName: "main.seqwater_demo.demand_forecast",
       sourceType: "table" as const,
       usedFor: "Demand forecast tracking below 14-day average",
       confidence: "high" as const,
-      detail: "Synthetic next-90-day demand baseline compared to the trailing 14-day mean.",
+      detail: "Next-90-day demand baseline compared to the trailing 14-day mean.",
     },
     {
-      sourceName: "Synthetic water quality samples (last 14 days)",
+      sourceName: "Water quality samples (last 14 days)",
       sourceType: "view" as const,
       usedFor: "No material water quality risks detected",
       confidence: "medium" as const,
-      detail: "Synthetic compliance view aggregating turbidity, pH, and chlorine residual exceedances.",
+      detail: "Compliance view aggregating turbidity, pH, and chlorine residual exceedances.",
     },
     {
-      sourceName: "Synthetic treatment plant operations",
+      sourceName: "Treatment plant operations",
       sourceType: "table" as const,
       usedFor: "Treatment plant availability normal",
       confidence: "high" as const,
-      detail: "Daily synthetic plant operations health score, all plants within nominal range.",
+      detail: "Daily plant operations health score, all plants within nominal range.",
     },
   ],
   assumptions: [
-    "Climate outlook remains within Bureau of Meteorology synthetic medium-range envelope.",
+    "Climate outlook remains within Bureau of Meteorology medium-range envelope.",
     "No new compliance non-conformances are detected over the planning horizon.",
-    "Demand assumptions hold within +/- 5% of synthetic baseline.",
+    "Demand assumptions hold within +/- 5% of baseline.",
   ],
   risks: [
     "Post-event turbidity may elevate at North Pine WTP and Landers Shute WTP as the 10 spilling dams continue to discharge.",
     "Lake Macdonald is at 40.2% on the live snapshot and remains mid-upgrade — coordinate Sunshine Coast retailer messaging.",
-    "Two ageing synthetic pumps in Brisbane North could elevate operational risk if pressure rises.",
+    "Two ageing pumps in Brisbane North could elevate operational risk if pressure rises.",
   ],
   recommendations: [
     "Maintain current monitoring cadence; no change to public messaging required.",
@@ -870,11 +870,11 @@ export const GOVERNANCE_COLUMNS = [
 export const MODEL_SERVING_CARDS = [
   {
     title: "Feature Store",
-    description: "Versioned, lineage-tracked synthetic features for AquaIQ models.",
+    description: "Versioned, lineage-tracked features for AquaIQ models.",
   },
   {
     title: "Model Registry",
-    description: "Governed registry with stage transitions and synthetic approvals.",
+    description: "Governed registry with stage transitions and approvals.",
   },
   {
     title: "Serving Endpoints",
@@ -889,7 +889,7 @@ export const MODEL_SERVING_CARDS = [
 export const PROOF_POINTS = [
   { title: "Secure by design", description: "Encrypted in transit and at rest." },
   { title: "Privacy protected", description: "Role-based access and masking." },
-  { title: "Compliant", description: "Designed for synthetic regulatory alignment." },
+  { title: "Compliant", description: "Designed for regulatory alignment." },
   { title: "Accountable", description: "Every AquaIQ output requires human validation." },
 ];
 
@@ -952,7 +952,7 @@ export interface KpiInsight {
   drivers: KpiDriver[];
   /** "What this means for operations" callout body. */
   meaning: string;
-  /** Genie-generated SQL block (synthetic) shown verbatim. */
+  /** Genie-generated SQL block shown verbatim. */
   sql: string;
   /** Unity Catalog source chips. */
   sources: SourceChip[];
@@ -1010,7 +1010,7 @@ export const POSTURE_INSIGHT: PostureInsight = {
     { label: "main.seqwater_demo.flood_storage_current", type: "table" },
     { label: "main.seqwater_demo.asset_risk_scores", type: "table" },
     { label: "main.seqwater_demo.water_quality_samples", type: "table" },
-    { label: "Synthetic operations playbook §4.2 (posture matrix)", type: "document" },
+    { label: "Operations playbook §4.2 (posture matrix)", type: "document" },
     { label: "seqwater_supervisor (Agent Bricks)", type: "workflow" },
   ],
   actions: [
@@ -1024,14 +1024,14 @@ export const POSTURE_INSIGHT: PostureInsight = {
       label: "Ask AquaIQ — what changes the posture?",
       kind: "aquaiq",
       prompt:
-        "What synthetic signals would have to change for the SEQ Water Grid posture to move from Watch back to Normal, and which signals would push it to Escalate?",
+        "What signals would have to change for the SEQ Water Grid posture to move from Watch back to Normal, and which signals would push it to Escalate?",
       icon: Bot,
     },
     {
       label: "Add to executive briefing",
       kind: "brief",
       toastTitle: "Added to executive briefing",
-      toastBody: "Posture rationale queued for the next synthetic briefing.",
+      toastBody: "Posture rationale queued for the next briefing.",
       icon: Briefcase,
     },
   ],
@@ -1060,7 +1060,7 @@ export const EXECUTIVE_KPI_INSIGHTS: Record<string, KpiInsight> = {
     sources: [
       { label: "main.seqwater_demo.dam_levels_current", type: "table" },
       { label: "main.seqwater_demo.dam_storage_daily", type: "table" },
-      { label: "Synthetic supply continuity view", type: "view" },
+      { label: "Supply continuity view", type: "view" },
       { label: "seqwater_supervisor (Agent Bricks)", type: "workflow" },
     ],
     agentTools: [
@@ -1085,7 +1085,7 @@ export const EXECUTIVE_KPI_INSIGHTS: Record<string, KpiInsight> = {
         label: "Ask AquaIQ for a 90-day supply outlook",
         kind: "aquaiq",
         prompt:
-          "Give me a synthetic 90-day water security outlook for SEQ. Reference Wivenhoe, Somerset, Lake Macdonald, and the post-event spilling dams.",
+          "Give me a 90-day water security outlook for SEQ. Reference Wivenhoe, Somerset, Lake Macdonald, and the post-event spilling dams.",
         icon: Bot,
       },
     ],
@@ -1104,7 +1104,7 @@ export const EXECUTIVE_KPI_INSIGHTS: Record<string, KpiInsight> = {
       { label: "Hinze, Baroon Pocket, Borumba spilling above nominal", tone: "up" },
       { label: "Leslie Harrison + Sideling Creek above FSL", tone: "up" },
       { label: "Wivenhoe + Somerset flood compartments intact (100%)", tone: "flat" },
-      { label: "Catchment saturation index elevated (synthetic)", delta: "+0.18", tone: "up" },
+      { label: "Catchment saturation index elevated", delta: "+0.18", tone: "up" },
     ],
     meaning:
       "Spilling itself is not a supply-continuity risk — these dams are doing exactly what they're designed to do. The watchpoints are downstream stakeholder communications and post-event turbidity at the treatment plants pulling from the now-replenished catchments. Maintain hourly spillway monitoring through the next 24-48 hours.",
@@ -1113,7 +1113,7 @@ export const EXECUTIVE_KPI_INSIGHTS: Record<string, KpiInsight> = {
       { label: "main.seqwater_demo.dam_levels_current", type: "table" },
       { label: "main.seqwater_demo.flood_storage_current", type: "table" },
       { label: "main.seqwater_demo.rainfall_observations", type: "table" },
-      { label: "Synthetic spillway monitoring runbook", type: "document" },
+      { label: "Spillway monitoring runbook", type: "document" },
     ],
     agentTools: [
       { name: "genie.dam_levels_current", summary: "10 dams flagged is_spilling = TRUE" },
@@ -1137,14 +1137,14 @@ export const EXECUTIVE_KPI_INSIGHTS: Record<string, KpiInsight> = {
         label: "Ask AquaIQ which downstream communities are affected",
         kind: "aquaiq",
         prompt:
-          "For the 10 synthetic Seqwater dams currently spilling, which downstream catchments and communities are most likely to be affected over the next 24-48 hours? Reference the spilling list and the synthetic spillway monitoring runbook.",
+          "For the 10 Seqwater dams currently spilling, which downstream catchments and communities are most likely to be affected over the next 24-48 hours? Reference the spilling list and the spillway monitoring runbook.",
         icon: Bot,
       },
       {
         label: "Notify stakeholders",
         kind: "workflow",
         toastTitle: "Stakeholder notification queued",
-        toastBody: "Synthetic pre-approved comms list cued for review.",
+        toastBody: "Pre-approved comms list cued for review.",
         icon: Megaphone,
       },
     ],
@@ -1158,25 +1158,25 @@ export const EXECUTIVE_KPI_INSIGHTS: Record<string, KpiInsight> = {
     status: "normal",
     headline: "Both Wivenhoe + Somerset dedicated flood compartments are empty",
     narrative:
-      "Dedicated flood mitigation storage is 100% available across the two compartments that protect Brisbane: Wivenhoe (1,450,000 ML compartment, 0 ML committed) and Somerset (524,000 ML compartment, 0 ML committed). Combined headroom of 1,974,000 ML is roughly equivalent to a 1-in-100-year event under the synthetic catchment-saturation envelope used in AquaIQ's flood scenarios. The recent wet event has been absorbed entirely inside the full-supply volumes; no encroachment into flood storage has occurred.",
+      "Dedicated flood mitigation storage is 100% available across the two compartments that protect Brisbane: Wivenhoe (1,450,000 ML compartment, 0 ML committed) and Somerset (524,000 ML compartment, 0 ML committed). Combined headroom of 1,974,000 ML is roughly equivalent to a 1-in-100-year event under the catchment-saturation envelope used in AquaIQ's flood scenarios. The recent wet event has been absorbed entirely inside the full-supply volumes; no encroachment into flood storage has occurred.",
     drivers: [
       { label: "Wivenhoe flood compartment", delta: "100% available", tone: "flat" },
       { label: "Somerset flood compartment", delta: "100% available", tone: "flat" },
       { label: "Recent wet event absorbed inside FSV", tone: "flat" },
-      { label: "Synthetic 1-in-20yr scenario headroom", delta: "+870,000 ML", tone: "up" },
+      { label: "1-in-20yr scenario headroom", delta: "+870,000 ML", tone: "up" },
     ],
     meaning:
-      "Flood-mitigation posture is the strongest it can be. AquaIQ has confirmed against the synthetic dam operations playbook that no protective release is required. This metric should remain at 100% unless a defined synthetic scenario is triggered from /flood.",
+      "Flood-mitigation posture is the strongest it can be. AquaIQ has confirmed against the dam operations playbook that no protective release is required. This metric should remain at 100% unless a defined scenario is triggered from /flood.",
     sql: `-- Flood compartment availability across protective storages\n-- Generated by Genie • seqwater_operations space\nSELECT dam_id,\n       dam_name,\n       flood_compartment_capacity_ml,\n       flood_compartment_used_ml,\n       ROUND(\n         (flood_compartment_capacity_ml - flood_compartment_used_ml)\n         / flood_compartment_capacity_ml * 100, 1\n       ) AS flood_storage_available_pct\nFROM   main.seqwater_demo.flood_storage_current\nWHERE  dam_id IN ('wivenhoe', 'somerset')`,
     sources: [
       { label: "main.seqwater_demo.flood_storage_current", type: "table" },
       { label: "main.seqwater_demo.dam_release_simulation", type: "table" },
-      { label: "Synthetic dam operations playbook", type: "document" },
+      { label: "Dam operations playbook", type: "document" },
       { label: "run_flood_scenario (UC function)", type: "workflow" },
     ],
     agentTools: [
       { name: "flood_storage_check", summary: "Wivenhoe + Somerset → 100%, 100%" },
-      { name: "run_flood_scenario", summary: "1-in-20yr synthetic → headroom intact" },
+      { name: "run_flood_scenario", summary: "1-in-20yr → headroom intact" },
       { name: "document_retrieval", summary: "Dam operations playbook §6 — no release" },
     ],
     actions: [
@@ -1190,7 +1190,7 @@ export const EXECUTIVE_KPI_INSIGHTS: Record<string, KpiInsight> = {
         label: "Ask AquaIQ for a 1-in-100yr what-if",
         kind: "aquaiq",
         prompt:
-          "Run a synthetic 1-in-100 year flood scenario against the current Wivenhoe and Somerset flood compartment availability. Summarise headroom and any protective releases the synthetic playbook would recommend.",
+          "Run a 1-in-100 year flood scenario against the current Wivenhoe and Somerset flood compartment availability. Summarise headroom and any protective releases the playbook would recommend.",
         icon: Bot,
       },
     ],
@@ -1202,9 +1202,9 @@ export const EXECUTIVE_KPI_INSIGHTS: Record<string, KpiInsight> = {
     title: "Water Quality Alerts",
     value: "4",
     status: "watch",
-    headline: "4 active synthetic water quality alerts — turbidity-led",
+    headline: "4 active water quality alerts — turbidity-led",
     narrative:
-      "There are 4 active water quality alerts on the synthetic compliance view: 2 turbidity alerts (North Pine WTP, Landers Shute WTP), 1 taste & odour alert (Moggill WTP), and 1 chlorine-residual drift alert (Capalaba WTP). The week-over-week trend is -2, which is a positive direction. The two turbidity alerts are causally linked to the post-event catchment runoff feeding the 10 currently-spilling dams, and AquaIQ rates them at Medium confidence pending operator validation. No customer-facing notifications have been issued.",
+      "There are 4 active water quality alerts on the compliance view: 2 turbidity alerts (North Pine WTP, Landers Shute WTP), 1 taste & odour alert (Moggill WTP), and 1 chlorine-residual drift alert (Capalaba WTP). The week-over-week trend is -2, which is a positive direction. The two turbidity alerts are causally linked to the post-event catchment runoff feeding the 10 currently-spilling dams, and AquaIQ rates them at Medium confidence pending operator validation. No customer-facing notifications have been issued.",
     drivers: [
       { label: "Turbidity (North Pine + Landers Shute)", delta: "13.1 NTU", tone: "up" },
       { label: "Taste & odour (Moggill)", tone: "up" },
@@ -1213,12 +1213,12 @@ export const EXECUTIVE_KPI_INSIGHTS: Record<string, KpiInsight> = {
     ],
     meaning:
       "Operational response is the right level here — no public messaging, no retailer escalation. Operations should validate post-event dosing readiness at North Pine and Landers Shute (the two turbidity-led plants) and confirm the chlorine residual drift at Capalaba is within seasonal envelope.",
-    sql: `-- Active synthetic water-quality alerts in the last 24 hours\n-- Generated by Genie • seqwater_operations space\nSELECT  qa.alert_id,\n        qa.plant,\n        qa.indicator,\n        qa.value,\n        qa.threshold,\n        qa.alert_level,\n        qa.opened_at\nFROM    main.seqwater_demo.quality_alerts qa\nWHERE   qa.opened_at >= current_timestamp() - INTERVAL 24 HOURS\n  AND   qa.alert_level IN ('Watch', 'Elevated')\nORDER   BY qa.opened_at DESC`,
+    sql: `-- Active water-quality alerts in the last 24 hours\n-- Generated by Genie • seqwater_operations space\nSELECT  qa.alert_id,\n        qa.plant,\n        qa.indicator,\n        qa.value,\n        qa.threshold,\n        qa.alert_level,\n        qa.opened_at\nFROM    main.seqwater_demo.quality_alerts qa\nWHERE   qa.opened_at >= current_timestamp() - INTERVAL 24 HOURS\n  AND   qa.alert_level IN ('Watch', 'Elevated')\nORDER   BY qa.opened_at DESC`,
     sources: [
       { label: "main.seqwater_demo.quality_alerts", type: "table" },
       { label: "main.seqwater_demo.water_quality_samples", type: "table" },
       { label: "main.seqwater_demo.turbidity_events", type: "table" },
-      { label: "Synthetic water quality response procedure", type: "document" },
+      { label: "Water quality response procedure", type: "document" },
     ],
     agentTools: [
       { name: "genie.quality_alerts", summary: "4 open alerts → turbidity-led" },
@@ -1236,7 +1236,7 @@ export const EXECUTIVE_KPI_INSIGHTS: Record<string, KpiInsight> = {
         label: "Ask AquaIQ what is driving the elevated turbidity",
         kind: "aquaiq",
         prompt:
-          "What is driving the elevated synthetic water quality risk this month at North Pine WTP and Landers Shute WTP? Reference the recent wet event and the synthetic turbidity_events feed.",
+          "What is driving the elevated water quality risk this month at North Pine WTP and Landers Shute WTP? Reference the recent wet event and the turbidity_events feed.",
         icon: Bot,
       },
       {
@@ -1257,7 +1257,7 @@ export const EXECUTIVE_KPI_INSIGHTS: Record<string, KpiInsight> = {
     status: "watch",
     headline: "7 assets sitting in the Elevated risk band",
     narrative:
-      "7 synthetic assets are currently in the Elevated risk band: North Pine WTP, Moggill WTP, Sunshine Coast Trunk Main, Logan River Pipeline, Brisbane North Pump Station, Caboolture Pump Station, and the Wivenhoe spillway gate-3 actuator. The risk score is a blended index combining synthetic predicted_failure_30d, open work orders, age, and criticality. The week-over-week count is unchanged. AquaIQ has linked these directly to the synthetic capital pipeline — three of the seven are addressed by approved capital projects, and risk-reduction modelling suggests 68% portfolio risk reduction is achievable from the top 5 projects.",
+      "7 assets are currently in the Elevated risk band: North Pine WTP, Moggill WTP, Sunshine Coast Trunk Main, Logan River Pipeline, Brisbane North Pump Station, Caboolture Pump Station, and the Wivenhoe spillway gate-3 actuator. The risk score is a blended index combining predicted_failure_30d, open work orders, age, and criticality. The week-over-week count is unchanged. AquaIQ has linked these directly to the capital pipeline — three of the seven are addressed by approved capital projects, and risk-reduction modelling suggests 68% portfolio risk reduction is achievable from the top 5 projects.",
     drivers: [
       { label: "North Pine WTP (turbidity + age)", delta: "3.8 / 5", tone: "up" },
       { label: "Logan River Pipeline (material + age)", delta: "4.1 / 5", tone: "up" },
@@ -1266,7 +1266,7 @@ export const EXECUTIVE_KPI_INSIGHTS: Record<string, KpiInsight> = {
     ],
     meaning:
       "Asset risk is steady, not deteriorating, but concentration in Brisbane North means a single high-impact event would stress the network. The capital pipeline addresses ~68% of total elevated risk; bring forward the North Pine WTP Upgrade business case if turbidity events continue.",
-    sql: `-- Synthetic elevated-risk assets, joined to the open capital pipeline\n-- Generated by Genie • seqwater_operations space\nSELECT  a.asset_id,\n        a.name,\n        a.asset_type,\n        a.region,\n        ar.risk_band,\n        ar.risk_score,\n        ar.open_work_orders,\n        cp.project_name AS linked_capital_project\nFROM    main.seqwater_demo.asset_risk_scores ar\n   JOIN main.seqwater_demo.assets a USING (asset_id)\n   LEFT JOIN main.seqwater_demo.capital_projects cp ON cp.primary_asset_id = a.asset_id\nWHERE   ar.risk_band IN ('Elevated', 'High', 'Critical')\nORDER   BY ar.risk_score DESC`,
+    sql: `-- Elevated-risk assets, joined to the open capital pipeline\n-- Generated by Genie • seqwater_operations space\nSELECT  a.asset_id,\n        a.name,\n        a.asset_type,\n        a.region,\n        ar.risk_band,\n        ar.risk_score,\n        ar.open_work_orders,\n        cp.project_name AS linked_capital_project\nFROM    main.seqwater_demo.asset_risk_scores ar\n   JOIN main.seqwater_demo.assets a USING (asset_id)\n   LEFT JOIN main.seqwater_demo.capital_projects cp ON cp.primary_asset_id = a.asset_id\nWHERE   ar.risk_band IN ('Elevated', 'High', 'Critical')\nORDER   BY ar.risk_score DESC`,
     sources: [
       { label: "main.seqwater_demo.asset_risk_scores", type: "table" },
       { label: "main.seqwater_demo.assets", type: "table" },
@@ -1289,14 +1289,14 @@ export const EXECUTIVE_KPI_INSIGHTS: Record<string, KpiInsight> = {
         label: "Ask AquaIQ which capital projects reduce the most risk",
         kind: "aquaiq",
         prompt:
-          "Which synthetic capital projects reduce the most operational risk across the 7 elevated assets? Reference asset_risk_scores and the capital pipeline.",
+          "Which capital projects reduce the most operational risk across the 7 elevated assets? Reference asset_risk_scores and the capital pipeline.",
         icon: Bot,
       },
       {
         label: "Brief board on capital prioritisation",
         kind: "brief",
         toastTitle: "Board brief queued",
-        toastBody: "Synthetic capital risk-reduction summary added to next pack.",
+        toastBody: "Capital risk-reduction summary added to next pack.",
         icon: Briefcase,
       },
     ],
@@ -1310,7 +1310,7 @@ export const EXECUTIVE_KPI_INSIGHTS: Record<string, KpiInsight> = {
     status: "monitor",
     headline: "11 open critical work orders — down 3 vs yesterday",
     narrative:
-      "There are 11 open work orders at Priority 1 (Critical) across the synthetic maintenance backlog, down from 14 yesterday. Three were closed overnight by the Brisbane North night crew. The remaining 11 split across pump stations (5), treatment plants (4), and pipeline / valve work (2). Median age is 6 days, well inside the 14-day SLA. The two oldest sit against the Brisbane North pump station — AquaIQ recommends elevating these into the next maintenance window to align with peak-demand readiness.",
+      "There are 11 open work orders at Priority 1 (Critical) across the maintenance backlog, down from 14 yesterday. Three were closed overnight by the Brisbane North night crew. The remaining 11 split across pump stations (5), treatment plants (4), and pipeline / valve work (2). Median age is 6 days, well inside the 14-day SLA. The two oldest sit against the Brisbane North pump station — AquaIQ recommends elevating these into the next maintenance window to align with peak-demand readiness.",
     drivers: [
       { label: "Pump station P1 work orders", delta: "5 open", tone: "flat" },
       { label: "Treatment plant P1 work orders", delta: "4 open", tone: "flat" },
@@ -1319,12 +1319,12 @@ export const EXECUTIVE_KPI_INSIGHTS: Record<string, KpiInsight> = {
     ],
     meaning:
       "Backlog is being worked down inside SLA — no governance action required. Operations leadership should consider bringing forward the two oldest Brisbane North pump-station orders to align with the heatwave-readiness window. No risk to public-facing service.",
-    sql: `-- Open critical (P1) work orders across the synthetic maintenance backlog\n-- Generated by Genie • seqwater_operations space\nSELECT  wo.work_order_id,\n        a.name        AS asset_name,\n        a.asset_type,\n        a.region,\n        wo.priority,\n        wo.status,\n        wo.opened_at,\n        DATEDIFF(current_date(), wo.opened_at) AS age_days\nFROM    main.seqwater_demo.maintenance_work_orders wo\n   JOIN main.seqwater_demo.assets a USING (asset_id)\nWHERE   wo.priority = 'P1'\n  AND   wo.status   IN ('Open', 'In Progress')\nORDER   BY wo.opened_at`,
+    sql: `-- Open critical (P1) work orders across the maintenance backlog\n-- Generated by Genie • seqwater_operations space\nSELECT  wo.work_order_id,\n        a.name        AS asset_name,\n        a.asset_type,\n        a.region,\n        wo.priority,\n        wo.status,\n        wo.opened_at,\n        DATEDIFF(current_date(), wo.opened_at) AS age_days\nFROM    main.seqwater_demo.maintenance_work_orders wo\n   JOIN main.seqwater_demo.assets a USING (asset_id)\nWHERE   wo.priority = 'P1'\n  AND   wo.status   IN ('Open', 'In Progress')\nORDER   BY wo.opened_at`,
     sources: [
       { label: "main.seqwater_demo.maintenance_work_orders", type: "table" },
       { label: "main.seqwater_demo.assets", type: "table" },
       { label: "main.seqwater_demo.asset_health_daily", type: "table" },
-      { label: "Synthetic maintenance prioritisation runbook", type: "document" },
+      { label: "Maintenance prioritisation runbook", type: "document" },
     ],
     agentTools: [
       { name: "genie.maintenance_work_orders", summary: "11 P1 open · 3 closed overnight" },
@@ -1342,7 +1342,7 @@ export const EXECUTIVE_KPI_INSIGHTS: Record<string, KpiInsight> = {
         label: "Ask AquaIQ which work orders to prioritise",
         kind: "aquaiq",
         prompt:
-          "From the 11 open synthetic critical work orders, which should be elevated into the next maintenance window? Prioritise against asset criticality, age, and the synthetic heatwave readiness scenario.",
+          "From the 11 open critical work orders, which should be elevated into the next maintenance window? Prioritise against asset criticality, age, and the heatwave readiness scenario.",
         icon: Bot,
       },
       {

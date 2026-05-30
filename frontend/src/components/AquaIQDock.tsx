@@ -204,7 +204,7 @@ export default function AquaIQDock() {
                   AquaIQ
                 </div>
                 <div className="truncate text-[10.5px] text-ink-muted">
-                  Synthetic governed assistant · streaming
+                  Governed assistant · streaming
                 </div>
               </div>
               <DockIconButton

@@ -1,68 +1,68 @@
-# Synthetic Flood Readiness Executive Briefing Template
+# Flood Readiness Executive Briefing Template
 
-**Status:** SYNTHETIC DEMO ARTEFACT — for executive demonstration only.
-**Owner (synthetic):** Executive Office
-**Last reviewed (synthetic):** 2026-02-20
+**Status:** DEMO ARTEFACT — for executive demonstration only.
+**Owner:** Executive Office
+**Last reviewed:** 2026-02-20
 **Classification:** Internal demo
 
-> This template is a synthetic example. It is not an operational flood-release
+> This template is an example. It is not an operational flood-release
 > procedure or briefing. Real flood operations at Seqwater are governed by approved
 > manuals, formal escalation pathways, and licensed operators.
 
 ## 1. Briefing header
 
-- Briefing ID (synthetic):
-- Issued (synthetic):
-- Issuing function (synthetic): Executive Office
-- Reviewed by (synthetic): Operations Lead, Water Quality Lead, Stakeholder Comms
+- Briefing ID:
+- Issued:
+- Issuing function: Executive Office
+- Reviewed by: Operations Lead, Water Quality Lead, Stakeholder Comms
 
-## 2. Current synthetic posture
+## 2. Current posture
 
-- Overall water security status (synthetic):
-- 72-hour synthetic risk level:
-- Major dam storage profile (synthetic):
-- Treatment capacity outlook (synthetic):
-- Catchment saturation snapshot (synthetic):
+- Overall water security status:
+- 72-hour risk level:
+- Major dam storage profile:
+- Treatment capacity outlook:
+- Catchment saturation snapshot:
 
-## 3. Top synthetic risks
+## 3. Top risks
 
-A short, conservative narrative description of the top three synthetic risks. Each must
+A short, conservative narrative description of the top three risks. Each must
 include:
 
 - The risk in plain language.
-- The evidence (synthetic data sources used).
+- The evidence (data sources used).
 - Confidence and assumptions.
 - The decision or watch point this risk informs.
 
-## 4. Recommended synthetic actions
+## 4. Recommended actions
 
 A short, ranked list of recommended actions. Each must include:
 
 - The action.
-- The owner (synthetic role).
+- The owner (role).
 - The timeframe.
 - Whether the action requires human validation (default: yes).
 
-## 5. Customer and community considerations (synthetic)
+## 5. Customer and community considerations
 
-- Retailer customer notifications status (synthetic).
-- Recreational asset advisories status (synthetic).
-- Stakeholder communications drafts in flight (synthetic).
+- Retailer customer notifications status.
+- Recreational asset advisories status.
+- Stakeholder communications drafts in flight.
 
-## 6. Capital and operational implications (synthetic)
+## 6. Capital and operational implications
 
-- Capital projects materially affecting risk posture (synthetic).
-- Operational expenditure exposures (synthetic).
+- Capital projects materially affecting risk posture.
+- Operational expenditure exposures.
 
-## 7. Decisions required (synthetic)
+## 7. Decisions required
 
 A short list of executive decisions, each tied to evidence and an owner.
 
 ## 8. Assumptions and validation
 
-- Key synthetic assumptions used in this briefing.
+- Key assumptions used in this briefing.
 - The named human reviewers who validated the briefing.
 
 ---
 
-*Synthetic demo content. Not for operational use.*
+*Demo content. Not for operational use.*

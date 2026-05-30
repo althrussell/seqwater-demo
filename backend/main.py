@@ -22,9 +22,9 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name
 app = FastAPI(
     title="Seqwater AI Command Centre",
     description=(
-        "Synthetic demo API powering an executive command centre for water security, "
+        "Demo API powering an executive command centre for water security, "
         "asset resilience, water quality, flood readiness, and AI decision support. "
-        "All data is synthetic; this app is a Databricks demonstration."
+        "All data is demo; this app is a Databricks demonstration."
     ),
     version="0.1.0",
 )
@@ -107,7 +107,7 @@ else:
     @app.get("/")
     def root() -> dict[str, str]:
         return {
-            "app": "Seqwater AI Command Centre (synthetic demo)",
+            "app": "Seqwater AI Command Centre (demo)",
             "frontend": "Run `npm install && npm run dev` in /frontend, then open http://localhost:5173",
             "api_docs": "/docs",
         }

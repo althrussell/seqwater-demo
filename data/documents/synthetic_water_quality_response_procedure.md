@@ -1,19 +1,19 @@
-# Synthetic Water Quality Response Procedure
+# Water Quality Response Procedure
 
-**Status:** SYNTHETIC DEMO ARTEFACT — for executive demonstration only.
-**Owner (synthetic):** Water Quality and Treatment
-**Last reviewed (synthetic):** 2026-04-02
+**Status:** DEMO ARTEFACT — for executive demonstration only.
+**Owner:** Water Quality and Treatment
+**Last reviewed:** 2026-04-02
 **Classification:** Internal demo
 
-> This procedure is synthetic. It is intended only to populate a Databricks demo. It is
+> This procedure is demo. It is intended only to populate a Databricks demo. It is
 > not real, has not been validated by a public health authority, and must not be applied
 > to any operational water system. Real water quality response in Seqwater operations
 > is governed by approved procedures and the Australian Drinking Water Guidelines.
 
 ## 1. Scope
 
-The procedure covers the synthetic detection, escalation, and response to elevated
-operational risk indicators detected at synthetic water treatment plants and reservoirs.
+The procedure covers the detection, escalation, and response to elevated
+operational risk indicators detected at water treatment plants and reservoirs.
 
 ## 2. Indicators monitored (illustrative only)
 
@@ -24,15 +24,15 @@ operational risk indicators detected at synthetic water treatment plants and res
 - Temperature (degC)
 - E. coli detections (binary)
 
-## 3. Synthetic alert levels
+## 3. Alert levels
 
-| Level     | Synthetic indicator pattern                                           | Synthetic indicative response                                          |
+| Level     | Indicator pattern                                           | Indicative response                                          |
 |-----------|------------------------------------------------------------------------|------------------------------------------------------------------------|
 | Normal    | All indicators within steady operating envelope                        | Continue routine sampling cadence.                                     |
 | Watch     | Turbidity trending up; or chlorine residual moving toward lower bound  | Increase sampling frequency. Notify treatment supervisor.              |
-| Elevated  | Turbidity sustained above synthetic threshold; or any positive E. coli | Review treatment process. Validate with operator. Notify quality lead. |
+| Elevated  | Turbidity sustained above threshold; or any positive E. coli | Review treatment process. Validate with operator. Notify quality lead. |
 
-## 4. Operational review checklist (synthetic)
+## 4. Operational review checklist
 
 1. Confirm online analyser calibration status.
 2. Review inlet raw water quality from upstream catchment.
@@ -44,7 +44,7 @@ operational risk indicators detected at synthetic water treatment plants and res
 ## 5. Communications principles
 
 - Never speculate on consumer-facing health impact in internal AI-generated summaries.
-- Always state assumptions and the synthetic nature of the data.
+- Always state assumptions and the nature of the data.
 - Defer external communications to designated water quality leads and corporate affairs.
 
 ## 6. Human-in-the-loop validation
@@ -55,4 +55,4 @@ operational change is made.
 
 ---
 
-*Synthetic demo content. Not for operational use.*
+*Demo content. Not for operational use.*

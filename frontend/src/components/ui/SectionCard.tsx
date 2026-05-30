@@ -27,21 +27,21 @@ export default function SectionCard({
       )}
     >
       {title || actions ? (
-        <header className="flex items-start justify-between gap-3 border-b border-border px-5 py-3.5">
+        <header className="flex flex-none items-start justify-between gap-3 border-b border-border px-4 py-2">
           <div className="min-w-0">
             {title ? (
-              <div className="text-[13px] font-semibold uppercase tracking-[0.12em] text-deepNavy">
+              <div className="text-[12px] font-semibold uppercase tracking-[0.12em] text-deepNavy">
                 {title}
               </div>
             ) : null}
             {description ? (
-              <div className="mt-1 text-[12.5px] text-ink-muted">{description}</div>
+              <div className="mt-0.5 text-[11.5px] text-ink-muted">{description}</div>
             ) : null}
           </div>
           {actions ? <div className="flex items-center gap-2">{actions}</div> : null}
         </header>
       ) : null}
-      <div className={cn(padded ? "p-5" : "", "flex-1", bodyClassName)}>{children}</div>
+      <div className={cn(padded ? "p-3" : "", "min-h-0 flex-1", bodyClassName)}>{children}</div>
     </section>
   );
 }

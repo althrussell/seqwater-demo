@@ -63,8 +63,8 @@ export default function SeqWaterGridMap() {
   }, [risk.data]);
 
   return (
-    <div className="space-y-3">
-      <div className="flex flex-wrap items-center gap-3">
+    <div className="flex h-[var(--page-h)] min-h-0 flex-col gap-2">
+      <div className="flex flex-none flex-wrap items-center gap-2">
         <div className="flex-1 min-w-0">
           <LayerPillBar
             active={active}
@@ -97,12 +97,11 @@ export default function SeqWaterGridMap() {
       </div>
 
       {/*
-        Map row fills the remaining viewport height. The app shell chrome
-        (header + footer disclaimer + page padding + layer pill row) costs
-        ~210px on a typical 1280×800 laptop demo; min-h keeps things sane on
-        short screens.
+        Map row fills the remaining page budget. The shell exposes --page-h
+        which already accounts for header + banner + disclaimer; we just
+        subtract the layer pill row + gap (~52px) here.
       */}
-      <div className="flex h-[calc(100vh-210px)] min-h-[520px] items-stretch gap-3">
+      <div className="flex min-h-0 flex-1 items-stretch gap-2">
         <div className="relative min-w-0 flex-1">
           <SeqWaterMap
             assets={mapAssets}
@@ -127,17 +126,17 @@ export default function SeqWaterGridMap() {
 
         {/*
           Drawer column animates its own width so the map next to it shrinks
-          smoothly. The inner wrapper keeps a fixed 440px so the drawer
+          smoothly. The inner wrapper keeps a fixed 380px so the drawer
           content doesn't reflow during the transition. The map's
           ResizeObserver picks up the width change and calls map.resize().
         */}
         <div
           className={cn(
             "h-full flex-none overflow-hidden transition-[width] duration-300 ease-out",
-            selectedId ? "w-[440px]" : "w-0",
+            selectedId ? "w-[380px]" : "w-0",
           )}
         >
-          <div className="h-full w-[440px]">
+          <div className="h-full w-[380px]">
             <AssetDrawer
               assetId={selectedId}
               onClose={() => setSelectedId(null)}

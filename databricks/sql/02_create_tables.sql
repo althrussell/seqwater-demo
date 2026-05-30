@@ -1,7 +1,7 @@
 -- ============================================================================
 -- Seqwater AI Command Centre — Unity Catalog tables
 --
--- All values are SYNTHETIC demo data. Schema mirrors columns produced by
+-- All values are demo data. Schema mirrors columns produced by
 -- scripts/generate_synthetic_data.py. {catalog}.{schema} placeholders are
 -- substituted by scripts/databricks_sql.py.
 -- ============================================================================
@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS {catalog}.{schema}.assets (
   commissioned_year   INT,
   synthetic_demo_flag BOOLEAN NOT NULL
 )
-COMMENT 'Synthetic asset register. Not real Seqwater data.'
+COMMENT 'Asset register. Not real Seqwater data.'
 TBLPROPERTIES ('synthetic_demo' = 'true');
 
 CREATE TABLE IF NOT EXISTS {catalog}.{schema}.asset_locations (
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS {catalog}.{schema}.asset_locations (
   region              STRING,
   synthetic_demo_flag BOOLEAN NOT NULL
 )
-COMMENT 'Synthetic asset coordinates. Approximate SEQ landmarks for demo only.'
+COMMENT 'Asset coordinates. Approximate SEQ landmarks for demo only.'
 TBLPROPERTIES ('synthetic_demo' = 'true');
 
 CREATE TABLE IF NOT EXISTS {catalog}.{schema}.dam_storage_daily (
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS {catalog}.{schema}.dam_storage_daily (
   synthetic_demo_flag BOOLEAN NOT NULL
 )
 PARTITIONED BY (date)
-COMMENT 'Synthetic daily dam storage history.'
+COMMENT 'Daily dam storage history.'
 TBLPROPERTIES ('synthetic_demo' = 'true');
 
 CREATE TABLE IF NOT EXISTS {catalog}.{schema}.dam_levels_current (
@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS {catalog}.{schema}.rainfall_observations (
   rainfall_mm         DOUBLE,
   synthetic_demo_flag BOOLEAN
 )
-COMMENT 'Synthetic catchment rainfall observations.';
+COMMENT 'Catchment rainfall observations.';
 
 CREATE TABLE IF NOT EXISTS {catalog}.{schema}.rainfall_forecast (
   asset_id              STRING,
@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS {catalog}.{schema}.rainfall_forecast (
   issued_at             TIMESTAMP,
   synthetic_demo_flag   BOOLEAN
 )
-COMMENT 'Synthetic catchment rainfall forecast (24h, 48h, 72h, 7d).';
+COMMENT 'Catchment rainfall forecast (24h, 48h, 72h, 7d).';
 
 CREATE TABLE IF NOT EXISTS {catalog}.{schema}.demand_forecast (
   date                DATE,
@@ -150,7 +150,7 @@ CREATE TABLE IF NOT EXISTS {catalog}.{schema}.asset_risk_scores (
   recommended_action    STRING,
   synthetic_demo_flag   BOOLEAN
 )
-COMMENT 'Synthetic asset risk scoreboard.';
+COMMENT 'Asset risk scoreboard.';
 
 CREATE TABLE IF NOT EXISTS {catalog}.{schema}.water_quality_samples (
   sample_id               STRING,
@@ -218,7 +218,7 @@ CREATE TABLE IF NOT EXISTS {catalog}.{schema}.flood_scenarios (
   status                        STRING,
   synthetic_demo_flag           BOOLEAN
 )
-COMMENT 'Synthetic flood readiness scenario register. NOT an operational release model.';
+COMMENT 'Flood readiness scenario register. NOT an operational release model.';
 
 CREATE TABLE IF NOT EXISTS {catalog}.{schema}.catchment_conditions (
   asset_id                   STRING,

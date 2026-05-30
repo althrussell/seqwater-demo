@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     """Runtime settings.
 
     The app supports two modes:
-      * ``local``       (default) — synthetic data only, mock AI responses.
+      * ``local``       (default) — data only, mock AI responses.
       * ``databricks``  — Serverless SQL Warehouse, Foundation Model API, Volumes.
     """
 

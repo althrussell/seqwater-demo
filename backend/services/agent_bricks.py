@@ -16,7 +16,7 @@ Public surface
     * ``{"event": "tool_call", "name": str, "args": dict}`` — supervisor
       routed to a child agent.
     * ``{"event": "tool_result", "name": str, "summary": str}`` — child agent
-      returned. Synthetic placeholder when the upstream omits it.
+      returned. Placeholder when the upstream omits it.
     * ``{"event": "sources", "items": list[dict]}`` — aggregated source
       citations (Volume files for KA, table refs for Genie).
     * ``{"event": "done", "trace_id": ..., "markdown": ...,
@@ -338,7 +338,7 @@ def _table_ref_from_tool_name(raw: str) -> str | None:
 
 def _summarize_function_output(output: Any) -> str:
     if not output:
-        return "Tool returned (synthetic)."
+        return "Tool returned."
     if isinstance(output, (dict, list)):
         try:
             text = json.dumps(output)
@@ -354,7 +354,7 @@ def _summarize_function_output(output: Any) -> str:
     if isinstance(parsed, dict) and parsed.get("rows") is not None:
         rows = parsed.get("rows") or []
         cols = parsed.get("columns") or []
-        return f"{len(rows)} synthetic row(s) returned across columns: {', '.join(cols[:6])}{'…' if len(cols) > 6 else ''}"
+        return f"{len(rows)} row(s) returned across columns: {', '.join(cols[:6])}{'…' if len(cols) > 6 else ''}"
     return text[:240]
 
 
@@ -417,7 +417,7 @@ async def _normalise_event(
                     yield {
                         "event": "tool_result",
                         "name": entry["name"],
-                        "summary": "Synthetic tool returned.",
+                        "summary": "Tool returned.",
                     }
 
     citations = event.get("citations") or event.get("sources")
@@ -435,7 +435,7 @@ def _normalise_citations(citations: Any) -> list[dict[str, Any]]:
     if isinstance(citations, list):
         for c in citations:
             if isinstance(c, dict):
-                source = c.get("source") or c.get("title") or c.get("name") or "synthetic source"
+                source = c.get("source") or c.get("title") or c.get("name") or "source"
                 detail = c.get("detail") or c.get("snippet") or ""
                 href = c.get("href") or c.get("url")
                 entry: dict[str, Any] = {"source": str(source), "detail": str(detail)[:240]}

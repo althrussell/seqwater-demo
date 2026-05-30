@@ -1,7 +1,7 @@
 """Repository functions wrapping the data loader.
 
 These functions return serialisable dicts/lists for the API layer. They merge
-across multiple synthetic tables to produce executive-friendly views.
+across multiple tables to produce executive-friendly views.
 """
 from __future__ import annotations
 
@@ -45,7 +45,7 @@ def grid_storage_snapshot() -> dict[str, Any] | None:
     """Aggregate the live dam-levels snapshot into a single grid figure.
 
     Returns ``None`` when no snapshot is available so callers can fall back to
-    the synthetic time series.
+    the time series.
     """
     df = _df("dam_levels_current")
     if df.empty:
@@ -311,9 +311,9 @@ def overview() -> dict[str, Any]:
         risk_level = "Elevated"
 
     headline = {
-        "Routine": "Routine — operations within steady envelope (synthetic).",
-        "Watch": "Watch — monitor catchment rainfall and water quality (synthetic).",
-        "Elevated": "Elevated — multi-asset attention recommended (synthetic).",
+        "Routine": "Routine — operations within steady envelope.",
+        "Watch": "Watch — monitor catchment rainfall and water quality.",
+        "Elevated": "Elevated — multi-asset attention recommended.",
     }[risk_level]
 
     storage_trend = []
@@ -374,11 +374,11 @@ def overview() -> dict[str, Any]:
         )
     if forecast_72h > 100:
         top_actions.append(
-            "Validate rainfall and inflow inputs with duty hydrologist (synthetic)."
+            "Validate rainfall and inflow inputs with duty hydrologist."
         )
     if quality_alerts > 5:
         top_actions.append(
-            "Convene synthetic water quality review for elevated zones."
+            "Convene water quality review for elevated zones."
         )
 
     spilling_count = snapshot["spilling_count"] if snapshot else 0
@@ -392,7 +392,7 @@ def overview() -> dict[str, Any]:
             f" {len(low_names)} below 60% (e.g. " + ", ".join(low_names[:2]) + ")." if low_names else "."
         )
     summary = (
-        f"Synthetic posture: {risk_level.lower()}. Storage {storage_pct:.1f}% across the "
+        f"Posture: {risk_level.lower()}. Storage {storage_pct:.1f}% across the "
         f"SEQ Water Grid. {open_critical} P1 work orders open. "
         f"{quality_alerts} water quality alerts active. {elevated_assets} assets in elevated risk bands."
         f"{snapshot_context}"
@@ -404,15 +404,15 @@ def overview() -> dict[str, Any]:
         )
 
     kpis = [
-        {"label": "Water Security", "value": risk_level, "status": "watch" if risk_level == "Watch" else ("elevated" if risk_level == "Elevated" else "ok"), "sublabel": "Synthetic 72-hour posture"},
-        {"label": "Total Storage", "value": f"{storage_pct:.1f}%", "status": "ok" if storage_pct > 60 else "watch", "sublabel": "Live Seqwater snapshot" if snapshot else "Across synthetic SEQ dams"},
+        {"label": "Water Security", "value": risk_level, "status": "watch" if risk_level == "Watch" else ("elevated" if risk_level == "Elevated" else "ok"), "sublabel": "72-hour posture"},
+        {"label": "Total Storage", "value": f"{storage_pct:.1f}%", "status": "ok" if storage_pct > 60 else "watch", "sublabel": "Live Seqwater snapshot" if snapshot else "Across SEQ dams"},
         {"label": "Dams Spilling", "value": str(spilling_count), "status": "watch" if spilling_count >= 3 else "ok", "sublabel": "Live snapshot — flood-mitigation OK"},
-        {"label": "Forecast Demand", "value": f"{demand_ml:,.0f} ML/day", "status": "ok", "sublabel": "Synthetic baseline"},
-        {"label": "Treatment Capacity", "value": f"{capacity_ml:,.0f} ML/day", "status": "ok", "sublabel": "Synthetic available"},
-        {"label": "Critical Work Orders", "value": str(open_critical), "status": "elevated" if open_critical > 5 else "watch" if open_critical > 0 else "ok", "sublabel": "P1 open (synthetic)"},
-        {"label": "Quality Alerts", "value": str(quality_alerts), "status": "watch" if quality_alerts > 0 else "ok", "sublabel": "Watch + Elevated (synthetic)"},
+        {"label": "Forecast Demand", "value": f"{demand_ml:,.0f} ML/day", "status": "ok", "sublabel": "Baseline"},
+        {"label": "Treatment Capacity", "value": f"{capacity_ml:,.0f} ML/day", "status": "ok", "sublabel": "Available"},
+        {"label": "Critical Work Orders", "value": str(open_critical), "status": "elevated" if open_critical > 5 else "watch" if open_critical > 0 else "ok", "sublabel": "P1 open"},
+        {"label": "Quality Alerts", "value": str(quality_alerts), "status": "watch" if quality_alerts > 0 else "ok", "sublabel": "Watch + Elevated"},
         {"label": "Elevated Assets", "value": str(elevated_assets), "status": "elevated" if elevated_assets > 4 else "watch", "sublabel": "High/Critical risk band"},
-        {"label": "72h Rainfall Forecast", "value": f"{forecast_72h:.0f} mm", "status": "watch" if forecast_72h > 120 else "ok", "sublabel": "Synthetic mean across catchments"},
+        {"label": "72h Rainfall Forecast", "value": f"{forecast_72h:.0f} mm", "status": "watch" if forecast_72h > 120 else "ok", "sublabel": "Mean across catchments"},
     ]
 
     return {

@@ -1,5 +1,5 @@
 // Type definitions mirror the backend Pydantic models. Kept loose with index
-// signatures so they tolerate extra synthetic fields without breaking builds.
+// signatures so they tolerate extra fields without breaking builds.
 
 export interface KpiTile {
   label: string;

@@ -49,7 +49,7 @@ export default function ExecutiveOverview() {
 
   const [drawer, setDrawer] = useState<DrawerState>(null);
 
-  // Use the curated synthetic asset set for the executive map preview.
+  // Use the curated asset set for the executive map preview.
   // Filtering live API data here would over-crowd Brisbane and drift away
   // from the executive narrative; the curated list keeps the panel calm.
   const mapAssets = useMemo(() => EXECUTIVE_FEATURED_ASSETS, []);
@@ -65,7 +65,7 @@ export default function ExecutiveOverview() {
   }, [drawer]);
 
   return (
-    <div className="space-y-3.5">
+    <div className="flex h-[var(--page-h)] min-h-0 flex-col gap-2">
       <HeroBanner
         image={HERO_IMAGES.executiveOverview}
         eyebrow="Executive Overview"
@@ -76,10 +76,10 @@ export default function ExecutiveOverview() {
           ...overlay.posture,
           onExplain: () => setDrawer({ kind: "posture" }),
         }}
-        height={300}
+        height={150}
       />
 
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
+      <div className="grid flex-none grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-6">
         {EXECUTIVE_KPIS.map((k) => (
           <KpiCard
             key={k.title}
@@ -96,13 +96,12 @@ export default function ExecutiveOverview() {
         ))}
       </div>
 
-      {/* Map (left) + AquaIQ Summary (right) — AquaIQ kept above the fold
-          on a 16:9 laptop. Priorities appear immediately beneath the map. */}
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
+      {/* Map (left) + AquaIQ Summary (right) — soak up remaining height. */}
+      <div className="grid min-h-0 flex-1 grid-cols-1 gap-2 lg:grid-cols-12">
         <SectionCard
           title="SEQ Water Grid at a glance"
-          description="Synthetic overview of dams, treatment plants, pump stations and pipelines."
-          className="lg:col-span-7"
+          description="Overview of dams, treatment plants, pump stations and pipelines."
+          className="min-h-0 lg:col-span-7"
           padded={false}
           actions={
             <button
@@ -114,8 +113,8 @@ export default function ExecutiveOverview() {
             </button>
           }
         >
-          <div className="relative">
-            <div className="h-[360px] overflow-hidden rounded-b-lg">
+          <div className="relative h-full min-h-0">
+            <div className="h-full min-h-0 overflow-hidden rounded-b-lg">
               <SeqWaterMap
                 assets={mapAssets}
                 layers={PREVIEW_LAYERS}
@@ -127,9 +126,9 @@ export default function ExecutiveOverview() {
                 buildings={false}
                 disableIntro
                 initialZoom={7.6}
-                height={360}
+                height="100%"
                 labelledAssetNames={FEATURED_LABELLED}
-                layerLabel="Synthetic SEQ Water Grid Layer"
+                layerLabel="SEQ Water Grid Layer"
                 className="border-0 rounded-none"
               />
             </div>
@@ -150,25 +149,25 @@ export default function ExecutiveOverview() {
           variant="inline"
           body={overlay.executiveSummary}
           sources={EXEC_INLINE_SOURCES}
-          updatedLabel={`Synthetic — ${overlay.label}`}
+          updatedLabel={`${overlay.label}`}
           onCta={() => navigate("/aquaiq")}
-          className="lg:col-span-5"
+          className="min-h-0 lg:col-span-5"
         />
       </div>
 
       <SectionCard
         title="Executive Priorities"
-        description="Action items raised for executive review this morning."
+        className="flex-none"
         actions={
           <button
             onClick={() => navigate("/aquaiq")}
-            className="text-[12.5px] font-semibold text-primaryBlue hover:text-deepBlue"
+            className="text-[12px] font-semibold text-primaryBlue hover:text-deepBlue"
           >
             View all actions →
           </button>
         }
       >
-        <div className="grid grid-cols-1 gap-2.5 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
           {overlay.priorities.map((p) => (
             <ExecutivePriorityCard
               key={p.title}

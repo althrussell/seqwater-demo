@@ -3,13 +3,13 @@
 The Seqwater demo runs against two distinct service principals:
 
 * **App SP** — backs the Databricks App; owns the FastAPI process. Needs to
-  read every synthetic table, list the synthetic Volume, execute the three
+  read every table, list the Volume, execute the three
   Seqwater UC functions, and call the Supervisor / KA serving endpoints
   (those are bound via :file:`databricks/app_create.json`).
-* **Supervisor SP** — auto-created by Agent Bricks when the synthetic
+* **Supervisor SP** — auto-created by Agent Bricks when the
   Supervisor MAS is provisioned. Needs the same UC function EXECUTE rights
   so it can route to the deterministic Python tools, and SELECT on the
-  synthetic schema for any direct table reads its child agents perform.
+ schema for any direct table reads its child agents perform.
 
 This script is idempotent: every grant is ``GRANT … TO \`<sp>\``` which UC
 treats as a no-op when the grant already exists.

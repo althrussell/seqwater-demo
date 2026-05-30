@@ -8,16 +8,14 @@ import {
   YAxis,
   ReferenceArea,
 } from "recharts";
-import { ArrowRight, BadgeDollarSign, Plus, Sparkles } from "lucide-react";
+import { ArrowRight, BadgeDollarSign, Plus } from "lucide-react";
 import KpiCard from "@/components/ui/KpiCard";
 import SectionCard from "@/components/ui/SectionCard";
 import StatusBadge from "@/components/ui/StatusBadge";
-import AquaIQSummaryCard from "@/components/ui/AquaIQSummaryCard";
 import HeroBanner from "@/components/ui/HeroBanner";
 import {
   ASSET_MATRIX,
   ASSET_RESILIENCE_KPIS,
-  CAPITAL_AQUAIQ,
   CAPITAL_PROJECTS,
   CRITICAL_ASSETS,
   HERO_COPY,
@@ -35,16 +33,16 @@ const BAND_COLORS: Record<string, string> = {
 export default function AssetResilience() {
   const { toast } = useToast();
   return (
-    <div className="space-y-5">
+    <div className="flex h-[var(--page-h)] min-h-0 flex-col gap-2">
       <HeroBanner
         image={HERO_IMAGES.assetResilience}
         eyebrow={HERO_COPY.assetResilience.eyebrow}
         headline={HERO_COPY.assetResilience.headline}
         sub={HERO_COPY.assetResilience.sub}
-        height={220}
+        height={130}
       />
 
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
+      <div className="grid flex-none grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-6">
         {ASSET_RESILIENCE_KPIS.map((k) => (
           <KpiCard
             key={k.title}
@@ -59,13 +57,14 @@ export default function AssetResilience() {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
+      <div className="grid min-h-0 flex-1 grid-cols-1 gap-2 lg:grid-cols-12">
         <SectionCard
           title="Asset Resilience Matrix"
-          description="Synthetic criticality vs condition risk"
-          className="lg:col-span-7"
+          description="Criticality vs condition risk"
+          className="min-h-0 lg:col-span-7"
+          bodyClassName="flex flex-col p-3 min-h-0"
         >
-          <div className="h-[320px] w-full">
+          <div className="min-h-0 flex-1 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <ScatterChart margin={{ top: 16, right: 24, bottom: 28, left: 24 }}>
                 <CartesianGrid stroke="#E2E8F0" strokeDasharray="3 3" />
@@ -137,24 +136,24 @@ export default function AssetResilience() {
               </ScatterChart>
             </ResponsiveContainer>
           </div>
-          <div className="mt-2 flex flex-wrap items-center gap-3 text-[11.5px] text-ink-muted">
+          <div className="mt-1.5 flex flex-none flex-wrap items-center gap-2 text-[11px] text-ink-muted">
             <BandKey color="#5FA777" label="Low" />
             <BandKey color="#0076BE" label="Medium" />
             <BandKey color="#D88A00" label="High" />
             <BandKey color="#C2410C" label="Elevated" />
-            <span className="ml-auto text-[11px]">
-              Bubble = synthetic asset · upper-right quadrant = focus zone
+            <span className="ml-auto text-[10.5px]">
+              Bubble = asset · upper-right = focus zone
             </span>
           </div>
         </SectionCard>
 
         <SectionCard
           title="Critical Assets"
-          description="Synthetic shortlist for executive attention"
-          className="lg:col-span-5"
+          description="Shortlist for executive attention"
+          className="min-h-0 lg:col-span-5"
           padded={false}
         >
-          <div className="scrollbar-clean max-h-[360px] overflow-auto">
+          <div className="scrollbar-clean h-full min-h-0 overflow-auto">
             <table className="table-clean">
               <thead>
                 <tr>
@@ -176,7 +175,7 @@ export default function AssetResilience() {
                     <td>
                       <StatusBadge status={a.status} size="sm" />
                     </td>
-                    <td className="text-[12.5px] text-ink-secondary">{a.riskDriver}</td>
+                    <td className="text-[12px] text-ink-secondary">{a.riskDriver}</td>
                     <td className="text-right">
                       <button
                         onClick={() =>
@@ -185,10 +184,10 @@ export default function AssetResilience() {
                             description: `${a.asset} review queued.`,
                           })
                         }
-                        className="inline-flex items-center gap-1 rounded-md border border-border bg-surface px-2 py-1 text-[11.5px] font-medium text-primaryBlue transition hover:bg-surface-blue"
+                        className="inline-flex items-center gap-1 rounded-md border border-border bg-surface px-1.5 py-0.5 text-[11px] font-medium text-primaryBlue transition hover:bg-surface-blue"
                       >
                         <Plus className="h-3 w-3" />
-                        Add to briefing
+                        Add
                       </button>
                     </td>
                   </tr>
@@ -201,74 +200,67 @@ export default function AssetResilience() {
 
       <SectionCard
         title="Capital Project Priorities"
-        description="Synthetic ranked pipeline for investment decisioning"
+        description="Ranked pipeline for investment decisioning"
+        className="min-h-0 flex-1"
+        bodyClassName="p-3 min-h-0"
         actions={
           <button
             onClick={() =>
               toast({
                 title: "Capital plan",
                 description:
-                  "Synthetic — full capital investment plan would open in the planning workspace.",
+                  "full capital investment plan would open in the planning workspace.",
               })
             }
-            className="btn-ghost text-[12.5px]"
+            className="btn-ghost text-[12px]"
           >
             View capital plan <ArrowRight className="h-3.5 w-3.5" />
           </button>
         }
       >
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid h-full min-h-0 grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-4">
           {CAPITAL_PROJECTS.map((p) => (
             <div
               key={p.name}
-              className="flex flex-col rounded-md border border-border bg-surface p-3.5 transition hover:border-primaryBlue/30 hover:shadow-card"
+              className="flex min-h-0 flex-col overflow-hidden rounded-md border border-border bg-surface p-2.5 transition hover:border-primaryBlue/30 hover:shadow-card"
             >
-              <div className="flex items-center justify-between gap-2">
-                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-surface-blue text-[11px] font-semibold text-primaryBlue">
+              <div className="flex flex-none items-center justify-between gap-2">
+                <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-surface-blue text-[10.5px] font-semibold text-primaryBlue">
                   {p.priority}
                 </span>
-                <span className="text-[10.5px] uppercase tracking-wider text-ink-muted">
+                <span className="text-[9.5px] uppercase tracking-wider text-ink-muted">
                   Priority
                 </span>
               </div>
-              <div className="mt-2 text-[14.5px] font-semibold leading-snug text-deepNavy">
+              <div className="mt-1.5 line-clamp-2 text-[12.5px] font-semibold leading-snug text-deepNavy">
                 {p.name}
               </div>
-              <div className="mt-2 flex items-center justify-between text-[12px] text-ink-muted">
+              <div className="mt-1 flex flex-none items-center justify-between text-[11px] text-ink-muted">
                 <span className="inline-flex items-center gap-1">
-                  <BadgeDollarSign className="h-3.5 w-3.5 text-greenDark" />
+                  <BadgeDollarSign className="h-3 w-3 text-greenDark" />
                   {p.estimatedCost}
                 </span>
                 <span>{p.delivery}</span>
               </div>
-              <div className="mt-3">
-                <div className="flex items-center justify-between text-[11px] text-ink-muted">
+              <div className="mt-1.5 flex-none">
+                <div className="flex items-center justify-between text-[10.5px] text-ink-muted">
                   <span>Risk reduction</span>
                   <span className="font-semibold text-deepNavy">{p.riskReductionScore}</span>
                 </div>
-                <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-surface-blue">
+                <div className="mt-0.5 h-1 overflow-hidden rounded-full bg-surface-blue">
                   <div
                     className="h-full rounded-full bg-primaryBlue"
                     style={{ width: `${p.riskReductionScore}%` }}
                   />
                 </div>
               </div>
-              <p className="mt-3 text-[12px] leading-relaxed text-ink-secondary">{p.rationale}</p>
+              <p className="mt-1.5 line-clamp-3 text-[11px] leading-snug text-ink-secondary">
+                {p.rationale}
+              </p>
             </div>
           ))}
         </div>
       </SectionCard>
-
-      <AquaIQSummaryCard
-        title="AquaIQ Capital Insight"
-        description="AI-generated synthetic prioritisation note"
-        body={CAPITAL_AQUAIQ}
-        updatedLabel="Synthetic — Last updated 09:10 AM AEST"
-        ctaLabel="View capital reasoning"
-        onCta={() => toast({ title: "Capital reasoning opened", variant: "info" })}
-      />
-
-      <SectionFooterHint />
     </div>
   );
 }
@@ -276,18 +268,8 @@ export default function AssetResilience() {
 function BandKey({ color, label }: { color: string; label: string }) {
   return (
     <span className="inline-flex items-center gap-1.5">
-      <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ background: color }} />
+      <span className="inline-block h-2 w-2 rounded-full" style={{ background: color }} />
       <span>{label}</span>
     </span>
-  );
-}
-
-function SectionFooterHint() {
-  return (
-    <div className="rounded-md border border-dashed border-border bg-surface-blue/30 px-4 py-3 text-[11.5px] text-ink-muted">
-      <Sparkles className="mr-1 inline-block h-3.5 w-3.5 text-primaryBlue" />
-      Synthetic prioritisation. Final capital decisions require engineering, regulatory and
-      planning validation under approved Seqwater processes.
-    </div>
   );
 }

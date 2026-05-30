@@ -1,78 +1,78 @@
-# Synthetic SEQ Climate Outlook — Winter 2026
+# SEQ Climate Outlook — Winter 2026
 
-**Status:** SYNTHETIC DEMO ARTEFACT — for executive demonstration only.
-**Owner (synthetic):** Hydrology and Catchment Sciences
-**Reporting period (synthetic):** June to August 2026
+**Status:** DEMO ARTEFACT — for executive demonstration only.
+**Owner:** Hydrology and Catchment Sciences
+**Reporting period:** June to August 2026
 **Classification:** Internal demo
 
-> This synthetic seasonal climate outlook is generated for a Databricks demo
+> This seasonal climate outlook is generated for a Databricks demo
 > of governed AI-assisted operational planning. It is not a Bureau of
 > Meteorology product, has not been derived from real climate models, and
 > must not be used to inform any real operational decision.
 
-## 1. Synthetic outlook headline
+## 1. Outlook headline
 
-The synthetic seasonal outlook for winter 2026 across the synthetic SEQ Water
-Grid catchment area indicates a synthetic above-average rainfall band over
-the synthetic Pine Rivers and synthetic Sunshine Coast catchment regions,
-with synthetic near-average bands elsewhere. The synthetic temperature
-outlook indicates synthetic above-average overnight minima.
+The seasonal outlook for winter 2026 across the SEQ Water
+Grid catchment area indicates a above-average rainfall band over
+the Pine Rivers and Sunshine Coast catchment regions,
+with near-average bands elsewhere. The temperature
+outlook indicates above-average overnight minima.
 
-## 2. Synthetic catchment-level outlook
+## 2. Catchment-level outlook
 
-| Synthetic catchment region          | Synthetic rainfall outlook | Synthetic temperature outlook |
+| Catchment region          | Rainfall outlook | Temperature outlook |
 |-------------------------------------|----------------------------|-------------------------------|
-| Synthetic Pine Rivers               | Above average              | Above average                 |
-| Synthetic Sunshine Coast            | Above average              | Above average                 |
-| Synthetic Brisbane River            | Near average               | Above average                 |
-| Synthetic Logan and Albert          | Near average               | Near average                  |
-| Synthetic Gold Coast                | Near to below average      | Near average                  |
+| Pine Rivers               | Above average              | Above average                 |
+| Sunshine Coast            | Above average              | Above average                 |
+| Brisbane River            | Near average               | Above average                 |
+| Logan and Albert          | Near average               | Near average                  |
+| Gold Coast                | Near to below average      | Near average                  |
 
-## 3. Synthetic implications for water security
+## 3. Implications for water security
 
-- Synthetic storage trajectories are likely to remain inside the synthetic
-  operating envelope across the synthetic outlook window.
-- The synthetic catchment saturation indicator is likely to remain in the
-  synthetic upper quartile through the synthetic first half of the outlook.
-- Synthetic flood readiness posture is consequently likely to require
-  elevated synthetic monitoring vigilance through the synthetic outlook
+- Storage trajectories are likely to remain inside the
+  operating envelope across the outlook window.
+- The catchment saturation indicator is likely to remain in the
+ upper quartile through the first half of the outlook.
+- Flood readiness posture is consequently likely to require
+  elevated monitoring vigilance through the outlook
   period.
 
-## 4. Synthetic implications for asset operations
+## 4. Implications for asset operations
 
-- Synthetic asset risk for the synthetic Caboolture Pump Station (`PMP-014`)
-  is likely to be amplified by synthetic peak-demand events overlaid on a
-  synthetic mid-life mechanical reliability posture.
-- Synthetic dam safety surveillance is likely to require synthetic increased
-  inspection frequency at the synthetic North Pine Dam through the synthetic
+- Asset risk for the Caboolture Pump Station (`PMP-014`)
+  is likely to be amplified by peak-demand events overlaid on a
+ mid-life mechanical reliability posture.
+- Dam safety surveillance is likely to require increased
+  inspection frequency at the North Pine Dam through the
   outlook window.
 
-## 5. Synthetic implications for water quality
+## 5. Implications for water quality
 
-Synthetic upstream catchment quality is likely to be variable through the
-synthetic outlook window, with synthetic elevated turbidity events likely
-during synthetic short-duration storm cells. Synthetic treatment plants
-identified as currently in synthetic Watch posture should maintain enhanced
-synthetic monitoring cadence.
+Upstream catchment quality is likely to be variable through the
+outlook window, with elevated turbidity events likely
+during short-duration storm cells. Treatment plants
+identified as currently in Watch posture should maintain enhanced
+monitoring cadence.
 
-## 6. Synthetic recommended actions
+## 6. Recommended actions
 
-1. Maintain synthetic Watch posture for synthetic Pine Rivers and synthetic
+1. Maintain Watch posture for Pine Rivers and
    Sunshine Coast catchment regions.
-2. Pre-stage synthetic flood readiness checklists per the synthetic Flood
+2. Pre-stage flood readiness checklists per the Flood
    Readiness Executive Briefing Template.
-3. Update synthetic capital prioritisation outputs to reflect the synthetic
+3. Update capital prioritisation outputs to reflect the
    outlook.
-4. Coordinate synthetic communications with synthetic retailer customers per
-   the synthetic Retailer Customer Communications Protocol.
+4. Coordinate communications with retailer customers per
+   the Retailer Customer Communications Protocol.
 
-## 7. Synthetic human-in-the-loop validation
+## 7. Human-in-the-loop validation
 
-Synthetic AI-generated summaries of this synthetic outlook must cite this
-synthetic source, must explicitly note the synthetic illustrative nature of
-the outlook, and must require synthetic operational validation by qualified
-synthetic hydrologists before any synthetic operational change is supported.
+AI-generated summaries of this outlook must cite this
+source, must explicitly note the illustrative nature of
+the outlook, and must require operational validation by qualified
+hydrologists before any operational change is supported.
 
 ---
 
-*Synthetic demo content. Not for operational use.*
+*Demo content. Not for operational use.*

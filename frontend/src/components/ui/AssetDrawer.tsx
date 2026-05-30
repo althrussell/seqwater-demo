@@ -68,7 +68,7 @@ const SUMMARY_LIBRARY: Record<string, { hero: string; insight: string; checklist
     hero:
       "https://images.unsplash.com/photo-1581090700227-1e8e4f9d63cb?auto=format&fit=crop&w=900&q=70",
     insight:
-      "Synthetic pump health index easing. One open priority work order may benefit from prioritisation in this maintenance window.",
+      "Pump health index easing. One open priority work order may benefit from prioritisation in this maintenance window.",
     checklist: [
       "Review pump health trend",
       "Confirm spares availability",
@@ -89,7 +89,7 @@ const SUMMARY_LIBRARY: Record<string, { hero: string; insight: string; checklist
     hero:
       "https://images.unsplash.com/photo-1581093588401-fbb62a02f120?auto=format&fit=crop&w=900&q=70",
     insight:
-      "No active leak signals on this synthetic pipeline. Capital project alignment opportunity may exist.",
+      "No active leak signals on this pipeline. Capital project alignment opportunity may exist.",
     checklist: [
       "Confirm scheduled inspection cadence",
       "Review pressure trend report",
@@ -132,7 +132,7 @@ export default function AssetDrawer({ assetId, onClose, variant = "inline" }: Pr
   const lib = SUMMARY_LIBRARY[asset.asset_type as string] ?? {
     hero: FALLBACK_IMAGE,
     insight:
-      "Synthetic asset summary. Operational signals appear within calm range; continue regular monitoring.",
+      "Asset summary. Operational signals appear within calm range; continue regular monitoring.",
     checklist: ["Continue regular review", "Update briefing register"],
   };
 
@@ -276,7 +276,7 @@ export default function AssetDrawer({ assetId, onClose, variant = "inline" }: Pr
               onClick={() =>
                 toast({
                   title: "Risk explanation queued",
-                  description: "AquaIQ will draft a synthetic risk note for this asset.",
+                  description: "AquaIQ will draft a risk note for this asset.",
                 })
               }
               className="btn-secondary text-[12.5px]"
@@ -287,7 +287,7 @@ export default function AssetDrawer({ assetId, onClose, variant = "inline" }: Pr
               onClick={() =>
                 toast({
                   title: "Added to executive briefing",
-                  description: `${asset.name ?? "Asset"} included in the next synthetic briefing.`,
+                  description: `${asset.name ?? "Asset"} included in the next briefing.`,
                 })
               }
               className="btn-primary text-[12.5px]"
@@ -298,7 +298,7 @@ export default function AssetDrawer({ assetId, onClose, variant = "inline" }: Pr
               onClick={() =>
                 toast({
                   title: "Opening work orders",
-                  description: "Synthetic work order list ready for review.",
+                  description: "Work order list ready for review.",
                   variant: "info",
                 })
               }
@@ -457,9 +457,9 @@ function SignalsTab({
 }) {
   return (
     <div className="space-y-3">
-      <SignalBlock label="Storage / inflow (synthetic)" data={storageTrend} color="#0076BE" />
-      <SignalBlock label="Health index (synthetic)" data={healthTrend} color="#2E7D59" />
-      <SignalBlock label="Turbidity (NTU, synthetic)" data={turbidityTrend} color="#D88A00" />
+      <SignalBlock label="Storage / inflow" data={storageTrend} color="#0076BE" />
+      <SignalBlock label="Health index" data={healthTrend} color="#2E7D59" />
+      <SignalBlock label="Turbidity (NTU,)" data={turbidityTrend} color="#D88A00" />
     </div>
   );
 }
@@ -485,7 +485,7 @@ function RisksTab({
   risk?: { risk_band: string; risk_score: number; recommended_action: string; predicted_failure_30d: number };
 }) {
   if (!risk) {
-    return <Empty label="No synthetic risk score available for this asset." />;
+    return <Empty label="No risk score available for this asset." />;
   }
   return (
     <div className="space-y-3">
@@ -494,14 +494,14 @@ function RisksTab({
           { label: "Risk band", value: risk.risk_band },
           { label: "Risk score", value: risk.risk_score.toFixed(2) },
           {
-            label: "30-day failure (synthetic)",
+            label: "30-day failure",
             value: `${(risk.predicted_failure_30d * 100).toFixed(0)}%`,
           },
         ]}
       />
       <div className="rounded-md border border-border bg-surface-blue/50 p-3 text-[12.5px] text-deepNavy">
         <div className="text-[10.5px] font-semibold uppercase tracking-wider text-primaryBlue">
-          Recommended action (synthetic)
+          Recommended action
         </div>
         <p className="mt-1.5 leading-relaxed">{risk.recommended_action}</p>
       </div>
@@ -511,7 +511,7 @@ function RisksTab({
 
 function WorkOrdersTab({ items }: { items: Array<Record<string, any>> }) {
   if (!items || items.length === 0) {
-    return <Empty label="No synthetic work orders linked to this asset." />;
+    return <Empty label="No work orders linked to this asset." />;
   }
   return (
     <ul className="space-y-2 text-[12px]">
@@ -539,9 +539,9 @@ function WorkOrdersTab({ items }: { items: Array<Record<string, any>> }) {
 
 function DocumentsTab({ assetName }: { assetName: string }) {
   const docs = [
-    { name: `${assetName} — Operations Briefing (synthetic).pdf`, type: "Briefing", date: "27 May 2026" },
-    { name: `${assetName} — Asset Condition Notes (synthetic).docx`, type: "Engineering", date: "21 May 2026" },
-    { name: `${assetName} — Compliance Summary (synthetic).pdf`, type: "Compliance", date: "12 May 2026" },
+    { name: `${assetName} — Operations Briefing.pdf`, type: "Briefing", date: "27 May 2026" },
+    { name: `${assetName} — Asset Condition Notes.docx`, type: "Engineering", date: "21 May 2026" },
+    { name: `${assetName} — Compliance Summary.pdf`, type: "Compliance", date: "12 May 2026" },
   ];
   return (
     <ul className="space-y-2 text-[12.5px]">

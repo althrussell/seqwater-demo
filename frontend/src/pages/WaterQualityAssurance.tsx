@@ -3,12 +3,10 @@ import KpiCard from "@/components/ui/KpiCard";
 import SectionCard from "@/components/ui/SectionCard";
 import StatusBadge from "@/components/ui/StatusBadge";
 import Sparkline from "@/components/ui/Sparkline";
-import AquaIQSummaryCard from "@/components/ui/AquaIQSummaryCard";
 import HeroBanner from "@/components/ui/HeroBanner";
 import {
   HERO_COPY,
   HERO_IMAGES,
-  QUALITY_AQUAIQ,
   QUALITY_CHECKLIST,
   QUALITY_INDICATORS,
   QUALITY_KPIS,
@@ -17,16 +15,16 @@ import {
 
 export default function WaterQualityAssurance() {
   return (
-    <div className="space-y-5">
+    <div className="flex h-[var(--page-h)] min-h-0 flex-col gap-2">
       <HeroBanner
         image={HERO_IMAGES.waterQuality}
         eyebrow={HERO_COPY.waterQuality.eyebrow}
         headline={HERO_COPY.waterQuality.headline}
         sub={HERO_COPY.waterQuality.sub}
-        height={220}
+        height={130}
       />
 
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+      <div className="grid flex-none grid-cols-2 gap-2 md:grid-cols-4">
         {QUALITY_KPIS.map((k) => (
           <KpiCard
             key={k.title}
@@ -41,45 +39,49 @@ export default function WaterQualityAssurance() {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
+      <div className="grid min-h-0 flex-1 grid-cols-1 gap-2 lg:grid-cols-12">
         <SectionCard
           title="Key Indicators"
-          description="Synthetic compliance and trend by indicator"
-          className="lg:col-span-7"
+          description="Compliance and trend by indicator"
+          className="min-h-0 lg:col-span-7"
           padded={false}
+          bodyClassName="p-0 min-h-0"
         >
-          <table className="table-clean">
-            <thead>
-              <tr>
-                <th>Indicator</th>
-                <th>Status</th>
-                <th>Trend</th>
-                <th className="text-right">Compliance</th>
-              </tr>
-            </thead>
-            <tbody>
-              {QUALITY_INDICATORS.map((i) => (
-                <tr key={i.indicator}>
-                  <td className="font-semibold text-deepNavy">{i.indicator}</td>
-                  <td>
-                    <StatusBadge status={i.status} size="sm" />
-                  </td>
-                  <td className="w-[160px]">
-                    <Sparkline data={i.trend} stroke={i.trendColor} height={28} />
-                  </td>
-                  <td className="text-right font-semibold text-deepNavy">{i.compliance}</td>
+          <div className="scrollbar-clean h-full min-h-0 overflow-auto">
+            <table className="table-clean">
+              <thead>
+                <tr>
+                  <th>Indicator</th>
+                  <th>Status</th>
+                  <th>Trend</th>
+                  <th className="text-right">Compliance</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {QUALITY_INDICATORS.map((i) => (
+                  <tr key={i.indicator}>
+                    <td className="font-semibold text-deepNavy">{i.indicator}</td>
+                    <td>
+                      <StatusBadge status={i.status} size="sm" />
+                    </td>
+                    <td className="w-[140px]">
+                      <Sparkline data={i.trend} stroke={i.trendColor} height={22} />
+                    </td>
+                    <td className="text-right font-semibold text-deepNavy">{i.compliance}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </SectionCard>
 
         <SectionCard
           title="Quality Trends"
-          description="7-day synthetic trends"
-          className="lg:col-span-5"
+          description="7-day trends"
+          className="min-h-0 lg:col-span-5"
+          bodyClassName="p-3 min-h-0"
         >
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid h-full min-h-0 grid-cols-2 gap-2">
             <TrendTile label="Turbidity (NTU)" data={[9, 10, 10.5, 11, 11.5, 12, 13.1]} color="#D88A00" />
             <TrendTile label="pH" data={[7.4, 7.4, 7.5, 7.5, 7.4, 7.5, 7.5]} color="#0076BE" />
             <TrendTile
@@ -96,48 +98,52 @@ export default function WaterQualityAssurance() {
         </SectionCard>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
+      <div className="grid min-h-0 flex-1 grid-cols-1 gap-2 lg:grid-cols-12">
         <SectionCard
           title="Treatment Plants Overview"
-          className="lg:col-span-7"
+          className="min-h-0 lg:col-span-7"
           padded={false}
+          bodyClassName="p-0 min-h-0"
         >
-          <table className="table-clean">
-            <thead>
-              <tr>
-                <th>Plant</th>
-                <th>Status</th>
-                <th className="text-right">Compliance %</th>
-                <th>Review status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {QUALITY_PLANTS.map((p) => (
-                <tr key={p.plant}>
-                  <td className="font-semibold text-deepNavy">{p.plant}</td>
-                  <td>
-                    <StatusBadge status={p.status} size="sm" />
-                  </td>
-                  <td className="text-right">{p.compliance}</td>
-                  <td className="text-[12.5px] text-ink-secondary">{p.review}</td>
+          <div className="scrollbar-clean h-full min-h-0 overflow-auto">
+            <table className="table-clean">
+              <thead>
+                <tr>
+                  <th>Plant</th>
+                  <th>Status</th>
+                  <th className="text-right">Compliance %</th>
+                  <th>Review status</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {QUALITY_PLANTS.map((p) => (
+                  <tr key={p.plant}>
+                    <td className="font-semibold text-deepNavy">{p.plant}</td>
+                    <td>
+                      <StatusBadge status={p.status} size="sm" />
+                    </td>
+                    <td className="text-right">{p.compliance}</td>
+                    <td className="text-[12px] text-ink-secondary">{p.review}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </SectionCard>
 
         <SectionCard
           title="Operator Review Checklist"
-          className="lg:col-span-5"
+          className="min-h-0 lg:col-span-5"
+          bodyClassName="p-3 min-h-0"
         >
-          <ul className="space-y-2">
+          <ul className="scrollbar-clean h-full min-h-0 space-y-1.5 overflow-auto pr-1">
             {QUALITY_CHECKLIST.map((c) => (
               <li
                 key={c}
-                className="flex items-center gap-2 rounded-md border border-border bg-surface px-3 py-2.5 text-[13px] text-ink-secondary"
+                className="flex items-center gap-2 rounded-md border border-border bg-surface px-2.5 py-2 text-[12px] text-ink-secondary"
               >
-                <span className="flex h-5 w-5 items-center justify-center rounded-full border border-greenDark/40 bg-surface-green text-greenDark">
-                  <Check className="h-3 w-3" />
+                <span className="flex h-4 w-4 flex-none items-center justify-center rounded-full border border-greenDark/40 bg-surface-green text-greenDark">
+                  <Check className="h-2.5 w-2.5" />
                 </span>
                 {c}
               </li>
@@ -145,13 +151,6 @@ export default function WaterQualityAssurance() {
           </ul>
         </SectionCard>
       </div>
-
-      <AquaIQSummaryCard
-        title="AquaIQ Explanation"
-        description="Synthetic AquaIQ note: water quality observations and recommended action"
-        body={QUALITY_AQUAIQ}
-        updatedLabel="Synthetic — 29 May 2026 09:10 AM AEST"
-      />
     </div>
   );
 }
@@ -167,10 +166,12 @@ function TrendTile({
 }) {
   const latest = data[data.length - 1];
   return (
-    <div className="rounded-md border border-border bg-surface px-3 py-2.5">
-      <div className="text-[11px] text-ink-muted">{label}</div>
-      <div className="mt-0.5 text-[16px] font-semibold text-deepNavy">{latest.toFixed(2)}</div>
-      <Sparkline data={data} stroke={color} height={36} />
+    <div className="flex min-h-0 flex-col overflow-hidden rounded-md border border-border bg-surface px-2.5 py-2">
+      <div className="text-[10.5px] text-ink-muted">{label}</div>
+      <div className="text-[14px] font-semibold text-deepNavy">{latest.toFixed(2)}</div>
+      <div className="mt-auto min-h-0 flex-1">
+        <Sparkline data={data} stroke={color} height={24} />
+      </div>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 -- ============================================================================
--- Seqwater AI Command Centre — Synthetic data quality checks
+-- Seqwater AI Command Centre — Data quality checks
 --
 -- Each query returns rows when something is wrong. A "clean" run returns 0 rows.
 -- {catalog}.{schema} placeholders are substituted by scripts/databricks_sql.py.

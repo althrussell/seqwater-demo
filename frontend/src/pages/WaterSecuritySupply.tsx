@@ -15,7 +15,6 @@ import {
 import { ArrowRight, Check, ChevronRight } from "lucide-react";
 import KpiCard from "@/components/ui/KpiCard";
 import SectionCard from "@/components/ui/SectionCard";
-import AquaIQSummaryCard from "@/components/ui/AquaIQSummaryCard";
 import StatusBadge from "@/components/ui/StatusBadge";
 import HeroBanner from "@/components/ui/HeroBanner";
 import {
@@ -23,7 +22,6 @@ import {
   HERO_IMAGES,
   SOURCE_CONTRIBUTION,
   STORAGE_HISTORY,
-  SUPPLY_AQUAIQ,
   SUPPLY_BALANCE,
   SUPPLY_KEY_DRIVERS,
   SUPPLY_KPIS,
@@ -46,16 +44,16 @@ export default function WaterSecuritySupply() {
         : STORAGE_HISTORY.slice(-30);
 
   return (
-    <div className="space-y-5">
+    <div className="flex h-[var(--page-h)] min-h-0 flex-col gap-2">
       <HeroBanner
         image={HERO_IMAGES.waterSecuritySupply}
         eyebrow={HERO_COPY.waterSecuritySupply.eyebrow}
         headline={HERO_COPY.waterSecuritySupply.headline}
         sub={HERO_COPY.waterSecuritySupply.sub}
-        height={220}
+        height={130}
       />
 
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
+      <div className="grid flex-none grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-6">
         {SUPPLY_KPIS.map((k) => (
           <KpiCard
             key={k.title}
@@ -71,11 +69,11 @@ export default function WaterSecuritySupply() {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
+      <div className="grid min-h-0 flex-1 grid-cols-1 gap-2 lg:grid-cols-12">
         <SectionCard
           title="Grid Storage Over Time"
           description="Total useable storage across Seqwater storages"
-          className="lg:col-span-7"
+          className="min-h-0 lg:col-span-7"
           actions={
             <div className="flex items-center rounded-md border border-border bg-surface text-[12px]">
               {TIMEFRAMES.map((t) => (
@@ -93,8 +91,9 @@ export default function WaterSecuritySupply() {
               ))}
             </div>
           }
+          bodyClassName="flex flex-col p-3"
         >
-          <div className="h-[260px] w-full">
+          <div className="min-h-0 flex-1 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart data={slice} margin={{ top: 8, right: 16, bottom: 0, left: 0 }}>
                 <defs>
@@ -169,13 +168,13 @@ export default function WaterSecuritySupply() {
               </ComposedChart>
             </ResponsiveContainer>
           </div>
-          <div className="mt-2 flex flex-wrap items-center gap-4 text-[11.5px] text-ink-muted">
+          <div className="mt-2 flex flex-none flex-wrap items-center gap-3 text-[11px] text-ink-muted">
             <LegendDot color="#0076BE" label="Actual" />
             <LegendDot color="#94A3B8" label="Median (5yr)" dashed />
             <LegendDot color="#00AEEF" label="10th – 90th percentile" muted />
             <a
               href="#"
-              className="ml-auto inline-flex items-center gap-1 text-[12px] font-semibold text-primaryBlue hover:text-deepBlue"
+              className="ml-auto inline-flex items-center gap-1 text-[11.5px] font-semibold text-primaryBlue hover:text-deepBlue"
             >
               View storage by dam <ArrowRight className="h-3 w-3" />
             </a>
@@ -184,18 +183,19 @@ export default function WaterSecuritySupply() {
 
         <SectionCard
           title="Water Supply Balance (Next 72h)"
-          className="lg:col-span-5"
+          className="min-h-0 lg:col-span-5"
+          bodyClassName="flex flex-col p-3 min-h-0"
         >
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid flex-none grid-cols-3 gap-2">
             <BalanceTile
-              label="AVAILABLE SUPPLY"
+              label="AVAILABLE"
               value={`${fmtNumber(SUPPLY_BALANCE.availableMl, {
                 maximumFractionDigits: 0,
               })} ML`}
               color="text-primaryBlue"
             />
             <BalanceTile
-              label="FORECAST DEMAND"
+              label="DEMAND"
               value={`${fmtNumber(SUPPLY_BALANCE.demandMl, {
                 maximumFractionDigits: 0,
               })} ML`}
@@ -203,26 +203,26 @@ export default function WaterSecuritySupply() {
               prefix="−"
             />
             <BalanceTile
-              label="SUPPLY MARGIN"
+              label="MARGIN"
               value={`${fmtNumber(SUPPLY_BALANCE.marginMl, {
                 maximumFractionDigits: 0,
               })} ML`}
               color="text-greenDark"
               prefix="="
-              sub={`(${SUPPLY_BALANCE.marginPercent}% margin)`}
+              sub={`(${SUPPLY_BALANCE.marginPercent}%)`}
             />
           </div>
-          <div className="mt-4">
-            <div className="text-[10.5px] font-semibold uppercase tracking-wider text-ink-muted">
+          <div className="mt-2 flex min-h-0 flex-1 flex-col">
+            <div className="text-[10px] font-semibold uppercase tracking-wider text-ink-muted">
               Key drivers
             </div>
-            <ul className="mt-2 space-y-1.5">
+            <ul className="scrollbar-clean mt-1.5 min-h-0 flex-1 space-y-1 overflow-auto pr-1">
               {SUPPLY_KEY_DRIVERS.map((d) => (
                 <li
                   key={d}
-                  className="flex items-start gap-2 text-[12.5px] text-ink-secondary"
+                  className="flex items-start gap-2 text-[12px] text-ink-secondary"
                 >
-                  <Check className="mt-0.5 h-3.5 w-3.5 flex-none text-primaryBlue" />
+                  <Check className="mt-0.5 h-3 w-3 flex-none text-primaryBlue" />
                   {d}
                 </li>
               ))}
@@ -231,25 +231,26 @@ export default function WaterSecuritySupply() {
         </SectionCard>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
+      <div className="grid min-h-0 flex-1 grid-cols-1 gap-2 lg:grid-cols-12">
         <SectionCard
-          title="Source Contribution (Current)"
-          className="lg:col-span-5"
+          title="Source Contribution"
+          className="min-h-0 lg:col-span-4"
           actions={
             <button
               onClick={() =>
                 toast({
                   title: "Source contribution",
                   description:
-                    "Synthetic — per-source breakdown by dam, weir, groundwater, recycled & desalination would open here.",
+                    "per-source breakdown by dam, weir, groundwater, recycled & desalination would open here.",
                 })
               }
-              className="btn-ghost text-[12px]"
+              className="btn-ghost text-[11.5px]"
             >
-              View source details
+              Details
               <ArrowRight className="h-3 w-3" />
             </button>
           }
+          bodyClassName="p-3 min-h-0"
         >
           <DonutSourceContribution />
         </SectionCard>
@@ -257,92 +258,79 @@ export default function WaterSecuritySupply() {
         <SectionCard
           title="Treatment Plant Capacity"
           description="Available capacity by plant"
-          className="lg:col-span-7"
+          className="min-h-0 lg:col-span-5"
+          bodyClassName="p-0 min-h-0"
           actions={
             <button
               onClick={() =>
                 toast({
                   title: "Treatment plants",
                   description:
-                    "Synthetic — full plant register with utilisation and outage history would open here.",
+                    "full plant register with utilisation and outage history would open here.",
                 })
               }
-              className="btn-ghost text-[12px]"
+              className="btn-ghost text-[11.5px]"
             >
-              View all treatment plants <ArrowRight className="h-3 w-3" />
+              View all <ArrowRight className="h-3 w-3" />
             </button>
           }
         >
-          <table className="table-clean">
-            <thead>
-              <tr>
-                <th>Plant</th>
-                <th className="text-right">Available Capacity</th>
-                <th className="text-right">% of Design</th>
-              </tr>
-            </thead>
-            <tbody>
-              {TREATMENT_PLANT_CAPACITY.map((p) => (
-                <tr key={p.plant}>
-                  <td className="font-medium">{p.plant}</td>
-                  <td className="text-right text-ink-secondary">
-                    {p.availableMlDay} ML/day
-                  </td>
-                  <td>
-                    <div className="flex items-center justify-end gap-2">
-                      <div className="h-1.5 w-32 overflow-hidden rounded-full bg-surface-blue">
-                        <div
-                          className="h-full rounded-full bg-primaryBlue"
-                          style={{ width: `${p.percentDesign}%` }}
-                        />
-                      </div>
-                      <span className="w-9 text-right text-[12.5px] font-semibold text-deepNavy">
-                        {p.percentDesign}%
-                      </span>
-                    </div>
-                  </td>
+          <div className="scrollbar-clean h-full min-h-0 overflow-auto">
+            <table className="table-clean">
+              <thead>
+                <tr>
+                  <th>Plant</th>
+                  <th className="text-right">Capacity</th>
+                  <th className="text-right">% Design</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {TREATMENT_PLANT_CAPACITY.map((p) => (
+                  <tr key={p.plant}>
+                    <td className="font-medium">{p.plant}</td>
+                    <td className="text-right text-ink-secondary">
+                      {p.availableMlDay} ML/day
+                    </td>
+                    <td>
+                      <div className="flex items-center justify-end gap-2">
+                        <div className="h-1.5 w-24 overflow-hidden rounded-full bg-surface-blue">
+                          <div
+                            className="h-full rounded-full bg-primaryBlue"
+                            style={{ width: `${p.percentDesign}%` }}
+                          />
+                        </div>
+                        <span className="w-9 text-right text-[12px] font-semibold text-deepNavy">
+                          {p.percentDesign}%
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </SectionCard>
-      </div>
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
         <SectionCard
-          title="Supply Continuity Watchpoints"
-          className="lg:col-span-6"
+          title="Watchpoints"
+          className="min-h-0 lg:col-span-3"
+          bodyClassName="p-3 min-h-0"
         >
-          <ul className="space-y-2">
+          <ul className="scrollbar-clean h-full min-h-0 space-y-1.5 overflow-auto pr-1">
             {SUPPLY_WATCHPOINTS.map((w) => (
               <li
                 key={w.text}
-                className="flex items-center justify-between gap-3 rounded-md border border-border bg-surface px-3 py-2.5 text-[13px] text-deepNavy"
+                className="flex items-center justify-between gap-2 rounded-md border border-border bg-surface px-2.5 py-2 text-[12px] text-deepNavy"
               >
-                <div className="flex items-center gap-2.5">
+                <div className="flex min-w-0 items-center gap-2">
                   <StatusBadge status={w.status} size="sm" />
-                  <span>{w.text}</span>
+                  <span className="truncate" title={w.text}>{w.text}</span>
                 </div>
-                <ChevronRight className="h-4 w-4 text-ink-muted" />
+                <ChevronRight className="h-3.5 w-3.5 flex-none text-ink-muted" />
               </li>
             ))}
           </ul>
         </SectionCard>
-
-        <AquaIQSummaryCard
-          className="lg:col-span-6"
-          title="AquaIQ Insight"
-          description="Synthetic AquaIQ explanation grounded in governed operational data."
-          body={SUPPLY_AQUAIQ}
-          updatedLabel="Synthetic — 29 May 2026 09:10 AM AEST"
-          onCta={() =>
-            toast({
-              title: "Added to executive brief",
-              description: "Insight queued for the AquaIQ Briefing Analyst.",
-            })
-          }
-          ctaLabel="Add to Executive Brief"
-        />
       </div>
     </div>
   );
@@ -362,15 +350,15 @@ function BalanceTile({
   sub?: string;
 }) {
   return (
-    <div className="rounded-md border border-border bg-surface px-3 py-3 text-center">
-      <div className="text-[10.5px] font-semibold uppercase tracking-wider text-ink-muted">
+    <div className="rounded-md border border-border bg-surface px-2 py-2 text-center">
+      <div className="text-[9.5px] font-semibold uppercase tracking-wider text-ink-muted">
         {label}
       </div>
-      <div className={`mt-2 text-[20px] font-semibold leading-none ${color}`}>
-        {prefix ? <span className="mr-1 text-ink-muted">{prefix}</span> : null}
+      <div className={`mt-1 text-[15px] font-semibold leading-none ${color}`}>
+        {prefix ? <span className="mr-0.5 text-ink-muted">{prefix}</span> : null}
         {value}
       </div>
-      {sub ? <div className="mt-1 text-[11px] text-ink-muted">{sub}</div> : null}
+      {sub ? <div className="mt-0.5 text-[10px] text-ink-muted">{sub}</div> : null}
     </div>
   );
 }
@@ -404,16 +392,16 @@ function LegendDot({
 function DonutSourceContribution() {
   const total = SOURCE_CONTRIBUTION.reduce((acc, s) => acc + s.value, 0);
   return (
-    <div className="grid grid-cols-2 items-center gap-3">
-      <div className="relative h-[180px]">
+    <div className="grid h-full min-h-0 grid-cols-2 items-center gap-2">
+      <div className="relative h-full min-h-0">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
               data={SOURCE_CONTRIBUTION}
               dataKey="value"
               nameKey="name"
-              innerRadius={56}
-              outerRadius={82}
+              innerRadius={44}
+              outerRadius={66}
               startAngle={90}
               endAngle={-270}
               stroke="#FFFFFF"
@@ -428,27 +416,26 @@ function DonutSourceContribution() {
         </ResponsiveContainer>
         <div className="pointer-events-none absolute inset-0 grid place-items-center">
           <div className="text-center">
-            <div className="text-[10.5px] uppercase tracking-wider text-ink-muted">Total Available</div>
-            <div className="text-[18px] font-semibold text-deepNavy">
+            <div className="text-[9.5px] uppercase tracking-wider text-ink-muted">Total</div>
+            <div className="text-[14px] font-semibold text-deepNavy">
               {fmtNumber(total, { maximumFractionDigits: 0 })} ML
             </div>
           </div>
         </div>
       </div>
-      <ul className="space-y-1.5 text-[12.5px]">
+      <ul className="scrollbar-clean min-h-0 max-h-full space-y-1 overflow-auto pr-1 text-[11.5px]">
         {SOURCE_CONTRIBUTION.map((s) => {
           const pct = ((s.value / total) * 100).toFixed(0);
           return (
             <li key={s.name} className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2 text-deepNavy">
+              <div className="flex min-w-0 items-center gap-1.5 text-deepNavy">
                 <span
-                  className="h-2.5 w-2.5 rounded-full"
+                  className="h-2 w-2 flex-none rounded-full"
                   style={{ background: s.color }}
                 />
-                <span>{s.name}</span>
+                <span className="truncate" title={s.name}>{s.name}</span>
               </div>
-              <div className="flex items-center gap-2 text-ink-muted">
-                <span>{fmtNumber(s.value, { maximumFractionDigits: 0 })} ML</span>
+              <div className="flex flex-none items-center gap-1.5 text-ink-muted">
                 <span className="font-semibold text-deepNavy">{pct}%</span>
               </div>
             </li>

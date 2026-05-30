@@ -27,77 +27,81 @@ import {
 export default function GovernancePlatform() {
   const { toast } = useToast();
   return (
-    <div className="space-y-6">
+    <div className="flex h-[var(--page-h)] min-h-0 flex-col gap-2">
       <HeroBanner
         image={HERO_IMAGES.governance}
         eyebrow={HERO_COPY.governance.eyebrow}
         headline={HERO_COPY.governance.headline}
         sub={HERO_COPY.governance.sub}
-        height={220}
+        height={120}
       />
-      <div className="flex justify-end">
-        <DatabricksMark />
-      </div>
 
-      <SectionCard title="Architecture Flow" description="Source to insight">
+      <SectionCard
+        title="Architecture Flow"
+        description="Source to insight"
+        className="min-h-0 flex-1"
+        bodyClassName="p-3 min-h-0"
+      >
         <GovernanceFlow columns={GOVERNANCE_COLUMNS} highlightColumn="Unity Catalog Governance" />
       </SectionCard>
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <SectionCard title="Model Serving & Orchestration">
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+      <div className="grid min-h-0 flex-none grid-cols-1 gap-2 lg:grid-cols-2">
+        <SectionCard title="Model Serving & Orchestration" bodyClassName="p-3">
+          <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
             {MODEL_SERVING_CARDS.map((c) => (
               <motion.div
                 key={c.title}
                 whileHover={{ y: -2 }}
                 transition={{ duration: 0.18 }}
-                className="rounded-md border border-border bg-surface px-3.5 py-3.5 transition hover:border-databricks-red/40"
+                className="rounded-md border border-border bg-surface px-2.5 py-2 transition hover:border-databricks-red/40"
               >
-                <div className="text-[13.5px] font-semibold text-deepNavy">{c.title}</div>
-                <div className="mt-1 text-[12.5px] text-ink-secondary">{c.description}</div>
+                <div className="text-[12px] font-semibold text-deepNavy">{c.title}</div>
+                <div className="mt-0.5 line-clamp-2 text-[11px] leading-snug text-ink-secondary">
+                  {c.description}
+                </div>
               </motion.div>
             ))}
           </div>
         </SectionCard>
 
-        <SectionCard title="Human-in-the-Loop Assurance">
+        <SectionCard title="Human-in-the-Loop Assurance" bodyClassName="p-3">
           <HumanLoopFlow />
-          <p className="mt-3 text-[12.5px] text-ink-muted">
+          <p className="mt-1.5 line-clamp-2 text-[11px] leading-snug text-ink-muted">
             Every AquaIQ output is paired with named analyst review, validation status, and a
             stored audit trail. AI accelerates decisions — humans authorise them.
           </p>
         </SectionCard>
       </div>
 
-      <footer className="rounded-xl bg-deepNavy px-5 py-4 text-white shadow-card">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2 text-[12px] uppercase tracking-[0.18em] text-white/70">
-            <ShieldCheck className="h-3.5 w-3.5" /> Platform proof points
+      <footer className="flex-none rounded-xl bg-deepNavy px-3 py-2.5 text-white shadow-card">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.18em] text-white/70">
+            <ShieldCheck className="h-3 w-3" /> Platform proof points
           </div>
           <button
             onClick={() =>
               toast({
                 title: "Governance one-pager",
                 description:
-                  "Synthetic — printable governance summary would download here.",
+                  "printable governance summary would download here.",
               })
             }
-            className="inline-flex items-center gap-1 text-[12.5px] font-semibold text-white/85 hover:text-white"
+            className="inline-flex items-center gap-1 text-[11.5px] font-semibold text-white/85 hover:text-white"
           >
-            Download governance one-pager <ArrowRight className="h-3.5 w-3.5" />
+            Download one-pager <ArrowRight className="h-3 w-3" />
           </button>
         </div>
-        <div className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-4">
+        <div className="mt-2 grid grid-cols-2 gap-2 md:grid-cols-4">
           {PROOF_POINTS.map((p, idx) => (
             <div
               key={p.title}
-              className="rounded-md bg-white/5 px-3 py-3 backdrop-blur"
+              className="rounded-md bg-white/5 px-2.5 py-1.5 backdrop-blur"
             >
-              <div className="flex items-center gap-2 text-[12px] font-semibold uppercase tracking-wider">
+              <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider">
                 <ProofIcon idx={idx} />
                 {p.title}
               </div>
-              <div className="mt-1 text-[12px] text-white/75">{p.description}</div>
+              <div className="mt-0.5 line-clamp-1 text-[10.5px] text-white/75">{p.description}</div>
             </div>
           ))}
         </div>
@@ -106,28 +110,10 @@ export default function GovernancePlatform() {
   );
 }
 
-function DatabricksMark() {
-  return (
-    <div className="flex items-center gap-2 rounded-md border border-databricks-red/30 bg-[#FFF1EE] px-3 py-2 text-[12px] font-semibold text-databricks-red">
-      <svg
-        width="22"
-        height="22"
-        viewBox="0 0 32 32"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-hidden
-      >
-        <path d="M16 4 L28 11 L16 18 L4 11 Z" fill="#FF3621" />
-        <path d="M16 14 L28 21 L16 28 L4 21 Z" fill="#FF8A00" />
-      </svg>
-      Powered by Databricks
-    </div>
-  );
-}
-
 function ProofIcon({ idx }: { idx: number }) {
   const icons = [ShieldCheck, KeyRound, ScrollText, Award];
   const Icon = icons[idx % icons.length];
-  return <Icon className="h-3.5 w-3.5 text-databricks-orange" />;
+  return <Icon className="h-3 w-3 text-databricks-orange" />;
 }
 
 function HumanLoopFlow() {
@@ -139,19 +125,19 @@ function HumanLoopFlow() {
     { label: "Audit & Learning", icon: BookOpen },
   ];
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="flex flex-wrap items-center gap-1.5">
       {steps.map((s, i) => {
         const Icon = s.icon;
         return (
-          <div key={s.label} className="flex items-center gap-2">
-            <div className="flex items-center gap-2 rounded-md border border-border bg-surface px-3 py-2 text-[12.5px] font-medium text-deepNavy">
-              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-surface-blue text-primaryBlue">
-                <Icon className="h-3.5 w-3.5" />
+          <div key={s.label} className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 rounded-md border border-border bg-surface px-2 py-1 text-[11.5px] font-medium text-deepNavy">
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-surface-blue text-primaryBlue">
+                <Icon className="h-3 w-3" />
               </span>
               {s.label}
             </div>
             {i < steps.length - 1 ? (
-              <ArrowRight className="h-3.5 w-3.5 text-ink-muted" />
+              <ArrowRight className="h-3 w-3 text-ink-muted" />
             ) : null}
           </div>
         );

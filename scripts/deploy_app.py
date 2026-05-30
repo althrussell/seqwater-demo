@@ -268,7 +268,7 @@ def sync_source(path: str) -> None:
     # We explicitly --include the gitignored artefacts that the running app needs:
     #   * app.yaml             (rendered from app.template.yaml — see render_app_yaml)
     #   * frontend/dist/       (the SPA build)
-    #   * data/synthetic/*.csv|*.json  (the synthetic data the LocalDataLoader falls back to)
+    #   * data/synthetic/*.csv|*.json  (the data the LocalDataLoader falls back to)
     run([
         "databricks", "--profile", PROFILE, "sync",
         str(ROOT), path,

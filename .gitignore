@@ -36,13 +36,13 @@ Thumbs.db
 .vscode/
 *.swp
 
-# Generated synthetic data (regenerate via scripts/generate_synthetic_data.py)
+# Generated data (regenerate via scripts/generate_synthetic_data.py)
 data/synthetic/*.csv
 data/synthetic/*.parquet
 data/synthetic/*.json
 !data/synthetic/.gitkeep
 
-# Generated synthetic PDFs (regenerate via scripts/generate_synthetic_pdfs.py)
+# Generated PDFs (regenerate via scripts/generate_synthetic_pdfs.py)
 data/documents/pdf/
 
 # TS / Vite build artefacts

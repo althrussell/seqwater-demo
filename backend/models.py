@@ -1,7 +1,7 @@
 """Pydantic response models exposed by the API.
 
 These are intentionally permissive (most fields optional) so that the same models
-serve both local synthetic data and live Databricks Unity Catalog data.
+serve both local data and live Databricks Unity Catalog data.
 """
 from __future__ import annotations
 
@@ -42,7 +42,7 @@ class DamLevel(_Base):
     """A single row of the live Seqwater dam-levels snapshot.
 
     Mirrors the public Seqwater dam-levels page so the API and UI can render
-    the published table verbatim alongside the synthetic operational telemetry.
+    the published table verbatim alongside the operational telemetry.
     """
     asset_id: str
     asset_name: str
@@ -129,7 +129,7 @@ class FloodScenario(_Base):
 
 
 class ScenarioRunRequest(BaseModel):
-    scenario_name: str = Field(default="Custom synthetic scenario")
+    scenario_name: str = Field(default="Custom scenario")
     rainfall_forecast_mm_24h: float = 60
     rainfall_forecast_mm_72h: float = 200
     catchment_saturation_index: float = 0.65

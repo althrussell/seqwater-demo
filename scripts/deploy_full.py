@@ -6,9 +6,9 @@ remains independently runnable for debugging:
   1. Pre-flight: discover the warehouse / catalog / schema / volume / LLM
      endpoint for the active profile and persist them to ``.env``.
   2. ``scripts/create_uc_assets.py``  — create schema, tables, views, UC
-     functions, and the synthetic Volume.
+     functions, and the Volume.
   3. ``scripts/generate_synthetic_data.py`` — local Parquet generation.
-  4. ``scripts/generate_synthetic_pdfs.py`` — local synthetic PDF + KA Q/A
+  4. ``scripts/generate_synthetic_pdfs.py`` — local PDF + KA Q/A
      companion JSON generation.
   5. ``scripts/seed_data.py`` — upload Parquet, INSERT OVERWRITE every table,
      upload markdown + PDF + companion JSON to the Volume.
@@ -282,17 +282,17 @@ def _phase_uc(env: dict[str, str]) -> None:
 
 def _phase_data_gen(env: dict[str, str]) -> None:
     if os.environ.get("SKIP_DATA_GEN") == "1":
-        _print_banner("Phase 3 / 9: synthetic data generation [SKIPPED]")
+        _print_banner("Phase 3 / 9: data generation [SKIPPED]")
         return
-    _print_banner("Phase 3 / 9: generate synthetic Parquet locally")
+    _print_banner("Phase 3 / 9: generate Parquet locally")
     _run([sys.executable, str(ROOT / "scripts" / "generate_synthetic_data.py")], env=env)
 
 
 def _phase_pdf_gen(env: dict[str, str]) -> None:
     if os.environ.get("SKIP_PDF_GEN") == "1":
-        _print_banner("Phase 4 / 9: synthetic PDFs [SKIPPED]")
+        _print_banner("Phase 4 / 9: PDFs [SKIPPED]")
         return
-    _print_banner("Phase 4 / 9: generate synthetic PDFs + KA Q/A companions")
+    _print_banner("Phase 4 / 9: generate PDFs + KA Q/A companions")
     _run([sys.executable, str(ROOT / "scripts" / "generate_synthetic_pdfs.py")], env=env)
 
 
