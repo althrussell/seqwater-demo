@@ -58,3 +58,11 @@ logs/
 
 # Databricks
 .databricks/
+
+# Generated app spec (rendered from databricks/app_create.template.json by scripts/deploy_app.py)
+databricks/app_create.json
+
+# NOTE: app.yaml is rendered from app.template.yaml by scripts/deploy_app.py at deploy
+# time. It is intentionally NOT gitignored — `databricks sync` skips gitignored files,
+# and the Apps runtime requires app.yaml to be present in the synced source path.
+# Re-running scripts/deploy_app.py refreshes it from the template.

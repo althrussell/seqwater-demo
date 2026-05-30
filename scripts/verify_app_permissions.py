@@ -154,19 +154,33 @@ def _check_uc_function(client, cfg: TargetConfig) -> CheckResult:
 
 
 def _check_serving_endpoint(client, name: str, *, perm_label: str) -> CheckResult:
-    def _do() -> str:
-        from databricks.sdk.service.serving import ChatMessage, ChatMessageRole  # type: ignore
+    """Smoke-invoke an Agent Bricks serving endpoint.
 
-        client.serving_endpoints.query(
-            name=name,
-            messages=[
-                ChatMessage(role=ChatMessageRole.SYSTEM, content="ping"),
-                ChatMessage(role=ChatMessageRole.USER, content="ping"),
-            ],
-            max_tokens=1,
-            temperature=0,
-        )
-        return "ok"
+    The Supervisor MAS and KA endpoints both implement the Databricks
+    ``agent/v1/responses`` API contract (the OpenAI ``messages`` shape is
+    rejected with ``'messages' field is not supported``). We therefore POST
+    a minimal payload using the ``input`` field directly via httpx so we
+    don't depend on the SDK's chat-completions helper.
+    """
+    def _do() -> str:
+        from databricks.sdk.core import Config  # type: ignore
+        import httpx
+
+        cfg = Config()
+        host = (cfg.host or "").rstrip("/")
+        headers = {"Content-Type": "application/json"}
+        headers.update(cfg.authenticate())
+        url = f"{host}/serving-endpoints/{name}/invocations"
+        payload = {
+            "input": [{"role": "user", "content": "ping"}],
+            "max_output_tokens": 1,
+            "stream": False,
+        }
+        with httpx.Client(timeout=60.0) as hc:
+            r = hc.post(url, headers=headers, json=payload)
+        if r.status_code >= 400:
+            raise RuntimeError(f"HTTP {r.status_code}: {r.text[:200]}")
+        return f"http {r.status_code}"
 
     return _timed(
         f"INVOKE {name}",

@@ -21,11 +21,11 @@ env:
   - name: APP_MODE
     value: "databricks"
   - name: DATABRICKS_CATALOG
-    value: "anzgt_us_01_catalog"
+    value: "${DATABRICKS_CATALOG}"
   - name: DATABRICKS_SCHEMA
-    value: "seqwater_demo"
+    value: "${DATABRICKS_SCHEMA}"
   - name: DATABRICKS_VOLUME
-    value: "operational_docs"
+    value: "${DATABRICKS_VOLUME}"
   - name: DATABRICKS_LLM_ENDPOINT
     valueFrom: "llm-endpoint"
   - name: DATABRICKS_LLM_TEMPERATURE

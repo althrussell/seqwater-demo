@@ -365,7 +365,268 @@ class _MCPBackend(_AgentBricksBackend):
         )
 
 
+class _SDKBackend(_AgentBricksBackend):
+    """Use the Databricks Python SDK directly. Works on any workspace where
+    the Agent Bricks public API is enabled (Knowledge Assistants v1,
+    Supervisor Agents v1, Genie create/update)."""
+
+    name = "sdk"
+
+    def __init__(self) -> None:
+        self._client = None
+        self._cfg: TargetConfig | None = None
+        try:
+            from databricks.sdk import WorkspaceClient  # type: ignore
+            self._client = WorkspaceClient(
+                profile=os.environ.get("DATABRICKS_CONFIG_PROFILE")
+            )
+            self._cfg = TargetConfig.from_env()
+        except Exception as exc:  # pragma: no cover
+            LOG.debug("SDK backend unavailable: %s", exc)
+            self._client = None
+
+    def is_available(self) -> bool:
+        if self._client is None:
+            return False
+        for attr in ("genie", "knowledge_assistants", "supervisor_agents"):
+            if not hasattr(self._client, attr):
+                return False
+        return True
+
+    def create_or_update_genie(self, spec: dict[str, Any]) -> dict[str, str]:
+        import hashlib as _hashlib
+
+        client = self._client
+        cfg = self._cfg
+        assert client is not None and cfg is not None
+
+        title = spec["name"]
+        description = spec.get("description", "")
+        listed = client.genie.list_spaces()
+        for existing in (listed.spaces or []):
+            if (existing.title or "").strip() == title:
+                LOG.info("Genie space already exists: %s (id=%s)", title, existing.space_id)
+                return {"DATABRICKS_GENIE_SPACE_ID": existing.space_id}
+
+        instr_lines = spec.get("instructions", [])
+        instr_text = "\n".join(instr_lines) if instr_lines else ""
+        text_instructions = (
+            [
+                {
+                    "id": _hashlib.md5(instr_text.encode()).hexdigest()[:32],
+                    "content": [instr_text],
+                }
+            ]
+            if instr_text
+            else []
+        )
+        benchmark_questions = sorted(
+            (
+                {
+                    "id": _hashlib.md5(cq["name"].encode()).hexdigest()[:32],
+                    "question": [cq.get("description") or cq["name"]],
+                    "answer": [{"format": "SQL", "content": [cq["sql"]]}],
+                }
+                for cq in spec.get("certified_queries", [])
+            ),
+            key=lambda x: x["id"],
+        )
+        tables = [{"identifier": t} for t in sorted(spec.get("tables", []))]
+        sample_questions = sorted(
+            (
+                {
+                    "id": _hashlib.md5(q.encode()).hexdigest()[:32],
+                    "question": [q],
+                }
+                for q in spec.get("sample_questions", [])
+            ),
+            key=lambda x: x["id"],
+        )
+
+        serialized_payload = {
+            "version": 2,
+            "data_sources": {"tables": tables},
+        }
+        if sample_questions:
+            serialized_payload["config"] = {"sample_questions": sample_questions}
+        if text_instructions:
+            serialized_payload["instructions"] = {"text_instructions": text_instructions}
+        if benchmark_questions:
+            serialized_payload["benchmarks"] = {"questions": benchmark_questions}
+
+        created = client.genie.create_space(
+            warehouse_id=cfg.warehouse_id,
+            serialized_space=json.dumps(serialized_payload),
+            title=title,
+            description=description,
+        )
+        LOG.info("Genie space created: id=%s", created.space_id)
+        return {"DATABRICKS_GENIE_SPACE_ID": created.space_id}
+
+    def create_or_update_ka(self, spec: dict[str, Any]) -> dict[str, str]:
+        from databricks.sdk.service.knowledgeassistants import (  # type: ignore
+            KnowledgeAssistant,
+            KnowledgeSource,
+            FilesSpec,
+        )
+
+        client = self._client
+        assert client is not None
+
+        display_name = spec["name"]
+        description = spec.get("description", "")
+        instructions = "\n".join(spec.get("instructions", []))
+
+        existing_id = None
+        for existing in client.knowledge_assistants.list_knowledge_assistants():
+            if (existing.display_name or "").strip() == display_name:
+                existing_id = existing.id
+                LOG.info("Knowledge Assistant already exists: %s (id=%s)", display_name, existing_id)
+                break
+
+        if existing_id is None:
+            ka_obj = KnowledgeAssistant(
+                display_name=display_name,
+                description=description,
+                instructions=instructions,
+            )
+            created = client.knowledge_assistants.create_knowledge_assistant(knowledge_assistant=ka_obj)
+            existing_id = created.id
+            LOG.info("Knowledge Assistant created: id=%s endpoint=%s", existing_id, created.endpoint_name)
+
+        parent = f"knowledge-assistants/{existing_id}"
+        volume_path = spec["volume_path"]
+        source_display = "synthetic_seqwater_pdf_corpus"
+        try:
+            existing_sources = list(client.knowledge_assistants.list_knowledge_sources(parent=parent))
+        except Exception:
+            existing_sources = []
+        already = any((s.display_name or "") == source_display for s in existing_sources)
+        if not already:
+            ks = KnowledgeSource(
+                display_name=source_display,
+                description="Synthetic Seqwater operational PDFs.",
+                source_type="FILES",
+                files=FilesSpec(path=volume_path),
+            )
+            client.knowledge_assistants.create_knowledge_source(parent=parent, knowledge_source=ks)
+            LOG.info("KA knowledge source added: path=%s", volume_path)
+
+        full = client.knowledge_assistants.get_knowledge_assistant(name=parent)
+        endpoint_name = full.endpoint_name or ""
+        return {
+            "DATABRICKS_KA_TILE_ID": existing_id,
+            "DATABRICKS_KA_ENDPOINT": endpoint_name,
+        }
+
+    def create_or_update_mas(
+        self, spec: dict[str, Any], *, ka_tile_id: str, genie_space_id: str
+    ) -> dict[str, str]:
+        from databricks.sdk.service.supervisoragents import (  # type: ignore
+            SupervisorAgent,
+            Tool,
+            KnowledgeAssistant as _ToolKA,
+            GenieSpace as _ToolGenie,
+            UcFunction as _ToolUcFn,
+        )
+
+        client = self._client
+        assert client is not None
+
+        display_name = spec["name"]
+        description = spec.get("description", "")
+        instructions = "\n".join(spec.get("instructions", []))
+
+        existing_id = None
+        for existing in client.supervisor_agents.list_supervisor_agents():
+            if (existing.display_name or "").strip() == display_name:
+                existing_id = existing.supervisor_agent_id or existing.id
+                LOG.info("Supervisor agent already exists: %s (id=%s)", display_name, existing_id)
+                break
+
+        if existing_id is None:
+            sup = SupervisorAgent(
+                display_name=display_name,
+                description=description,
+                instructions=instructions,
+            )
+            created = client.supervisor_agents.create_supervisor_agent(supervisor_agent=sup)
+            existing_id = created.supervisor_agent_id or created.id
+            LOG.info("Supervisor agent created: id=%s endpoint=%s", existing_id, created.endpoint_name)
+
+        parent = f"supervisor-agents/{existing_id}"
+        try:
+            existing_tools = list(client.supervisor_agents.list_tools(parent=parent))
+        except Exception:
+            existing_tools = []
+        existing_tool_ids = {(t.tool_id or t.id or "") for t in existing_tools}
+
+        for agent in spec.get("agents", []):
+            tool_id = agent["name"]
+            if tool_id in existing_tool_ids:
+                LOG.info("Tool already exists: %s", tool_id)
+                continue
+            kind = agent.get("kind")
+            tool_kwargs: dict[str, Any] = {"description": agent.get("description", "")}
+            if kind == "knowledge_assistant":
+                tool_kwargs["tool_type"] = "knowledge_assistant"
+                tool_kwargs["knowledge_assistant"] = _ToolKA(knowledge_assistant_id=ka_tile_id)
+            elif kind == "genie_space":
+                tool_kwargs["tool_type"] = "genie_space"
+                tool_kwargs["genie_space"] = _ToolGenie(id=genie_space_id)
+            elif kind == "uc_function":
+                tool_kwargs["tool_type"] = "uc_function"
+                tool_kwargs["uc_function"] = _ToolUcFn(name=agent["uc_function_name"])
+            else:
+                LOG.warning("Skipping tool %s — unsupported kind %s", tool_id, kind)
+                continue
+            tool = Tool(**tool_kwargs)
+            client.supervisor_agents.create_tool(parent=parent, tool=tool, tool_id=tool_id)
+            LOG.info("Tool added to supervisor: %s (%s)", tool_id, kind)
+
+        full = client.supervisor_agents.get_supervisor_agent(name=parent)
+        endpoint_name = full.endpoint_name or ""
+        return {
+            "DATABRICKS_SUPERVISOR_TILE_ID": existing_id,
+            "DATABRICKS_SUPERVISOR_ENDPOINT": endpoint_name,
+        }
+
+    def wait_until_ready(self, tile_id: str, *, kind: str) -> None:
+        if not tile_id:
+            return
+        client = self._client
+        assert client is not None
+        deadline = time.time() + POLL_TIMEOUT_S
+        while time.time() < deadline:
+            try:
+                if kind == "ka":
+                    obj = client.knowledge_assistants.get_knowledge_assistant(
+                        name=f"knowledge-assistants/{tile_id}"
+                    )
+                    state = (obj.state.value if obj.state else "") or ""
+                else:
+                    obj = client.supervisor_agents.get_supervisor_agent(
+                        name=f"supervisor-agents/{tile_id}"
+                    )
+                    state = "ONLINE" if obj.endpoint_name else "PROVISIONING"
+            except Exception as exc:  # pragma: no cover
+                LOG.warning("(%s) status poll failed: %s", kind, exc)
+                state = "UNKNOWN"
+            LOG.info("(%s) tile %s status=%s", kind, tile_id, state)
+            if state in ("ONLINE", "READY"):
+                return
+            if state in ("FAILED", "OFFLINE"):
+                LOG.warning("(%s) tile %s state=%s — continuing.", kind, tile_id, state)
+                return
+            time.sleep(POLL_INTERVAL_S)
+        LOG.warning("(%s) tile %s did not reach ONLINE within %ss.", kind, tile_id, POLL_TIMEOUT_S)
+
+
 def _select_backend() -> _AgentBricksBackend:
+    sdk = _SDKBackend()
+    if sdk.is_available():
+        LOG.info("Using Databricks SDK Agent Bricks backend (genie / knowledge_assistants / supervisor_agents)")
+        return sdk
     mcp = _MCPBackend()
     if mcp.is_available():
         LOG.info("Using MCP Agent Bricks backend (manage_genie / manage_ka / manage_mas)")

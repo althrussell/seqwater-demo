@@ -70,17 +70,23 @@ def _resolve_auth() -> tuple[str | None, dict[str, str] | None]:
         return None, None
 
 
-def _build_messages(
+def _build_input(
     *, system_prompt: str, history: list[dict[str, Any]] | None, question: str
-) -> list[dict[str, str]]:
-    msgs: list[dict[str, str]] = [{"role": "system", "content": system_prompt}]
+) -> tuple[str, list[dict[str, str]]]:
+    """Build the Databricks Agent Bricks 'agent/v1/responses' payload.
+
+    The Supervisor endpoint exposes the OpenAI Responses-style API, where the
+    system prompt is passed via the top-level ``instructions`` field and the
+    conversation lives in ``input``.
+    """
+    msgs: list[dict[str, str]] = []
     for turn in history or []:
         role = turn.get("role")
         content = turn.get("content")
-        if role in ("user", "assistant", "system") and isinstance(content, str):
+        if role in ("user", "assistant") and isinstance(content, str):
             msgs.append({"role": role, "content": content})
     msgs.append({"role": "user", "content": question})
-    return msgs
+    return system_prompt, msgs
 
 
 def _flatten_content(content: Any) -> str:
@@ -141,14 +147,19 @@ async def stream_supervisor(
         return  # type: ignore[return-value]
 
     url = f"{host}/serving-endpoints/{s.databricks_supervisor_endpoint}/invocations"
-    body = {
-        "messages": _build_messages(
-            system_prompt=system_prompt, history=history, question=question
-        ),
-        "temperature": s.databricks_llm_temperature,
-        "max_tokens": s.databricks_llm_max_tokens,
+    instructions, conversation = _build_input(
+        system_prompt=system_prompt, history=history, question=question
+    )
+    body: dict[str, Any] = {
+        "input": conversation,
         "stream": True,
     }
+    if instructions:
+        body["instructions"] = instructions
+    if s.databricks_llm_max_tokens:
+        body["max_output_tokens"] = s.databricks_llm_max_tokens
+    if s.databricks_llm_temperature is not None:
+        body["temperature"] = s.databricks_llm_temperature
     trace_id = f"aquaiq-{uuid.uuid4().hex[:12]}"
 
     accumulated: list[str] = []
@@ -166,21 +177,9 @@ async def stream_supervisor(
                     )
                     return  # type: ignore[return-value]
 
-                content_type = response.headers.get("content-type", "")
-                if "text/event-stream" in content_type or "stream" in content_type:
-                    async for event in _consume_sse(response):
-                        async for normalised in _normalise_event(
-                            event,
-                            accumulated=accumulated,
-                            tools_used=tools_used,
-                            sources_used=sources_used,
-                            pending_calls=pending_calls,
-                        ):
-                            yield normalised
-                else:
-                    payload = json.loads(await response.aread())
-                    async for normalised in _normalise_event(
-                        payload,
+                async for event in _consume_sse(response):
+                    async for normalised in _normalise_response_event(
+                        event,
                         accumulated=accumulated,
                         tools_used=tools_used,
                         sources_used=sources_used,
@@ -223,6 +222,140 @@ async def _consume_sse(response: httpx.Response) -> AsyncIterator[dict[str, Any]
                     yield json.loads(data)
                 except json.JSONDecodeError:
                     continue
+
+
+async def _normalise_response_event(
+    event: dict[str, Any],
+    *,
+    accumulated: list[str],
+    tools_used: list[str],
+    sources_used: list[dict[str, Any]],
+    pending_calls: dict[str, dict[str, Any]],
+) -> AsyncIterator[dict[str, Any]]:
+    """Translate a Databricks ``agent/v1/responses`` SSE chunk into our typed events.
+
+    Upstream event types we handle:
+
+    * ``response.output_text.delta`` — a streaming text token. Emit a ``delta``.
+    * ``response.output_item.done`` with ``item.type == 'function_call'`` — a child
+      agent / UC function tool call. Emit a ``tool_call``.
+    * ``response.output_item.done`` with ``item.type == 'function_call_output'`` —
+      tool returned. Emit a ``tool_result``.
+    * ``response.output_item.done`` with ``item.type == 'message'`` — a complete
+      assistant message. Used for citation extraction (sources).
+    """
+    if not isinstance(event, dict):
+        return
+
+    etype = event.get("type") or ""
+
+    if etype == "response.output_text.delta":
+        delta = event.get("delta")
+        if isinstance(delta, str) and delta:
+            accumulated.append(delta)
+            yield {"event": "delta", "text": delta}
+        return
+
+    if etype != "response.output_item.done":
+        return
+
+    item = event.get("item") or {}
+    item_type = item.get("type")
+
+    if item_type == "function_call":
+        name = (item.get("name") or "").strip()
+        if not name:
+            return
+        call_id = str(item.get("call_id") or item.get("id") or id(item))
+        args_raw = item.get("arguments") or ""
+        pending_calls[call_id] = {"name": name, "arguments": args_raw}
+        if name not in tools_used:
+            tools_used.append(name)
+        yield {
+            "event": "tool_call",
+            "name": _humanise_tool_name(name),
+            "args": _summarize_tool_args(args_raw),
+        }
+        return
+
+    if item_type == "function_call_output":
+        call_id = str(item.get("call_id") or "")
+        info = pending_calls.get(call_id, {})
+        name = info.get("name") or item.get("name") or ""
+        raw_output = item.get("output") or ""
+        summary = _summarize_function_output(raw_output)
+        # Surface the underlying UC table (best-effort) as a source.
+        table_ref = _table_ref_from_tool_name(name)
+        if table_ref:
+            entry = {
+                "source": table_ref,
+                "detail": summary[:240],
+            }
+            if entry not in sources_used:
+                sources_used.append(entry)
+                yield {"event": "sources", "items": [entry]}
+        yield {
+            "event": "tool_result",
+            "name": _humanise_tool_name(name),
+            "summary": summary[:240],
+        }
+        return
+
+    if item_type == "message":
+        # Final assistant message. Some MAS deployments emit citations here.
+        content = item.get("content") or []
+        for block in content:
+            if isinstance(block, dict):
+                annotations = block.get("annotations") or []
+                items = _normalise_citations(annotations)
+                fresh = [it for it in items if it not in sources_used]
+                sources_used.extend(fresh)
+                if fresh:
+                    yield {"event": "sources", "items": fresh}
+        return
+
+
+def _humanise_tool_name(raw: str) -> str:
+    """Friendly-format the supervisor tool id for the UI."""
+    if not raw:
+        return ""
+    # MAS rewrites UC function tool ids to ``catalog__schema__function``.
+    if "__" in raw:
+        last = raw.rsplit("__", 1)[-1]
+        return last
+    return raw
+
+
+def _table_ref_from_tool_name(raw: str) -> str | None:
+    if not raw or "__" not in raw:
+        return None
+    parts = raw.split("__")
+    if len(parts) < 3:
+        return None
+    catalog, schema, fn = parts[0], parts[1], "__".join(parts[2:])
+    return f"{catalog}.{schema}.{fn} (UC function)"
+
+
+def _summarize_function_output(output: Any) -> str:
+    if not output:
+        return "Tool returned (synthetic)."
+    if isinstance(output, (dict, list)):
+        try:
+            text = json.dumps(output)
+        except TypeError:
+            text = str(output)
+    else:
+        text = str(output)
+    # Try parsing the standard rows/columns shape into a one-line summary.
+    try:
+        parsed = json.loads(text) if isinstance(text, str) else text
+    except Exception:
+        parsed = None
+    if isinstance(parsed, dict) and parsed.get("rows") is not None:
+        rows = parsed.get("rows") or []
+        cols = parsed.get("columns") or []
+        return f"{len(rows)} synthetic row(s) returned across columns: {', '.join(cols[:6])}{'…' if len(cols) > 6 else ''}"
+    return text[:240]
 
 
 async def _normalise_event(
@@ -349,11 +482,8 @@ async def prewarm_supervisor(timeout_s: float = 30.0) -> dict[str, Any]:
 
     url = f"{host}/serving-endpoints/{s.databricks_supervisor_endpoint}/invocations"
     body = {
-        "messages": [
-            {"role": "system", "content": "ping"},
-            {"role": "user", "content": "ping"},
-        ],
-        "max_tokens": 1,
+        "input": [{"role": "user", "content": "ping"}],
+        "max_output_tokens": 1,
         "temperature": 0,
     }
 

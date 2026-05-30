@@ -1,44 +1,49 @@
 {
-  "name": "seqwater-ai-command-centre",
+  "name": "${APP_NAME}",
   "description": "Seqwater AI Command Centre — synthetic Databricks demo for water security, asset risk, water quality, flood readiness, and the AquaIQ governed AI assistant. All data is synthetic.",
   "resources": [
     {
       "name": "sql-warehouse",
       "description": "Serverless SQL Warehouse for Unity Catalog queries.",
+      "_required": ["DATABRICKS_WAREHOUSE_ID"],
       "sql_warehouse": {
-        "id": "b09feb4ffedc1d16",
+        "id": "${DATABRICKS_WAREHOUSE_ID}",
         "permission": "CAN_USE"
       }
     },
     {
       "name": "llm-endpoint",
       "description": "Foundation Model API endpoint powering AquaIQ in non-Supervisor mode.",
+      "_required": ["DATABRICKS_LLM_ENDPOINT"],
       "serving_endpoint": {
-        "name": "databricks-gpt-oss-120b",
+        "name": "${DATABRICKS_LLM_ENDPOINT}",
         "permission": "CAN_QUERY"
       }
     },
     {
       "name": "supervisor-endpoint",
       "description": "Synthetic Seqwater Supervisor MAS endpoint (orchestrates KA + Genie + UC functions).",
+      "_required": ["DATABRICKS_SUPERVISOR_ENDPOINT"],
       "serving_endpoint": {
-        "name": "agents_main-seqwater_demo-seqwater_supervisor",
+        "name": "${DATABRICKS_SUPERVISOR_ENDPOINT}",
         "permission": "CAN_QUERY"
       }
     },
     {
       "name": "ka-endpoint",
       "description": "Synthetic Seqwater Operational Docs Knowledge Assistant endpoint.",
+      "_required": ["DATABRICKS_KA_ENDPOINT"],
       "serving_endpoint": {
-        "name": "agents_main-seqwater_demo-seqwater_operational_docs",
+        "name": "${DATABRICKS_KA_ENDPOINT}",
         "permission": "CAN_QUERY"
       }
     },
     {
       "name": "genie-space",
-      "description": "Synthetic Seqwater Operations Genie space.",
+      "description": "Synthetic Seqwater Operations Genie space (also embedded in the app).",
+      "_required": ["DATABRICKS_GENIE_SPACE_ID"],
       "genie_space": {
-        "space_id": "REPLACE_WITH_RESOLVED_GENIE_SPACE_ID",
+        "space_id": "${DATABRICKS_GENIE_SPACE_ID}",
         "permission": "CAN_RUN"
       }
     }

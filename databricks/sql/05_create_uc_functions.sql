@@ -34,9 +34,21 @@ RETURN
     predicted_failure_30d,
     open_work_orders,
     recommended_action
-  FROM {catalog}.{schema}.asset_risk_scores
-  ORDER BY risk_score DESC NULLS LAST
-  LIMIT COALESCE(limit_n, 5);
+  FROM (
+    SELECT
+      asset_id,
+      asset_name,
+      asset_type,
+      criticality,
+      risk_score,
+      risk_band,
+      predicted_failure_30d,
+      open_work_orders,
+      recommended_action,
+      ROW_NUMBER() OVER (ORDER BY risk_score DESC NULLS LAST) AS rn
+    FROM {catalog}.{schema}.asset_risk_scores
+  )
+  WHERE rn <= COALESCE(limit_n, 5);
 
 CREATE OR REPLACE FUNCTION {catalog}.{schema}.capital_priorities(limit_n INT DEFAULT 5)
 RETURNS TABLE (
@@ -60,9 +72,20 @@ RETURN
     risk_reduction_score,
     delivery_risk,
     recommended_priority
-  FROM {catalog}.{schema}.capital_projects
-  ORDER BY risk_reduction_score DESC NULLS LAST
-  LIMIT COALESCE(limit_n, 5);
+  FROM (
+    SELECT
+      project_id,
+      project_name,
+      asset_name,
+      project_type,
+      estimated_cost_aud,
+      risk_reduction_score,
+      delivery_risk,
+      recommended_priority,
+      ROW_NUMBER() OVER (ORDER BY risk_reduction_score DESC NULLS LAST) AS rn
+    FROM {catalog}.{schema}.capital_projects
+  )
+  WHERE rn <= COALESCE(limit_n, 5);
 
 CREATE OR REPLACE FUNCTION {catalog}.{schema}.run_flood_scenario(scenario_id_in STRING)
 RETURNS TABLE (

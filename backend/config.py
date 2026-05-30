@@ -106,11 +106,13 @@ class Settings(BaseSettings):
         """
         explicit = (self.databricks_genie_embed_url or "").strip()
         if explicit:
-            return explicit
+            return explicit if "://" in explicit else f"https://{explicit}"
         host = (self.databricks_host or "").rstrip("/")
         space = (self.databricks_genie_space_id or "").strip()
         if not host or not space:
             return None
+        if "://" not in host:
+            host = f"https://{host}"
         return f"{host}/embed/genie/{space}"
 
     @property
