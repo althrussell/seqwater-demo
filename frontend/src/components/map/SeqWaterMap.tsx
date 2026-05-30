@@ -134,6 +134,20 @@ interface SeqWaterMapProps {
   /** Show 3D building extrusions. Defaults to true; quietly skipped on styles without a building layer. */
   buildings?: boolean;
   disableIntro?: boolean;
+  /**
+   * When true, render compact marker chips (smaller, thinner ring). Used by
+   * the Executive Overview preview so the map reads as a curated geospatial
+   * panel rather than a heavy operational map. Defaults to `preview`.
+   */
+  compactMarkers?: boolean;
+  /**
+   * When true (and `preview` is true), suppresses the basemap's road and
+   * label clutter so the SEQ Water Grid layer reads as a custom product
+   * surface. Defaults to true.
+   */
+  cleanBasemap?: boolean;
+  /** Optional layer label rendered as a small badge in the top-left of the map. */
+  layerLabel?: string;
 }
 
 export default function SeqWaterMap({
@@ -151,7 +165,11 @@ export default function SeqWaterMap({
   terrain = true,
   buildings = true,
   disableIntro,
+  compactMarkers,
+  cleanBasemap = true,
+  layerLabel,
 }: SeqWaterMapProps) {
+  const useCompact = compactMarkers ?? preview;
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<MapboxMap | null>(null);
   const markersRef = useRef<mapboxgl.Marker[]>([]);
@@ -208,6 +226,9 @@ export default function SeqWaterMap({
     // Re-bind custom sources/layers every time the style is (re)loaded.
     const onStyleLoad = () => {
       addCustomLayers(map, { terrain, buildings, wantsIntro });
+      if (preview && cleanBasemap) {
+        suppressBasemapClutter(map);
+      }
       setStyleReady(true);
       // Bumping the version causes the marker/layer effects to re-run so HTML
       // markers re-bind cleanly after a style swap.
@@ -356,7 +377,7 @@ export default function SeqWaterMap({
     if (!showAssets) return;
 
     for (const a of assets) {
-      const el = buildMarkerEl(a.asset_type, "normal", a.asset_id === selectedId);
+      const el = buildMarkerEl(a.asset_type, "normal", a.asset_id === selectedId, useCompact);
       el.title = `${a.name} · ${a.asset_type}`;
       if (onSelect) {
         el.style.cursor = "pointer";
@@ -411,7 +432,7 @@ export default function SeqWaterMap({
       if (acc.variant === "alert" && !showRisk) continue;
       if (acc.variant === "quality" && !showQuality) continue;
 
-      const el = buildAccentEl(acc.variant);
+      const el = buildAccentEl(acc.variant, useCompact);
       el.title = acc.name;
       const popup = new mapboxgl.Popup({
         offset: 16,
@@ -470,13 +491,20 @@ export default function SeqWaterMap({
 
   return (
     <div
-      ref={containerRef}
       className={cn(
         "relative overflow-hidden rounded-xl border border-border bg-deepNavy",
         className,
       )}
       style={{ height }}
-    />
+    >
+      <div ref={containerRef} className="absolute inset-0" />
+      {layerLabel ? (
+        <div className="pointer-events-none absolute left-3 top-3 z-[400] inline-flex items-center gap-2 rounded-full border border-border bg-surface/95 px-3 py-1 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-deepNavy shadow-card backdrop-blur">
+          <span className="h-1.5 w-1.5 rounded-full bg-primaryBlue" />
+          {layerLabel}
+        </div>
+      ) : null}
+    </div>
   );
 }
 
@@ -596,7 +624,12 @@ function addCustomLayers(map: MapboxMap, opts: AddLayersOpts): void {
       id: "catchments-fill",
       type: "fill",
       source: "catchments",
-      paint: { "fill-color": ["get", "fill"], "fill-opacity": 0.18 },
+      paint: {
+        // Soft, transparent enterprise green (consistent across all catchments
+        // in preview) — feels like a layer rather than a coloured map.
+        "fill-color": "#5FA777",
+        "fill-opacity": 0.16,
+      },
     });
   }
   if (!map.getLayer("catchments-fill-rainfall")) {
@@ -613,7 +646,11 @@ function addCustomLayers(map: MapboxMap, opts: AddLayersOpts): void {
       id: "catchments-outline",
       type: "line",
       source: "catchments",
-      paint: { "line-color": "#5FA777", "line-width": 1.4, "line-opacity": 0.7 },
+      paint: {
+        "line-color": "#3F8C5C",
+        "line-width": 1.1,
+        "line-opacity": 0.55,
+      },
     });
   }
   if (!map.getLayer("catchments-label")) {
@@ -621,18 +658,18 @@ function addCustomLayers(map: MapboxMap, opts: AddLayersOpts): void {
       id: "catchments-label",
       type: "symbol",
       source: "catchments",
-      minzoom: 7,
+      minzoom: 6.5,
       layout: {
         "text-field": ["get", "name"],
-        "text-size": 11,
+        "text-size": 10.5,
         "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
-        "text-letter-spacing": 0.06,
+        "text-letter-spacing": 0.08,
         "text-transform": "uppercase",
       },
       paint: {
-        "text-color": "#dff2ff",
-        "text-halo-color": "rgba(10, 46, 77, 0.7)",
-        "text-halo-width": 1.4,
+        "text-color": "#1F4D33",
+        "text-halo-color": "rgba(255,255,255,0.92)",
+        "text-halo-width": 1.6,
       },
     });
   }
@@ -657,7 +694,11 @@ function addCustomLayers(map: MapboxMap, opts: AddLayersOpts): void {
       id: "pipelines-casing",
       type: "line",
       source: "pipelines",
-      paint: { "line-color": "rgba(10, 46, 77, 0.55)", "line-width": 4, "line-opacity": 0.6 },
+      paint: {
+        "line-color": "rgba(255,255,255,0.85)",
+        "line-width": 3.4,
+        "line-opacity": 0.85,
+      },
       layout: { "line-cap": "round", "line-join": "round" },
     });
   }
@@ -666,7 +707,12 @@ function addCustomLayers(map: MapboxMap, opts: AddLayersOpts): void {
       id: "pipelines-line",
       type: "line",
       source: "pipelines",
-      paint: { "line-color": "#00AEEF", "line-width": 2, "line-dasharray": [2, 1.5] },
+      paint: {
+        "line-color": "#0076BE",
+        "line-width": 1.6,
+        "line-opacity": 0.85,
+        "line-dasharray": [3, 2],
+      },
       layout: { "line-cap": "round", "line-join": "round" },
     });
   }
@@ -741,35 +787,37 @@ function buildMarkerEl(
   type: MapAsset["asset_type"],
   _status: MapAsset["status"],
   selected: boolean,
+  compact: boolean,
 ): HTMLDivElement {
   const el = document.createElement("div");
-  el.className = `seq-marker-mb ${selected ? "is-selected" : ""}`;
+  el.className = `seq-marker-mb ${selected ? "is-selected" : ""} ${compact ? "is-compact" : ""}`;
   let inner = "";
   let kindClass = "is-dam";
-  if (type === "Water Treatment Plant") {
+  if (type === "Water Treatment Plant" || type === "Desalination Plant") {
     kindClass = "is-wtp";
     inner = `<svg viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="9" width="16" height="11" rx="1"/><rect x="9" y="3" width="6" height="6" rx="0.5"/></svg>`;
   } else if (type === "Pump Station") {
     kindClass = "is-pump";
-    inner = `<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="4"/></svg>`;
+    inner = `<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="3.6"/><path d="M12 5 L12 8 M12 16 L12 19 M5 12 L8 12 M16 12 L19 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>`;
   } else if (type === "Reservoir") {
     kindClass = "is-reservoir";
     inner = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="6" width="14" height="12" rx="1.5"/></svg>`;
   } else {
-    inner = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 C 8 9 5 13 5 16 a 7 7 0 0 0 14 0 c 0 -3 -3 -7 -7 -14 z"/></svg>`;
+    // Dam / catchment storage — a clean droplet that reads as "water".
+    inner = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3 C 9 9 6.5 12.5 6.5 15.2 a 5.5 5.5 0 0 0 11 0 C 17.5 12.5 15 9 12 3 z"/></svg>`;
   }
   el.classList.add(kindClass);
   el.innerHTML = `<span class="seq-marker-mb__chip">${inner}</span>`;
   return el;
 }
 
-function buildAccentEl(variant: "alert" | "quality"): HTMLDivElement {
+function buildAccentEl(variant: "alert" | "quality", compact: boolean): HTMLDivElement {
   const el = document.createElement("div");
-  el.className = `seq-marker-mb seq-marker-mb--accent is-${variant}`;
+  el.className = `seq-marker-mb seq-marker-mb--accent is-${variant} ${compact ? "is-compact" : ""}`;
   if (variant === "alert") {
-    el.innerHTML = `<span class="seq-marker-mb__chip"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 L22 20 L2 20 Z" fill="#D88A00"/></svg></span>`;
+    el.innerHTML = `<span class="seq-marker-mb__chip"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4 L21 19 L3 19 Z" fill="#D88A00"/></svg></span>`;
   } else {
-    el.innerHTML = `<span class="seq-marker-mb__chip"><svg viewBox="0 0 24 24" fill="#7C3AED" stroke="white" stroke-width="1.5"><path d="M12 2 C 8 9 5 13 5 16 a 7 7 0 0 0 14 0 c 0 -3 -3 -7 -7 -14 z"/></svg></span>`;
+    el.innerHTML = `<span class="seq-marker-mb__chip"><svg viewBox="0 0 24 24" fill="#7C3AED" stroke="white" stroke-width="1.5"><path d="M12 3 C 9 9 6.5 12.5 6.5 15.2 a 5.5 5.5 0 0 0 11 0 C 17.5 12.5 15 9 12 3 z"/></svg></span>`;
   }
   return el;
 }
@@ -780,4 +828,49 @@ function escapeHtml(s: string): string {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
+}
+
+/**
+ * Hides road, place, POI and transit labels on the basemap so the SEQ Water
+ * Grid layer reads as a custom enterprise map rather than a satellite or
+ * navigation screenshot. Best-effort — silently skips layers that don't
+ * exist in the active style.
+ */
+function suppressBasemapClutter(map: MapboxMap): void {
+  try {
+    const style = map.getStyle();
+    if (!style?.layers) return;
+    for (const layer of style.layers) {
+      const id = layer.id;
+      if (
+        id.startsWith("seq-") ||
+        id.startsWith("catchments-") ||
+        id.startsWith("pipelines-") ||
+        id === "rainfall-heat" ||
+        id === "3d-buildings"
+      ) {
+        continue;
+      }
+      // Hide just the noisy basemap content — roads, road labels, POIs,
+      // transit, building footprints, and most place/admin labels. We
+      // intentionally leave water polygons, water labels and country/state
+      // boundaries alone so the geographic backdrop still feels like SEQ.
+      const hide =
+        /^(road|tunnel|bridge|motorway|trunk|primary|secondary|tertiary|street|service|path|track|cycle|pedestrian|ferry|aeroway|aerialway|transit|rail|airport|poi|building|housenum|landuse-overlay)/i.test(
+          id,
+        ) ||
+        /(road-label|road-shield|road-number|poi-label|transit-label|airport-label|settlement-subdivision-label|settlement-minor-label|natural-point-label|natural-line-label)/i.test(
+          id,
+        );
+      if (hide) {
+        try {
+          map.setLayoutProperty(id, "visibility", "none");
+        } catch {
+          /* layer doesn't support visibility */
+        }
+      }
+    }
+  } catch {
+    /* best-effort */
+  }
 }

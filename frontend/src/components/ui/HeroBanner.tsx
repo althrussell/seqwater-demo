@@ -40,10 +40,28 @@ export default function HeroBanner({
         src={image}
         alt=""
         className="absolute inset-0 h-full w-full object-cover"
+        style={{ filter: "saturate(1.05) brightness(1.02)" }}
         loading="eager"
       />
-      <div className="absolute inset-0 bg-hero-overlay" aria-hidden />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/15" aria-hidden />
+      {/* Left-to-right navy gradient behind the text only — keeps the
+          right side of the photograph (water + landscape) clean. */}
+      <div
+        className="absolute inset-0"
+        aria-hidden
+        style={{
+          background:
+            "linear-gradient(90deg, rgba(8,32,58,0.78) 0%, rgba(8,32,58,0.62) 28%, rgba(8,32,58,0.34) 52%, rgba(8,32,58,0.06) 72%, rgba(8,32,58,0) 100%)",
+        }}
+      />
+      {/* Soft photographic vignette — adds depth without flattening the photo. */}
+      <div
+        className="absolute inset-0"
+        aria-hidden
+        style={{
+          background:
+            "radial-gradient(120% 90% at 50% 50%, rgba(0,0,0,0) 55%, rgba(8,32,58,0.18) 82%, rgba(8,32,58,0.32) 100%)",
+        }}
+      />
       <div className="relative grid h-full grid-cols-1 items-center gap-6 px-8 py-8 lg:grid-cols-12 lg:px-10">
         <div className="flex flex-col gap-4 text-white lg:col-span-8">
           {eyebrow ? (

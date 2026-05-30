@@ -4,6 +4,7 @@ import DemoDisclaimer from "./DemoDisclaimer";
 import ScenarioBanner from "./ScenarioBanner";
 import { AppProvider } from "./AppContext";
 import { ToastProvider } from "@/components/ui/Toast";
+import AquaIQDock from "@/components/AquaIQDock";
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   return (
@@ -14,8 +15,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             <LeftRail />
             <main className="flex min-w-0 flex-1 flex-col">
               <AppHeader />
-              <div className="flex-1 px-6 pb-8 pt-4 lg:px-10 2xl:px-14">
-                <div className="mx-auto w-full max-w-[1640px] space-y-4">
+              <div className="flex-1 px-6 pb-6 pt-3 lg:px-10 2xl:px-14">
+                <div className="mx-auto w-full max-w-[1640px] space-y-3">
                   <ScenarioBanner />
                   {children}
                 </div>
@@ -23,6 +24,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               <DemoDisclaimer />
             </main>
           </div>
+          <AquaIQDock />
         </div>
       </ToastProvider>
     </AppProvider>

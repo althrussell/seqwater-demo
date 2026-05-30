@@ -28,6 +28,14 @@ interface Props {
   threadId: string;
   /** Pre-populate the input with a suggested question. */
   defaultQuestion?: string;
+  /**
+   * One-shot programmatic send. When `seq` changes, the question is sent
+   * to the chat as a new turn without user interaction. Used by the
+   * AquaIQ dock when a KPI insight drawer invokes `askAquaIQ(prompt)`.
+   */
+  autoSend?: { question: string; seq: number } | null;
+  /** Called once the auto-send has been dispatched. */
+  onAutoSent?: () => void;
 }
 
 const SUGGESTIONS = [
@@ -37,7 +45,12 @@ const SUGGESTIONS = [
   "What is driving the elevated synthetic water quality risk this month?",
 ];
 
-export default function AquaIQChat({ threadId, defaultQuestion }: Props) {
+export default function AquaIQChat({
+  threadId,
+  defaultQuestion,
+  autoSend,
+  onAutoSent,
+}: Props) {
   const [thread, setThread] = useState<ChatThread | undefined>(() => getThread(threadId));
   const [input, setInput] = useState(defaultQuestion ?? "");
   const [isStreaming, setIsStreaming] = useState(false);
@@ -46,6 +59,7 @@ export default function AquaIQChat({ threadId, defaultQuestion }: Props) {
 
   const abortRef = useRef<AbortController | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
+  const lastAutoSentSeqRef = useRef<number | null>(null);
 
   // Sync thread on store changes (works for cross-tab updates too)
   useEffect(() => {
@@ -181,6 +195,19 @@ export default function AquaIQChat({ threadId, defaultQuestion }: Props) {
     abortRef.current?.abort();
     setIsStreaming(false);
   }, []);
+
+  // Auto-send pending questions handed in from another surface
+  // (e.g. a KPI insight drawer via `askAquaIQ`). We gate on `seq` so the
+  // same string can be dispatched twice if needed; we never re-send for
+  // the same seq, even on re-renders.
+  useEffect(() => {
+    if (!autoSend) return;
+    if (lastAutoSentSeqRef.current === autoSend.seq) return;
+    if (isStreaming) return;
+    lastAutoSentSeqRef.current = autoSend.seq;
+    void send(autoSend.question);
+    onAutoSent?.();
+  }, [autoSend, isStreaming, send, onAutoSent]);
 
   const showSuggestions = turns.length === 0;
 

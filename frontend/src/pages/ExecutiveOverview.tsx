@@ -1,21 +1,21 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight, Maximize2 } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
 import HeroBanner from "@/components/ui/HeroBanner";
 import KpiCard from "@/components/ui/KpiCard";
+import KpiInsightDrawer from "@/components/ui/KpiInsightDrawer";
 import ExecutivePriorityCard from "@/components/ui/ExecutivePriorityCard";
 import AquaIQSummaryCard from "@/components/ui/AquaIQSummaryCard";
 import SectionCard from "@/components/ui/SectionCard";
 import SeqWaterMap from "@/components/map/SeqWaterMap";
 import MapLegend from "@/components/ui/MapLegend";
 import {
-  EXECUTIVE_AI_EVIDENCE,
-  EXECUTIVE_AI_SOURCES,
+  EXECUTIVE_FEATURED_ASSETS,
   EXECUTIVE_KPIS,
   HERO_IMAGES,
+  POSTURE_INSIGHT,
+  getKpiInsight,
 } from "@/lib/demoContent";
-import { api } from "@/lib/api";
 import { useAppContext } from "@/components/shell/AppContext";
 import { getScenarioOverlay } from "@/lib/scenarios";
 
@@ -24,40 +24,62 @@ const PREVIEW_LAYERS = ["assets", "catchment", "rainfall", "quality", "risk"];
 const DEFAULT_HERO_HEADLINE =
   "Water security remains stable, with elevated\nmonitoring across catchments and assets.";
 
+// All 6 of the curated assets carry permanent labels in the executive map.
+const FEATURED_LABELLED = EXECUTIVE_FEATURED_ASSETS.map((a) => a.name);
+
+// Five executive-grade source chips for the in-row AquaIQ summary panel —
+// keeps the card focused; the full lineage list is on /aquaiq.
+const EXEC_INLINE_SOURCES = [
+  { label: "Dam storage", type: "table" as const },
+  { label: "Rainfall forecast", type: "table" as const },
+  { label: "Water quality alerts", type: "table" as const },
+  { label: "Asset risk scores", type: "table" as const },
+  { label: "Operating procedures", type: "document" as const },
+];
+
+type DrawerState =
+  | { kind: "kpi"; title: string }
+  | { kind: "posture" }
+  | null;
+
 export default function ExecutiveOverview() {
   const navigate = useNavigate();
-  const overview = useQuery({ queryKey: ["overview"], queryFn: api.overview });
-  void overview;
-  const assets = useQuery({ queryKey: ["assets"], queryFn: api.assets });
   const { scenarioId } = useAppContext();
   const overlay = getScenarioOverlay(scenarioId);
 
-  const mapAssets = useMemo(() => {
-    return (assets.data ?? [])
-      .filter((a) => a.lat != null && a.lon != null)
-      .map((a) => ({
-        asset_id: a.asset_id,
-        name: a.name,
-        asset_type: a.asset_type,
-        region: a.region,
-        lat: a.lat as number,
-        lon: a.lon as number,
-      }));
-  }, [assets.data]);
+  const [drawer, setDrawer] = useState<DrawerState>(null);
+
+  // Use the curated synthetic asset set for the executive map preview.
+  // Filtering live API data here would over-crowd Brisbane and drift away
+  // from the executive narrative; the curated list keeps the panel calm.
+  const mapAssets = useMemo(() => EXECUTIVE_FEATURED_ASSETS, []);
+
+  const activeKpiDef = useMemo(() => {
+    if (!drawer || drawer.kind !== "kpi") return null;
+    return EXECUTIVE_KPIS.find((k) => k.title === drawer.title) ?? null;
+  }, [drawer]);
+
+  const activeKpiInsight = useMemo(() => {
+    if (!drawer || drawer.kind !== "kpi") return null;
+    return getKpiInsight(drawer.title);
+  }, [drawer]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3.5">
       <HeroBanner
         image={HERO_IMAGES.executiveOverview}
         eyebrow="Executive Overview"
         headline={overlay.heroHeadline ?? DEFAULT_HERO_HEADLINE}
         sub={overlay.heroSub}
         cta={{ label: "View full executive brief", onClick: () => navigate("/aquaiq") }}
-        posture={overlay.posture}
-        height={340}
+        posture={{
+          ...overlay.posture,
+          onExplain: () => setDrawer({ kind: "posture" }),
+        }}
+        height={300}
       />
 
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6">
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
         {EXECUTIVE_KPIS.map((k) => (
           <KpiCard
             key={k.title}
@@ -69,15 +91,18 @@ export default function ExecutiveOverview() {
             sparklineData={k.spark.length > 0 ? k.spark : undefined}
             sparklineColor={k.sparkColor}
             sparklineVariant={k.sparkVariant}
+            onClick={() => setDrawer({ kind: "kpi", title: k.title })}
           />
         ))}
       </div>
 
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-10">
+      {/* Map (left) + AquaIQ Summary (right) — AquaIQ kept above the fold
+          on a 16:9 laptop. Priorities appear immediately beneath the map. */}
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
         <SectionCard
           title="SEQ Water Grid at a glance"
           description="Synthetic overview of dams, treatment plants, pump stations and pipelines."
-          className="lg:col-span-6"
+          className="lg:col-span-7"
           padded={false}
           actions={
             <button
@@ -90,18 +115,26 @@ export default function ExecutiveOverview() {
           }
         >
           <div className="relative">
-            <div className="h-[380px] overflow-hidden rounded-b-lg">
+            <div className="h-[360px] overflow-hidden rounded-b-lg">
               <SeqWaterMap
                 assets={mapAssets}
                 layers={PREVIEW_LAYERS}
                 preview
-                initialZoom={8}
-                height={380}
+                compactMarkers
+                cleanBasemap
+                styleUrl="mapbox://styles/mapbox/light-v11"
+                terrain={false}
+                buildings={false}
+                disableIntro
+                initialZoom={7.6}
+                height={360}
+                labelledAssetNames={FEATURED_LABELLED}
+                layerLabel="Synthetic SEQ Water Grid Layer"
                 className="border-0 rounded-none"
               />
             </div>
             <div className="pointer-events-none absolute bottom-3 left-3 z-[400] hidden md:block">
-              <MapLegend className="pointer-events-auto w-[200px]" />
+              <MapLegend className="pointer-events-auto w-[210px]" />
             </div>
             <button
               onClick={() => navigate("/map")}
@@ -113,42 +146,70 @@ export default function ExecutiveOverview() {
           </div>
         </SectionCard>
 
-        <SectionCard
-          title="Executive Priorities"
-          description="Action items raised for executive review this morning."
-          className="lg:col-span-4"
-          actions={
-            <button
-              onClick={() => navigate("/aquaiq")}
-              className="text-[12.5px] font-semibold text-primaryBlue hover:text-deepBlue"
-            >
-              View all actions →
-            </button>
-          }
-        >
-          <div className="space-y-2.5">
-            {overlay.priorities.map((p) => (
-              <ExecutivePriorityCard
-                key={p.title}
-                title={p.title}
-                description={p.description}
-                icon={p.icon}
-                status={p.status}
-                onClick={() => navigate("/aquaiq")}
-              />
-            ))}
-          </div>
-        </SectionCard>
+        <AquaIQSummaryCard
+          variant="inline"
+          body={overlay.executiveSummary}
+          sources={EXEC_INLINE_SOURCES}
+          updatedLabel={`Synthetic — ${overlay.label}`}
+          onCta={() => navigate("/aquaiq")}
+          className="lg:col-span-5"
+        />
       </div>
 
-      <AquaIQSummaryCard
-        body={overlay.executiveSummary}
-        evidence={EXECUTIVE_AI_EVIDENCE}
-        recommendedReview={overlay.executiveReview}
-        sources={EXECUTIVE_AI_SOURCES}
-        updatedLabel={`Synthetic — ${overlay.label}`}
-        onCta={() => navigate("/aquaiq")}
-      />
+      <SectionCard
+        title="Executive Priorities"
+        description="Action items raised for executive review this morning."
+        actions={
+          <button
+            onClick={() => navigate("/aquaiq")}
+            className="text-[12.5px] font-semibold text-primaryBlue hover:text-deepBlue"
+          >
+            View all actions →
+          </button>
+        }
+      >
+        <div className="grid grid-cols-1 gap-2.5 md:grid-cols-3">
+          {overlay.priorities.map((p) => (
+            <ExecutivePriorityCard
+              key={p.title}
+              title={p.title}
+              description={p.description}
+              icon={p.icon}
+              status={p.status}
+              chipLabel={p.chipLabel}
+              evidenceLabel={p.evidenceLabel}
+              evidenceType={p.evidenceType}
+              onClick={() => navigate("/aquaiq")}
+            />
+          ))}
+        </div>
+      </SectionCard>
+
+      {/* KPI / posture insight drawer — single instance, driven by `drawer` state. */}
+      {drawer?.kind === "posture" ? (
+        <KpiInsightDrawer
+          open
+          onClose={() => setDrawer(null)}
+          kind="posture"
+          postureInsight={POSTURE_INSIGHT}
+          // 7-day grid storage trend gives the posture header a visual anchor
+          sparkline={EXECUTIVE_KPIS[0]?.spark}
+          sparklineColor="#0076BE"
+          valueCaption={`Live posture: ${overlay.posture.status}`}
+        />
+      ) : null}
+      {drawer?.kind === "kpi" ? (
+        <KpiInsightDrawer
+          open
+          onClose={() => setDrawer(null)}
+          kind="kpi"
+          insight={activeKpiInsight}
+          sparkline={activeKpiDef?.spark}
+          sparklineColor={activeKpiDef?.sparkColor}
+          sparklineVariant={activeKpiDef?.sparkVariant}
+          valueCaption={activeKpiDef?.supportingText}
+        />
+      ) : null}
     </div>
   );
 }

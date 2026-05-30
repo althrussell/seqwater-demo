@@ -44,6 +44,35 @@ PARTITIONED BY (date)
 COMMENT 'Synthetic daily dam storage history.'
 TBLPROPERTIES ('synthetic_demo' = 'true');
 
+CREATE TABLE IF NOT EXISTS {catalog}.{schema}.dam_levels_current (
+  asset_id                 STRING NOT NULL,
+  asset_name               STRING,
+  region                   STRING,
+  full_supply_ml           BIGINT,
+  current_volume_ml        BIGINT,
+  percent_full             DOUBLE,
+  latest_observation_local STRING,
+  is_spilling              BOOLEAN,
+  comment                  STRING,
+  source                   STRING,
+  synthetic_demo_flag      BOOLEAN
+)
+COMMENT 'Snapshot of the published Seqwater dam-levels page (one row per dam).'
+TBLPROPERTIES ('synthetic_demo' = 'false');
+
+CREATE TABLE IF NOT EXISTS {catalog}.{schema}.flood_storage_current (
+  asset_id                     STRING NOT NULL,
+  asset_name                   STRING,
+  total_flood_storage_ml       BIGINT,
+  flood_storage_in_use_pct     DOUBLE,
+  flood_storage_available_pct  DOUBLE,
+  observed_local               STRING,
+  source                       STRING,
+  synthetic_demo_flag          BOOLEAN
+)
+COMMENT 'Dedicated flood-storage compartments at Somerset and Wivenhoe.'
+TBLPROPERTIES ('synthetic_demo' = 'false');
+
 CREATE TABLE IF NOT EXISTS {catalog}.{schema}.rainfall_observations (
   asset_id            STRING,
   asset_name          STRING,

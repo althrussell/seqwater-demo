@@ -29,6 +29,11 @@ export interface ScenarioPriority {
   description: string;
   status: Status;
   icon: ComponentType<SVGProps<SVGSVGElement>>;
+  /** Optional override for the status chip text (e.g. "Review"). */
+  chipLabel?: string;
+  /** Optional short evidence/source label shown as a subtle chip. */
+  evidenceLabel?: string;
+  evidenceType?: "table" | "document";
 }
 
 export interface ScenarioOverlay {
@@ -70,11 +75,11 @@ export const SCENARIO_OVERLAYS: Record<string, ScenarioOverlay> = {
       description:
         "Elevated monitoring in place for selected catchments, assets and water quality indicators.",
     },
-    executiveSummary: `Grid storage sits at 86.0% across the 25 published Seqwater storages, with 10 dams currently spilling. Both Somerset and Wivenhoe dedicated flood compartments are 100% available. Elevated rainfall forecast across Lockyer, Bremer and Brisbane River catchments means post-event turbidity risk at North Pine WTP and Landers Shute WTP should be monitored closely as wet catchments stabilise.`,
+    executiveSummary: `Rainfall forecasts indicate increased inflows to Wivenhoe and Somerset catchments over the next 72 hours. Elevated turbidity risk at North Pine WTP and Moggill WTP should be monitored. Asset risk is elevated for 7 assets, primarily due to maintenance backlogs and age-related factors. No immediate operational impacts to supply continuity are expected.`,
     executiveReview: [
-      "Confirm spillway monitoring and downstream comms cadence for the 10 spilling dams.",
-      "Validate North Pine WTP and Landers Shute WTP dosing readiness for post-event turbidity.",
-      "Brief executive on Lake Macdonald 40.2% storage status and the active upgrade program.",
+      "Confirm spillway monitoring and downstream comms cadence for the wet event.",
+      "Validate North Pine WTP and Moggill WTP dosing readiness for post-event turbidity.",
+      "Brief executive on the 7 elevated-risk assets and the active maintenance plan.",
     ],
     priorities: [
       {
@@ -82,18 +87,25 @@ export const SCENARIO_OVERLAYS: Record<string, ScenarioOverlay> = {
         description: "Elevated rainfall forecast across 3 catchments.",
         status: "watch",
         icon: AlertTriangle,
+        evidenceLabel: "rainfall_forecast · catchment_conditions",
+        evidenceType: "table",
       },
       {
         title: "Review water quality risk",
         description: "Turbidity risk elevated at 2 treatment plants.",
         status: "monitor",
         icon: Droplets,
+        evidenceLabel: "quality_alerts · turbidity_events",
+        evidenceType: "table",
       },
       {
         title: "Maintain asset resilience",
         description: "7 assets with elevated risk requiring attention.",
         status: "monitor",
+        chipLabel: "Review",
         icon: ShieldCheck,
+        evidenceLabel: "asset_risk_scores · maintenance_work_orders",
+        evidenceType: "table",
       },
     ],
   },
@@ -128,18 +140,25 @@ export const SCENARIO_OVERLAYS: Record<string, ScenarioOverlay> = {
         description: "Demand at +14% vs baseline; activate retailer comms.",
         status: "watch",
         icon: Flame,
+        evidenceLabel: "demand_forecast · supply_forecast",
+        evidenceType: "table",
       },
       {
         title: "Treatment capacity headroom",
         description: "Mt Crosby East at 92% available capacity.",
         status: "watch",
         icon: Droplets,
+        evidenceLabel: "treatment_plant_operations",
+        evidenceType: "table",
       },
       {
         title: "Pump station risk",
         description: "2 ageing pump stations operating near thresholds.",
         status: "monitor",
+        chipLabel: "Review",
         icon: Wrench,
+        evidenceLabel: "asset_risk_scores · maintenance_work_orders",
+        evidenceType: "table",
       },
     ],
   },
@@ -174,18 +193,25 @@ export const SCENARIO_OVERLAYS: Record<string, ScenarioOverlay> = {
         description: "Synthetic outage; target restoration window 8 hours.",
         status: "escalate",
         icon: Wrench,
+        evidenceLabel: "incident_actions · maintenance_work_orders",
+        evidenceType: "table",
       },
       {
         title: "Rebalance the grid",
         description: "Mt Crosby +18 ML/day; Landers Shute +9 ML/day.",
         status: "watch",
         icon: Droplets,
+        evidenceLabel: "grid_transfer_recommendations",
+        evidenceType: "table",
       },
       {
         title: "Maintain customer comms",
         description: "Brisbane North and Moreton Bay retailers briefed.",
         status: "monitor",
+        chipLabel: "Review",
         icon: ShieldCheck,
+        evidenceLabel: "Customer comms protocol (synthetic)",
+        evidenceType: "document",
       },
     ],
   },
@@ -219,18 +245,24 @@ export const SCENARIO_OVERLAYS: Record<string, ScenarioOverlay> = {
         description: "All catchments and storages within nominal range.",
         status: "normal",
         icon: ShieldCheck,
+        evidenceLabel: "dam_levels_current · catchment_conditions",
+        evidenceType: "table",
       },
       {
         title: "Water quality compliance",
         description: "All indicators inside compliance bands.",
         status: "normal",
         icon: Droplets,
+        evidenceLabel: "water_quality_samples",
+        evidenceType: "table",
       },
       {
         title: "Asset health stable",
         description: "No critical assets in unplanned maintenance.",
         status: "normal",
         icon: Wrench,
+        evidenceLabel: "asset_risk_scores",
+        evidenceType: "table",
       },
     ],
   },

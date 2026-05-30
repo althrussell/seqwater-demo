@@ -1,33 +1,85 @@
-import {
-  AlertTriangle,
-  Building2,
-  Droplet,
-  CircleDot,
-  Square,
-  Minus,
-} from "lucide-react";
+import { AlertTriangle, Building2, Droplet } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
+
+type LegendKind = "dam" | "wtp" | "pump" | "alert" | "quality" | "catchment" | "pipeline";
 
 interface LegendItem {
   label: string;
-  icon: ComponentType<SVGProps<SVGSVGElement>>;
-  color: string;
-  fill?: string;
+  kind: LegendKind;
+  icon?: ComponentType<SVGProps<SVGSVGElement>>;
 }
 
 const ITEMS: LegendItem[] = [
-  { label: "Dam / Reservoir", icon: Droplet, color: "#0076BE" },
-  { label: "Water Treatment Plant", icon: Building2, color: "#2E7D59" },
-  { label: "Pump Station", icon: CircleDot, color: "#0076BE" },
-  { label: "Pipeline", icon: Minus, color: "#0076BE" },
-  { label: "Reservoir", icon: Square, color: "#0076BE" },
-  { label: "Alert / Watch", icon: AlertTriangle, color: "#D88A00" },
-  { label: "Quality Alert", icon: Droplet, color: "#7C3AED" },
-  { label: "Catchment Area", icon: Square, color: "#5FA777", fill: "#EEF8F2" },
+  { label: "Dam / reservoir", kind: "dam", icon: Droplet },
+  { label: "Water treatment plant", kind: "wtp", icon: Building2 },
+  { label: "Pump station", kind: "pump" },
+  { label: "Pipeline", kind: "pipeline" },
+  { label: "Alert / watch", kind: "alert", icon: AlertTriangle },
+  { label: "Quality alert", kind: "quality", icon: Droplet },
+  { label: "Catchment area", kind: "catchment" },
 ];
 
+function LegendChip({ kind, Icon }: { kind: LegendKind; Icon?: ComponentType<SVGProps<SVGSVGElement>> }) {
+  if (kind === "dam") {
+    return (
+      <span className="flex h-5 w-5 flex-none items-center justify-center rounded-full border-[1.5px] border-primaryBlue bg-white text-primaryBlue shadow-soft">
+        {Icon ? <Icon className="h-2.5 w-2.5" /> : null}
+      </span>
+    );
+  }
+  if (kind === "wtp") {
+    return (
+      <span className="flex h-5 w-5 flex-none items-center justify-center rounded-full border-[1.5px] border-greenDark bg-white text-greenDark shadow-soft">
+        {Icon ? <Icon className="h-2.5 w-2.5" /> : null}
+      </span>
+    );
+  }
+  if (kind === "pump") {
+    return (
+      <span className="flex h-5 w-5 flex-none items-center justify-center rounded-full border-[1.5px] border-white bg-primaryBlue text-white shadow-soft ring-1 ring-primaryBlue/30">
+        <span className="h-1.5 w-1.5 rounded-full bg-white" />
+      </span>
+    );
+  }
+  if (kind === "alert") {
+    return (
+      <span className="flex h-5 w-5 flex-none items-center justify-center rounded-full border-[1.5px] border-white bg-status-watch text-white shadow-soft">
+        {Icon ? <Icon className="h-2.5 w-2.5" /> : null}
+      </span>
+    );
+  }
+  if (kind === "quality") {
+    return (
+      <span className="flex h-5 w-5 flex-none items-center justify-center rounded-full border-[1.5px] border-white bg-[#7C3AED] text-white shadow-soft">
+        {Icon ? <Icon className="h-2.5 w-2.5" /> : null}
+      </span>
+    );
+  }
+  if (kind === "pipeline") {
+    return (
+      <span className="flex h-5 w-5 flex-none items-center justify-center" aria-hidden>
+        <span
+          className="h-[2px] w-4 rounded-full bg-primaryBlue"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(90deg,#0076BE 0,#0076BE 4px,transparent 4px,transparent 7px)",
+          }}
+        />
+      </span>
+    );
+  }
+  // catchment
+  return (
+    <span
+      className="flex h-5 w-5 flex-none items-center justify-center rounded-sm border border-greenDark/40"
+      style={{ background: "rgba(95,167,119,0.18)" }}
+      aria-hidden
+    />
+  );
+}
+
 export default function MapLegend({
-  title = "Map Key",
+  title = "Map key",
   items = ITEMS,
   className,
 }: {
@@ -38,23 +90,23 @@ export default function MapLegend({
   return (
     <div
       className={
-        "rounded-md border border-border bg-surface/95 px-3 py-2.5 text-[11.5px] text-ink-secondary shadow-card backdrop-blur " +
+        "rounded-lg border border-border bg-surface/96 px-3 py-2.5 text-[11.5px] text-ink-secondary shadow-card backdrop-blur " +
         (className ?? "")
       }
     >
-      <div className="mb-1.5 text-[10.5px] font-semibold uppercase tracking-wider text-deepNavy">
-        {title}
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-deepNavy">
+          {title}
+        </span>
+        <span className="rounded-full bg-surface-blue px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-[0.14em] text-primaryBlue">
+          Synthetic
+        </span>
       </div>
-      <ul className="space-y-1">
+      <ul className="grid grid-cols-1 gap-1.5">
         {items.map((it) => (
           <li key={it.label} className="flex items-center gap-2">
-            <span
-              className="flex h-4 w-4 flex-none items-center justify-center rounded-sm"
-              style={{ background: it.fill ?? "transparent", color: it.color }}
-            >
-              <it.icon className="h-3.5 w-3.5" />
-            </span>
-            <span>{it.label}</span>
+            <LegendChip kind={it.kind} Icon={it.icon} />
+            <span className="leading-tight">{it.label}</span>
           </li>
         ))}
       </ul>
@@ -66,11 +118,11 @@ export function RainfallLegend({ className }: { className?: string }) {
   return (
     <div
       className={
-        "rounded-md border border-border bg-surface/95 px-3 py-2.5 text-[11.5px] text-ink-secondary shadow-card backdrop-blur " +
+        "rounded-lg border border-border bg-surface/96 px-3 py-2.5 text-[11.5px] text-ink-secondary shadow-card backdrop-blur " +
         (className ?? "")
       }
     >
-      <div className="mb-1 text-[10.5px] font-semibold uppercase tracking-wider text-deepNavy">
+      <div className="mb-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-deepNavy">
         Rainfall (mm)
       </div>
       <div className="mb-1 text-[10.5px] text-ink-muted">Next 72 hours</div>

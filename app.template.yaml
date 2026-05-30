@@ -26,6 +26,12 @@ env:
     value: "${DATABRICKS_SCHEMA}"
   - name: DATABRICKS_VOLUME
     value: "${DATABRICKS_VOLUME}"
+  # The workspace organisation id is required by the Genie embed iframe URL
+  # (the ?o=<workspace_id> query param). Databricks Apps auto-injects
+  # DATABRICKS_HOST but not DATABRICKS_WORKSPACE_ID, so we set it explicitly
+  # from the workspace metadata captured at deploy time.
+  - name: DATABRICKS_WORKSPACE_ID
+    value: "${DATABRICKS_WORKSPACE_ID}"
   - name: DATABRICKS_LLM_ENDPOINT
     valueFrom: "llm-endpoint"
   - name: DATABRICKS_LLM_TEMPERATURE

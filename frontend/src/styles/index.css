@@ -43,6 +43,16 @@ body {
   .input {
     @apply w-full rounded-md border border-border-strong bg-surface px-3 py-2 text-sm text-deepNavy placeholder:text-ink-muted focus:border-primaryBlue focus:outline-none focus:ring-4 focus:ring-primaryBlue/15;
   }
+  /* Compact icon-only button used inside the AquaIQ floating dock header. */
+  .dock-ic {
+    @apply inline-flex h-7 w-7 flex-none items-center justify-center rounded-md
+      text-ink-muted transition hover:bg-[#EEF3FB] hover:text-deepBlue
+      focus:outline-none focus:ring-2 focus:ring-primaryBlue/30;
+  }
+  /* Subtle hover-bob for the AquaIQ launcher avatar. */
+  .aquaiq-dock__bob {
+    animation: aquaiqBob 4.2s ease-in-out infinite;
+  }
   .pill {
     @apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-medium;
   }
@@ -168,12 +178,23 @@ body {
   background: #ffffff;
   border: 2px solid #0076be;
   color: #0076be;
-  box-shadow: 0 4px 12px rgba(15, 48, 73, 0.28);
+  box-shadow: 0 4px 12px rgba(15, 48, 73, 0.22);
   transition: transform 120ms ease, box-shadow 120ms ease;
 }
 .seq-marker-mb__chip svg {
   width: 14px;
   height: 14px;
+}
+/* Compact variant used by the Executive Overview preview map. */
+.seq-marker-mb.is-compact .seq-marker-mb__chip {
+  width: 22px;
+  height: 22px;
+  border-width: 1.6px;
+  box-shadow: 0 2px 6px rgba(15, 48, 73, 0.18);
+}
+.seq-marker-mb.is-compact .seq-marker-mb__chip svg {
+  width: 11px;
+  height: 11px;
 }
 .seq-marker-mb:hover .seq-marker-mb__chip {
   transform: scale(1.1);
@@ -190,6 +211,7 @@ body {
   background: #0076be;
   border-color: #ffffff;
   color: #ffffff;
+  box-shadow: 0 4px 12px rgba(15, 48, 73, 0.28), 0 0 0 1.5px rgba(0, 118, 190, 0.35);
 }
 .seq-marker-mb.is-reservoir .seq-marker-mb__chip {
   border-color: #00aeef;
@@ -200,7 +222,13 @@ body {
   height: 30px;
   border: 2px solid #ffffff;
   background: transparent;
-  box-shadow: 0 4px 14px rgba(15, 48, 73, 0.4);
+  box-shadow: 0 4px 14px rgba(15, 48, 73, 0.32);
+}
+.seq-marker-mb--accent.is-compact .seq-marker-mb__chip {
+  width: 24px;
+  height: 24px;
+  border-width: 1.6px;
+  box-shadow: 0 3px 8px rgba(15, 48, 73, 0.24);
 }
 .seq-marker-mb--accent.is-alert .seq-marker-mb__chip {
   border-color: #ffffff;
@@ -211,14 +239,15 @@ body {
 
 .seq-map-label-html {
   font-family: inherit;
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 600;
+  letter-spacing: 0.01em;
   color: #0a2e4d;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.96);
   border: 1px solid #d7e7f0;
   border-radius: 999px;
-  padding: 2px 9px;
-  box-shadow: 0 4px 12px -4px rgba(15, 48, 73, 0.25);
+  padding: 2px 8px;
+  box-shadow: 0 3px 10px -4px rgba(15, 48, 73, 0.22);
   white-space: nowrap;
   pointer-events: none;
   transform: translateY(-1px);
@@ -331,4 +360,14 @@ body {
   border: 0;
   border-top: 1px solid #d7e7f0;
   margin: 0.8em 0;
+}
+
+@keyframes aquaiqBob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2.5px);
+  }
 }

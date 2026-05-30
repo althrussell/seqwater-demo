@@ -174,6 +174,10 @@ def _discover_workspace(profile: str) -> dict[str, str]:
     if host:
         discovered["DATABRICKS_HOST"] = host
         print(f"  host: {host}")
+    workspace_id = auth_env.get("DATABRICKS_WORKSPACE_ID", "").strip()
+    if workspace_id:
+        discovered["DATABRICKS_WORKSPACE_ID"] = workspace_id
+        print(f"  workspace id: {workspace_id}")
 
     # --- warehouse: validate any pin against the live list -----------------
     out = _capture(
@@ -420,6 +424,7 @@ def main() -> None:
     profile_changed = bool(previous_profile) and previous_profile != profile
     workspace_specific = (
         "DATABRICKS_HOST",
+        "DATABRICKS_WORKSPACE_ID",
         "DATABRICKS_WAREHOUSE_ID",
         "DATABRICKS_CATALOG",
         "DATABRICKS_GENIE_SPACE_ID",

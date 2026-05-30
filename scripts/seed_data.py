@@ -32,7 +32,8 @@ SYN = ROOT / "data" / "synthetic"
 DOCS = ROOT / "data" / "documents"
 
 TABLES = [
-    "assets", "asset_locations", "dam_storage_daily", "rainfall_observations",
+    "assets", "asset_locations", "dam_storage_daily", "dam_levels_current",
+    "flood_storage_current", "rainfall_observations",
     "rainfall_forecast", "demand_forecast", "supply_forecast",
     "grid_transfer_recommendations", "asset_health_daily",
     "maintenance_work_orders", "asset_risk_scores", "water_quality_samples",

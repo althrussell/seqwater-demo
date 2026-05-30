@@ -29,6 +29,12 @@ interface Props {
   ctaLabel?: string;
   onCta?: () => void;
   className?: string;
+  /**
+   * Layout variant:
+   *  - `default`: full-width 2-column premium layout (Summary + Evidence side-by-side)
+   *  - `inline`:  narrow single-column layout for in-row placement next to a map
+   */
+  variant?: "default" | "inline";
 }
 
 const ICON: Record<SourceType, typeof Database> = {
@@ -51,12 +57,104 @@ export default function AquaIQSummaryCard({
   ctaLabel = "View full explanation",
   onCta,
   className,
+  variant = "default",
 }: Props) {
   const isPremium = Boolean(
     (evidence && evidence.length > 0) ||
       (recommendedReview && recommendedReview.length > 0) ||
       (sources && sources.length > 0),
   );
+
+  if (variant === "inline") {
+    return (
+      <section
+        className={cn(
+          "relative flex h-full flex-col overflow-hidden rounded-xl border border-border bg-surface shadow-card",
+          className,
+        )}
+      >
+        {/* Subtle navy gradient wash at the top so the card reads as an AI panel
+            rather than a generic content card. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 h-24"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(0,118,190,0.07) 0%, rgba(0,118,190,0) 100%)",
+          }}
+        />
+        <header className="relative flex items-start gap-3 px-5 pb-3 pt-4">
+          <span className="flex h-9 w-9 flex-none items-center justify-center rounded-lg bg-surface-blue text-primaryBlue ring-1 ring-primaryBlue/15">
+            <Sparkles className="h-4 w-4" />
+          </span>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2">
+              <span className="text-[10.5px] font-semibold uppercase tracking-[0.18em] text-primaryBlue">
+                AquaIQ
+              </span>
+              <span className="rounded-full border border-border bg-surface-blue/40 px-1.5 py-0.5 text-[9.5px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
+                Synthetic
+              </span>
+            </div>
+            <div className="mt-0.5 text-[15px] font-semibold leading-tight text-deepNavy">
+              {title}
+            </div>
+            <div className="mt-1 text-[12px] leading-snug text-ink-muted">
+              {description}
+            </div>
+          </div>
+        </header>
+
+        <div className="relative flex flex-1 flex-col gap-3 px-5 pb-4">
+          <div className="rounded-lg border border-surface-blueStrong/60 bg-surface-blue/55 p-3.5 text-[13px] leading-[1.55] text-deepNavy">
+            {body}
+          </div>
+
+          {sources && sources.length > 0 ? (
+            <div>
+              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted">
+                Sources
+              </div>
+              <div className="mt-1.5 flex flex-wrap gap-1.5">
+                {sources.map((s) => {
+                  const Icon = ICON[s.type];
+                  return (
+                    <span
+                      key={s.label}
+                      className="inline-flex max-w-[200px] items-center gap-1.5 truncate rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] font-medium text-ink-secondary"
+                      title={s.label}
+                    >
+                      <Icon className="h-3 w-3 flex-none text-primaryBlue" />
+                      <span className="truncate">{s.label}</span>
+                    </span>
+                  );
+                })}
+              </div>
+            </div>
+          ) : null}
+
+          <div className="mt-auto flex items-center justify-between gap-3 pt-1">
+            {onCta ? (
+              <button
+                onClick={onCta}
+                className="inline-flex items-center gap-1.5 rounded-md bg-primaryBlue px-3 py-1.5 text-[12px] font-semibold text-white shadow-card transition hover:bg-deepBlue"
+              >
+                {ctaLabel}
+                <ArrowRight className="h-3.5 w-3.5" />
+              </button>
+            ) : (
+              <span />
+            )}
+            {updatedLabel ? (
+              <span className="truncate text-[10.5px] font-medium uppercase tracking-[0.12em] text-ink-muted">
+                {updatedLabel}
+              </span>
+            ) : null}
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section
