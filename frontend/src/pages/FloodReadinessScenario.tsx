@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { AlertTriangle, ChevronRight, Layers, List, MapPin } from "lucide-react";
+import FloodCatchmentImpactMap, {
+  FLOOD_MAPBOX_AVAILABLE,
+} from "@/components/map/FloodCatchmentImpactMap";
 import HeroBanner from "@/components/ui/HeroBanner";
 import SectionCard from "@/components/ui/SectionCard";
 import StatusBadge from "@/components/ui/StatusBadge";
@@ -120,7 +123,7 @@ export default function FloodReadinessScenario() {
             </div>
           }
         >
-          {view === "map" ? <SyntheticCatchmentMap /> : <CatchmentList />}
+          {view === "map" ? <CatchmentMapPanel /> : <CatchmentList />}
         </SectionCard>
       </div>
 
@@ -242,9 +245,52 @@ function ScenarioSelect({
   );
 }
 
-function SyntheticCatchmentMap() {
+function CatchmentMapPanel() {
   return (
     <div className="relative h-full min-h-0 overflow-hidden">
+      {FLOOD_MAPBOX_AVAILABLE ? (
+        <FloodCatchmentImpactMap impacts={CATCHMENT_IMPACTS} />
+      ) : (
+        <SyntheticCatchmentMap />
+      )}
+      <MapImpactLegend />
+      <ProjectionBadge />
+    </div>
+  );
+}
+
+function MapImpactLegend() {
+  return (
+    <div className="pointer-events-none absolute bottom-3 left-3 z-[400] rounded-md border border-border bg-surface/95 p-2 text-[11px] text-ink-secondary shadow-card backdrop-blur">
+      <div className="mb-1 text-[10.5px] font-semibold uppercase tracking-wider text-deepNavy">
+        Impact level
+      </div>
+      <div className="flex items-center gap-3">
+        <span className="inline-flex items-center gap-1">
+          <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#5FA777]" /> Low
+        </span>
+        <span className="inline-flex items-center gap-1">
+          <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#0076BE]" /> Medium
+        </span>
+        <span className="inline-flex items-center gap-1">
+          <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#D88A00]" /> High
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function ProjectionBadge() {
+  return (
+    <div className="pointer-events-none absolute right-3 top-3 z-[400] inline-flex items-center gap-1 rounded-md border border-border bg-surface/90 px-2 py-1 text-[11px] text-ink-muted shadow-card backdrop-blur">
+      <Layers className="h-3 w-3 text-primaryBlue" /> Projection
+    </div>
+  );
+}
+
+function SyntheticCatchmentMap() {
+  return (
+    <div className="h-full w-full">
       <svg viewBox="0 0 600 320" preserveAspectRatio="xMidYMid slice" className="h-full w-full">
         <defs>
           <linearGradient id="ocean2" x1="1" y1="0" x2="0" y2="0">
@@ -260,25 +306,6 @@ function SyntheticCatchmentMap() {
         <CatchmentBlob d="M200 220 Q 320 220 380 260 Q 320 300 230 290 Z" fill="#0076BE" alpha={0.35} label="Logan River" lx={300} ly={265} />
         <CatchmentBlob d="M420 250 Q 510 250 560 280 Q 530 305 460 305 Q 410 290 410 270 Z" fill="#5FA777" alpha={0.35} label="Gold Coast Creeks" lx={485} ly={280} />
       </svg>
-      <div className="absolute bottom-3 left-3 rounded-md border border-border bg-surface/95 p-2 text-[11px] text-ink-secondary shadow-card backdrop-blur">
-        <div className="mb-1 text-[10.5px] font-semibold uppercase tracking-wider text-deepNavy">
-          Impact level
-        </div>
-        <div className="flex items-center gap-3">
-          <span className="inline-flex items-center gap-1">
-            <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#5FA777]" /> Low
-          </span>
-          <span className="inline-flex items-center gap-1">
-            <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#0076BE]" /> Medium
-          </span>
-          <span className="inline-flex items-center gap-1">
-            <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#D88A00]" /> High
-          </span>
-        </div>
-      </div>
-      <div className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-md border border-border bg-surface/90 px-2 py-1 text-[11px] text-ink-muted shadow-card backdrop-blur">
-        <Layers className="h-3 w-3 text-primaryBlue" /> Projection
-      </div>
     </div>
   );
 }

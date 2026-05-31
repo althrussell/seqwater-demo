@@ -76,7 +76,7 @@ export default function ExecutiveOverview() {
           ...overlay.posture,
           onExplain: () => setDrawer({ kind: "posture" }),
         }}
-        height={150}
+        height={230}
       />
 
       <div className="grid flex-none grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-6">
